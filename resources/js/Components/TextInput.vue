@@ -6,9 +6,8 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    type: {
-        type: String,
-        default: 'text',
+    inputType: {
+        type: String
     },
 });
 
@@ -31,7 +30,7 @@ const classes = computed(() => {
 
 <template>
     <textarea
-        v-if="type === 'textarea'"
+        v-if="inputType === 'textarea'"
         :class="classes"
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"

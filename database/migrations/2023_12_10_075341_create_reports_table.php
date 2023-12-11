@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->enum('status',['open', 'in progress', 'resolved', 'closed'])->default('open');
+            $table->enum('status',['open', 'in_progress', 'resolved', 'closed'])->default('open');
             $table->string('venue')->nullable();
             $table->string('reporter')->nullable();
             $table->foreignId('user_id')
