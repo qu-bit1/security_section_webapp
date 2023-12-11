@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('attachments', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('path');
+            $table->string('mime_type')->nullable();
+            $table->nullableMorphs('attachable');
+            $table->foreignId('user_id')
+                ->constrained("users")
+                ->onUpdate('cascade');
             $table->timestamps();
         });
     }
