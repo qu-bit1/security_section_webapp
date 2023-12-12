@@ -34,13 +34,15 @@ class AttachmentController extends Controller
      */
     public function store(StoreAttachmentRequest $request): RedirectResponse
     {
-        $file = $request->file('attachment');
-        $attachment = Attachment::create([
-            'name' => $file->getClientOriginalName(),
-            'path' => $file->store('attachments'),
-            'user_id' => auth()->user()->id,
-            'mime_type' => $file->getMimeType(),
-        ]);
+        $files = $request->file('attachments');
+        foreach ($files as $file) {
+            $attachment = Attachment::create([
+                'name' => $file->getClientOriginalName(),
+                'path' => $file->store('attachments'),
+                'user_id' => auth()->user()->id,
+                'mime_type' => $file->getMimeType(),
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Attachment uploaded.');
     }

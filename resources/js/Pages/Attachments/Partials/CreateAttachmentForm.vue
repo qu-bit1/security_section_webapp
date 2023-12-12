@@ -3,18 +3,18 @@ import {Head, useForm} from '@inertiajs/vue3';
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import FileInput from "@/Components/FileInput.vue";
 
 const form = useForm({
-    attachment: null
+    attachments: null
 });
 
 const submit = () => {
     form.post(route('attachments.store'), {
-        onFinish: () => form.reset('attachment'),
+        onFinish: () => form.reset('attachments'),
     });
 };
 </script>
-
 
 <template>
     <Head title="Upload File"/>
@@ -22,23 +22,15 @@ const submit = () => {
     <form @submit.prevent="submit">
         <div>
             <InputLabel for="attachment" value="Select File"/>
-
-            <input
-                id="attachment"
-                type="file"
-                class="mt-1 block w-full"
-                autofocus
-                autocomplete="attachment"
-                @input="form.attachment = $event.target.files[0]"
-            />
+            <FileInput class="mt-1 block w-full" v-model="form.attachments" :multiple="true"/>
             <progress v-if="form.progress" :value="form.progress.percentage" max="100">
                 {{ form.progress.percentage }}%
             </progress>
-            <InputError class="mt-2" :message="form.errors.attachment"/>
+            <InputError :message="form.errors.attachments"/>
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+            <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4">
                 Upload File
             </PrimaryButton>
         </div>

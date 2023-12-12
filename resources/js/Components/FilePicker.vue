@@ -7,6 +7,7 @@ import {ref, watch} from "vue";
 import {router, useForm} from '@inertiajs/vue3'
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
+import FileInput from "@/Components/FileInput.vue";
 
 const props = defineProps({
     attachments: {
@@ -21,7 +22,7 @@ const attachingToReport = ref(false);
 const selectedFiles = ref([...props.modelValue]);
 const currentTab = ref("upload");
 const form = useForm({
-    attachment: null
+    attachments: null
 });
 
 watch(() => props.modelValue, (value) => {
@@ -108,18 +109,11 @@ const toggleFileSelection = (attachmentId) => {
                     <div>
                         <InputLabel for="attachment" value="Select File"/>
 
-                        <input
-                            id="attachment"
-                            type="file"
-                            class="mt-1 block w-full"
-                            autofocus
-                            autocomplete="attachment"
-                            @input="form.attachment = $event.target.files[0]"
-                        />
+                        <FileInput class="mt-1 block w-full" v-model="form.attachments" :multiple="true"/>
                         <progress v-if="form.progress" :value="form.progress.percentage" max="100">
                             {{ form.progress.percentage }}%
                         </progress>
-                        <InputError class="mt-2" :message="form.errors.attachment"/>
+                        <InputError :message="form.errors.attachments"/>
                     </div>
                 </div>
                 <div class="p-6 flex justify-end border-t">

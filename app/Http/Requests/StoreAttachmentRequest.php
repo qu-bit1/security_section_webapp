@@ -23,7 +23,7 @@ class StoreAttachmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "attachment" => ["required"],
+            "attachments" => ["required", "array", "max:5"],
         ];
     }
 }
