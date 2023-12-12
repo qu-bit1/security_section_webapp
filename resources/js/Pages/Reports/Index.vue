@@ -1,8 +1,10 @@
 <script setup>
 
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import {Head} from "@inertiajs/vue3";
+import {Head, Link} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import DeleteReportForm from "@/Pages/Reports/Partials/DeleteReportForm.vue";
 
 defineProps({reports: Object});
 </script>
@@ -38,11 +40,24 @@ defineProps({reports: Object});
                                     <th scope="col" class="px-6 py-4 uppercase tracking-wider">
                                         Description
                                     </th>
+                                    <th scope="col" class="px-6 py-4 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th scope="col" class="px-6 py-4 uppercase tracking-wider">
+                                        Venue
+                                    </th>
+                                    <th scope="col" class="px-6 py-4 uppercase tracking-wider">
+                                        Reporter
+                                    </th>
+                                    <th scope="col" class="px-6 py-4 uppercase tracking-wider">
+                                        Attachments
+                                    </th>
+
                                     <!--                                    <th scope="col" class="px-6 py-4 uppercase tracking-wider">-->
                                     <!--                                        color</th>-->
-                                    <!--                                    <th scope="col" class="relative px-6 py-4">-->
-                                    <!--                                        <span class="sr-only">Edit</span>-->
-                                    <!--                                    </th>-->
+                                    <th scope="col" class="relative px-6 py-4">
+                                        <span class="sr-only">Edit</span>
+                                    </th>
                                 </tr>
                                 </thead>
                                 <tbody class="bg-skin-base divide-y divide-gray-200 text-gray-600">
@@ -52,11 +67,36 @@ defineProps({reports: Object});
                                             {{ report.id }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            {{ report.title }}
+                                            <Link
+                                                :href="route('reports.show', report.id)"
+                                            >
+                                                {{ report.title }}
+                                            </Link>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             {{ report.description }}
                                         </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            {{ report.status }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            {{ report.venue }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            {{ report.reporter }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            {{ report.attachments.length }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row">
+                                            <SecondaryButton
+                                                :href="route('reports.edit', report.id)"
+                                            >
+                                                Edit
+                                            </SecondaryButton>
+                                            <DeleteReportForm class="ml-2" :report="report" :key="report.id"/>
+                                        </td>
+
                                     </tr>
                                 </template>
                                 </tbody>

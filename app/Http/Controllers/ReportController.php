@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
+use App\Models\Attachment;
 use App\Models\Report;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -16,7 +17,7 @@ class ReportController extends Controller
     public function index(): Response
     {
         return Inertia::render('Reports/Index', [
-            'reports' => Report::with('users')->get(),
+            'reports' => Report::with(['users', 'attachments'])->get(),
         ]);
     }
 
@@ -25,7 +26,9 @@ class ReportController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Reports/Create');
+        return Inertia::render('Reports/Create', [
+            'attachments' => Attachment::where('user_id', auth()->user()->id)->get(),
+        ]);
     }
 
     /**
@@ -36,8 +39,13 @@ class ReportController extends Controller
         $report = Report::create([
             'title' => $request->title,
             'description' => $request->description,
+            'status' => $request->status,
+            'venue' => $request->venue,
+            'reporter' => $request->reporter,
             'user_id' => auth()->user()->id,
         ]);
+
+        $report->attachments()->attach($request->attachments);
 
         return redirect()->route('reports.index')->with('success', 'Report created.');
     }
@@ -48,7 +56,7 @@ class ReportController extends Controller
     public function show(Report $report): Response
     {
         return Inertia::render('Reports/Show', [
-            'report' => $report->load('user', 'comments'),
+            'report' => $report->load('users', 'comments', "attachments"),
         ]);
     }
 
@@ -58,7 +66,8 @@ class ReportController extends Controller
     public function edit(Report $report): Response
     {
         return Inertia::render('Reports/Edit', [
-            'report' => $report->load('user'),
+            'report' => $report->load('users', 'attachments'),
+            'attachments' => Attachment::where('user_id', auth()->user()->id)->get(),
         ]);
     }
 
@@ -70,9 +79,14 @@ class ReportController extends Controller
         $report->update([
             'title' => $request->title,
             'description' => $request->description,
+            'status' => $request->status,
+            'venue' => $request->venue,
+            'reporter' => $request->reporter,
         ]);
 
-        return redirect()->route('reports.index')->with('success', 'Report updated.');
+        $report->attachments()->sync($request->attachments);
+
+        return redirect()->route('reports.show', $report->id)->with('success', 'Report updated.');
     }
 
     /**

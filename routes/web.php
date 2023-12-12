@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\ProfileController;
 use \App\Http\Controllers\CommentController;
 use App\Http\Controllers\ReportController;
@@ -40,6 +41,8 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('reports.comments', CommentController::class);
 //    Route::get('/tag/{tag}', [TagController::class, 'show'])->name('tag.show');
+
+    Route::resource('attachments', AttachmentController::class);
 });
 
 require __DIR__.'/auth.php';

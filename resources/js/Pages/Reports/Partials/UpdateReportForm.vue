@@ -8,24 +8,27 @@ import SelectInput from "@/Components/SelectInput.vue";
 import FilePicker from "@/Components/FilePicker.vue";
 
 const props = defineProps({
+    report: {
+        type: Object,
+    },
     attachments: {
         type: Array,
     }
 });
 
 const form = useForm({
-    title: '',
-    description: '',
-    venue: '',
-    reporter: '',
+    title: props.report.title,
+    description: props.report.description,
+    venue: props.report.venue,
+    reporter: props.report.reporter,
     category: '',
-    status: '',
+    status: props.report.status,
     tags: [],
-    attachments: [],
+    attachments: props.report.attachments.map(attachment => attachment.id),
 });
 
 const submit = () => {
-    form.post(route('reports.store'));
+    form.put(route('reports.update', props.report.id));
 };
 
 const statusOptions = [
@@ -119,7 +122,7 @@ const statusOptions = [
 
         <div class="flex items-center justify-end mt-4">
             <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                Create Report
+                Update Report
             </PrimaryButton>
         </div>
     </form>

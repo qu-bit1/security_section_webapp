@@ -6,9 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateReportRequest extends FormRequest
 {
-    public mixed $title;
-    public mixed $description;
-
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -26,7 +23,6 @@ class UpdateReportRequest extends FormRequest
     {
         return [
             'title' => ['required', 'max:255'],
-            'description' => ['required'],
         ];
     }
 }

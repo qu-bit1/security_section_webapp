@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAttachmentRequest;
 use App\Http\Requests\UpdateAttachmentRequest;
 use App\Models\Attachment;
+use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AttachmentController extends Controller
 {
@@ -13,23 +16,33 @@ class AttachmentController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('Attachments/Index', [
+            'attachments' => Attachment::where('user_id', auth()->user()->id)->get(),
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
-        //
+        return Inertia::render('Attachments/Create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAttachmentRequest $request)
+    public function store(StoreAttachmentRequest $request): RedirectResponse
     {
-        //
+        $file = $request->file('attachment');
+        $attachment = Attachment::create([
+            'name' => $file->getClientOriginalName(),
+            'path' => $file->store('attachments'),
+            'user_id' => auth()->user()->id,
+            'mime_type' => $file->getMimeType(),
+        ]);
+
+        return redirect()->back()->with('success', 'Attachment uploaded.');
     }
 
     /**
@@ -61,6 +74,8 @@ class AttachmentController extends Controller
      */
     public function destroy(Attachment $attachment)
     {
-        //
+        $attachment->delete();
+
+        return redirect()->back()->with('success', 'Attachment deleted.');
     }
 }
