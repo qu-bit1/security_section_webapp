@@ -29,7 +29,7 @@ const form = useForm({
 
             <p class="mt-1 text-sm text-gray-600">
                 Update your account's profile information and email address.
-            </p>
+         different role of users(different set of permissions)   </p>
         </header>
 
         <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">

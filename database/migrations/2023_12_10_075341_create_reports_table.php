@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->constrained("users")
                 ->onUpdate('cascade');
-            $table->foreignId('category_id')
+            $table->foreignId('category_id')->nullable()
                 ->constrained("categories")
                 ->onUpdate('cascade');
             $table->timestamps();

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\File;
 
 class StoreAttachmentRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class StoreAttachmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,7 @@ class StoreAttachmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "attachments" => ["required", "array", "max:5"],
         ];
     }
 }
