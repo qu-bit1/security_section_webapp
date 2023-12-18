@@ -6,6 +6,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import DeleteReportForm from "@/Pages/Reports/Partials/DeleteReportForm.vue";
 import Paginator from "@/Components/Paginator.vue";
+import ViewTags from "@/Pages/Reports/Partials/ViewTags.vue";
 
 defineProps({reports: Object});
 </script>
@@ -51,6 +52,9 @@ defineProps({reports: Object});
                                         Reporter
                                     </th>
                                     <th scope="col" class="px-6 py-4 uppercase tracking-wider">
+                                        Tags
+                                    </th>
+                                    <th scope="col" class="px-6 py-4 uppercase tracking-wider">
                                         Attachments
                                     </th>
 
@@ -85,6 +89,9 @@ defineProps({reports: Object});
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             {{ report.reporter }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <ViewTags :report="report"/>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             {{ report.attachments_count }}

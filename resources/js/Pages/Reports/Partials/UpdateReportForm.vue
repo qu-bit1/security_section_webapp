@@ -6,6 +6,7 @@ import TextInput from '@/Components/TextInput.vue';
 import {Head, useForm} from '@inertiajs/vue3';
 import SelectInput from "@/Components/SelectInput.vue";
 import FilePicker from "@/Components/FilePicker.vue";
+import MultiSelectInput from "@/Components/MultiSelectInput.vue";
 
 const props = defineProps({
     report: {
@@ -23,7 +24,7 @@ const form = useForm({
     reporter: props.report.reporter,
     category: '',
     status: props.report.status,
-    tags: [],
+    tags: props.report.tags.map(tag => tag.title),
     attachments: props.report.attachments.map(attachment => attachment.id),
 });
 
@@ -37,6 +38,14 @@ const statusOptions = [
     {value: 'resolved', label: 'Resolved'},
     {value: 'closed', label: 'Closed'},
 ];
+const searchTags = async (search) => {
+    try {
+        const response = await axios.get(route('tags.search', {search}));
+        return response.data.tags;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+};
 </script>
 
 <template>
@@ -59,12 +68,6 @@ const statusOptions = [
         </div>
 
         <div class="mt-4">
-            <InputLabel value="Attachments"/>
-            <FilePicker :attachments="attachments" v-model="form.attachments"/>
-            <InputError class="mt-2" :message="form.errors.attachments"/>
-        </div>
-
-        <div class="mt-4">
             <InputLabel for="description" value="Description"/>
 
             <TextInput
@@ -76,6 +79,26 @@ const statusOptions = [
             />
 
             <InputError class="mt-2" :message="form.errors.description"/>
+        </div>
+
+        <div class="mt-4">
+            <InputLabel for="tags" value="Tags"/>
+
+            <MultiSelectInput
+                id="tags"
+                class="mt-1 block w-full"
+                v-model="form.tags"
+                autocomplete="tags"
+                :search-function="searchTags"
+            />
+
+            <InputError class="mt-2" :message="form.errors.tags"/>
+        </div>
+
+        <div class="mt-4">
+            <InputLabel value="Attachments"/>
+            <FilePicker :attachments="attachments" v-model="form.attachments"/>
+            <InputError class="mt-2" :message="form.errors.attachments"/>
         </div>
 
         <div class="mt-4">

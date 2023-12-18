@@ -6,6 +6,7 @@ use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
 use App\Models\Attachment;
 use App\Models\Report;
+use App\Models\Tag;
 use Inertia\Inertia;
 use Inertia\Response;
 use \Illuminate\Http\RedirectResponse;
@@ -17,7 +18,7 @@ class ReportController extends Controller
     public function index(): Response
     {
         return Inertia::render('Reports/Index', [
-            'reports' => Report::withCount(['attachments'])->paginate(12),
+            'reports' => Report::with("tags")->withCount(['attachments'])->paginate(12),
         ]);
     }
 
@@ -46,6 +47,14 @@ class ReportController extends Controller
         ]);
 
         $report->attachments()->attach($request->attachments);
+        $tagIds = [];
+        foreach ($request->tags as $tag) {
+            $tag = Tag::firstOrCreate(['title' => $tag]);
+            if ($tag) {
+                $tagIds[] = $tag->id;
+            }
+        };
+        $report->tags()->attach($tagIds);
 
         return redirect()->route('reports.index')->with('success', 'Report created.');
     }
@@ -66,7 +75,7 @@ class ReportController extends Controller
     public function edit(Report $report): Response
     {
         return Inertia::render('Reports/Edit', [
-            'report' => $report->load('users', 'attachments'),
+            'report' => $report->load('users', 'attachments', "tags"),
             'attachments' => Attachment::where('user_id', auth()->user()->id)->get(),
         ]);
     }
@@ -85,6 +94,15 @@ class ReportController extends Controller
         ]);
 
         $report->attachments()->sync($request->attachments);
+
+        $tagIds = [];
+        foreach ($request->tags as $tag) {
+            $tag = Tag::firstOrCreate(['title' => $tag]);
+            if ($tag) {
+                $tagIds[] = $tag->id;
+            }
+        };
+        $report->tags()->sync($tagIds);
 
         return redirect()->route('reports.show', $report->id)->with('success', 'Report updated.');
     }
