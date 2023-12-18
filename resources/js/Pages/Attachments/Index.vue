@@ -1,11 +1,25 @@
 <script setup>
 
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import {Head} from "@inertiajs/vue3";
+import {Head, router} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Paginator from "@/Components/Paginator.vue";
+import {ref, watch} from "vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
-defineProps({attachments: Object});
+const props = defineProps({
+    attachments: Object,
+    filters: Object,
+});
+
+let search = ref(props.filters.search);
+let showFilters = ref(props.filters.search !== null);
+
+watch(search, (value) => {
+    router.get(route('attachments.index'),{search: value}, {
+        preserveState: true,
+    });
+});
 </script>
 
 
@@ -13,12 +27,31 @@ defineProps({attachments: Object});
     <Head title="Attachments"/>
     <AuthenticatedLayout>
         <template #header>
-            <div class="flex flex-row ">
+            <div class="flex flex-row">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Attachments</h2>
                 <div class="flex-1 flex justify-end">
-                    <PrimaryButton :href="route('attachments.create')">
+                    <SecondaryButton @click="showFilters = !showFilters">
+                        Filter
+                    </SecondaryButton>
+                    <PrimaryButton :href="route('attachments.create')" class="ml-2">
                         Upload Attachment
                     </PrimaryButton>
+                </div>
+            </div>
+            <div v-if="showFilters" class="mt-4">
+                <div class="flex flex-row">
+                    <div class="flex-1">
+                        <label for="search" class="sr-only">Search</label>
+                        <input
+                            v-model="search"
+                            id="search"
+                            name="search"
+                            type="search"
+                            autocomplete="off"
+                            class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                            placeholder="Search..."
+                        />
+                    </div>
                 </div>
             </div>
         </template>

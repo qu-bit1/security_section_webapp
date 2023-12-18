@@ -17,16 +17,16 @@ class AttachmentController extends Controller
     public function index()
     {
         return Inertia::render('Attachments/Index', [
-            'attachments' => Attachment::where('user_id', auth()->user()->id)->paginate(12),
+            'attachments' => Attachment::query()
+                ->when(request('search'), function ($query, $search) {
+                    $query->where('name', 'LIKE', "%{$search}%")
+                        ->orWhere('mime_type', 'LIKE', "%{$search}%");
+                })
+                ->where('user_id', auth()->user()->id)
+                ->paginate(12)
+                ->withQueryString(),
+            'filters' => request()->only(['search']),
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): Response
-    {
-        return Inertia::render('Attachments/Create');
     }
 
     /**
@@ -45,6 +45,14 @@ class AttachmentController extends Controller
         }
 
         return redirect()->back()->with('success', 'Attachment uploaded.');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(): Response
+    {
+        return Inertia::render('Attachments/Create');
     }
 
     /**
