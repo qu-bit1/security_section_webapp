@@ -5,6 +5,7 @@ import {Head, Link} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import DeleteReportForm from "@/Pages/Reports/Partials/DeleteReportForm.vue";
+import Paginator from "@/Components/Paginator.vue";
 
 defineProps({reports: Object});
 </script>
@@ -61,7 +62,7 @@ defineProps({reports: Object});
                                 </tr>
                                 </thead>
                                 <tbody class="bg-skin-base divide-y divide-gray-200 text-gray-600">
-                                <template v-for="report in reports" :key="report.id">
+                                <template v-for="report in reports.data" :key="report.id">
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             {{ report.id }}
@@ -86,7 +87,7 @@ defineProps({reports: Object});
                                             {{ report.reporter }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            {{ report.attachments.length }}
+                                            {{ report.attachments_count }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row">
                                             <SecondaryButton
@@ -102,6 +103,7 @@ defineProps({reports: Object});
                                 </tbody>
                             </table>
                         </div>
+                        <Paginator :paginator="reports"/>
                     </div>
                 </div>
             </div>

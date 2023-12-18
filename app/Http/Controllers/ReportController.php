@@ -17,7 +17,7 @@ class ReportController extends Controller
     public function index(): Response
     {
         return Inertia::render('Reports/Index', [
-            'reports' => Report::with(['users', 'attachments'])->get(),
+            'reports' => Report::withCount(['attachments'])->paginate(12),
         ]);
     }
 

@@ -17,7 +17,7 @@ class AttachmentController extends Controller
     public function index()
     {
         return Inertia::render('Attachments/Index', [
-            'attachments' => Attachment::where('user_id', auth()->user()->id)->get(),
+            'attachments' => Attachment::where('user_id', auth()->user()->id)->paginate(12),
         ]);
     }
 

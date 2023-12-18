@@ -3,6 +3,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {Head} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import Paginator from "@/Components/Paginator.vue";
 
 defineProps({attachments: Object});
 </script>
@@ -21,9 +22,9 @@ defineProps({attachments: Object});
                 </div>
             </div>
         </template>
-        <div class="max-w-7xl m-auto">
-            <div class="p-6 grid grid-cols-4 gap-4">
-                <template v-for="attachment in attachments">
+        <div class="max-w-7xl m-auto p-6">
+            <div class="grid grid-cols-4 gap-4">
+                <template v-for="attachment in attachments.data">
                     <div
                         class="border shadow sm:rounded-lg bg-white"
                     >
@@ -38,6 +39,7 @@ defineProps({attachments: Object});
                     </div>
                 </template>
             </div>
+            <Paginator :paginator="attachments"/>
         </div>
     </AuthenticatedLayout>
 </template>

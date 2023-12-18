@@ -127,9 +127,9 @@ const toggleFileSelection = (attachmentId) => {
             </form>
         </div>
         <!--        insert tab content-->
-        <div>
-            <div class="p-6 grid grid-cols-3 gap-4 overflow-y-auto" v-if="currentTab === 'insert'">
-                <template v-for="attachment in attachments">
+        <div v-if="currentTab === 'insert'">
+            <div class="p-6 grid grid-cols-3 gap-4 overflow-y-auto">
+                <template v-for="attachment in attachments" :key="attachment.id">
                     <div
                         class="border rounded shadow cursor-pointer"
                         :class="{'border-blue-500': selectedFiles.includes(attachment.id) }"
@@ -146,8 +146,11 @@ const toggleFileSelection = (attachmentId) => {
                     </div>
                 </template>
             </div>
+<!--            <div class="px-6">-->
+<!--                <Paginator :paginator="attachments"/>-->
+<!--            </div>-->
             <div class="p-6 flex justify-end border-t sticky bottom-0 bg-white"
-                 v-if="selectedFiles.length > 0 && currentTab === 'insert'">
+                 v-if="selectedFiles.length > 0">
                 <div class="flex-1">
                     <p class="text-gray-700">{{ selectedFiles.length }} files selected</p>
                 </div>
