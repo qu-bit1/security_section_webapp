@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import {computed} from 'vue';
 
 const props = defineProps({
     active: {
@@ -19,6 +19,6 @@ const classes = computed(() =>
 
 <template>
     <button :class="classes" :type="type">
-        <slot />
+        <slot/>
     </button>
 </template>

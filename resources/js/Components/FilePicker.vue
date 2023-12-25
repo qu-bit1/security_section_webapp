@@ -76,7 +76,7 @@ const toggleFileSelection = (attachmentId) => {
 
 </script>
 <template>
-    <SecondaryButton @click="attachToReport" class="mt-1" type="button">
+    <SecondaryButton class="mt-1" type="button" @click="attachToReport">
         {{ modelValue.length ? `${modelValue.length} files selected` : 'Attach Files' }}
     </SecondaryButton>
     <Modal :show="attachingToReport" @close="closeModal">
@@ -94,8 +94,8 @@ const toggleFileSelection = (attachmentId) => {
         <div class="hidden space-x-8 px-4 sm:flex h-14 bg-white border-b">
             <template v-for="(tab, index) in tabs" :key="index">
                 <TabButton
-                    :type="'button'"
                     :active="currentTab === tab.slug"
+                    :type="'button'"
                     @click.prevent="changeTab(tab.slug)"
                 >
                     {{ tab.name }}
@@ -104,12 +104,12 @@ const toggleFileSelection = (attachmentId) => {
         </div>
         <!--        upload tab content-->
         <div>
-            <form @submit.prevent="uploadFile" v-if="currentTab === 'upload'">
+            <form v-if="currentTab === 'upload'" @submit.prevent="uploadFile">
                 <div class="p-6">
                     <div>
                         <InputLabel for="attachment" value="Select File"/>
 
-                        <FileInput class="mt-1 block w-full" v-model="form.attachments" :multiple="true"/>
+                        <FileInput v-model="form.attachments" :multiple="true" class="mt-1 block w-full"/>
                         <progress v-if="form.progress" :value="form.progress.percentage" max="100">
                             {{ form.progress.percentage }}%
                         </progress>
@@ -117,9 +117,9 @@ const toggleFileSelection = (attachmentId) => {
                     </div>
                 </div>
                 <div class="p-6 flex justify-end border-t">
-                    <SecondaryButton @click="closeModal" type="button">Cancel</SecondaryButton>
+                    <SecondaryButton type="button" @click="closeModal">Cancel</SecondaryButton>
                     <DangerButton
-                        class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
+                        :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4"
                     >
                         Upload File
                     </DangerButton>
@@ -131,11 +131,11 @@ const toggleFileSelection = (attachmentId) => {
             <div class="p-6 grid grid-cols-3 gap-4 overflow-y-auto">
                 <template v-for="attachment in attachments" :key="attachment.id">
                     <div
-                        class="border rounded shadow cursor-pointer"
                         :class="{'border-blue-500': selectedFiles.includes(attachment.id) }"
+                        class="border rounded shadow cursor-pointer"
                         @click="toggleFileSelection(attachment.id)"
                     >
-                        <img :src="attachment.path" class="w-full h-32 object-cover" alt=""/>
+                        <img :src="attachment.path" alt="" class="w-full h-32 object-cover"/>
                         <div class="p-4">
                             <div class="flex justify-between">
                                 <div class="flex-1">
@@ -146,19 +146,19 @@ const toggleFileSelection = (attachmentId) => {
                     </div>
                 </template>
             </div>
-<!--            <div class="px-6">-->
-<!--                <Paginator :paginator="attachments"/>-->
-<!--            </div>-->
-            <div class="p-6 flex justify-end border-t sticky bottom-0 bg-white"
-                 v-if="selectedFiles.length > 0">
+            <!--            <div class="px-6">-->
+            <!--                <Paginator :paginator="attachments"/>-->
+            <!--            </div>-->
+            <div v-if="selectedFiles.length > 0"
+                 class="p-6 flex justify-end border-t sticky bottom-0 bg-white">
                 <div class="flex-1">
                     <p class="text-gray-700">{{ selectedFiles.length }} files selected</p>
                 </div>
-                <SecondaryButton @click="closeModal" type="button">Cancel</SecondaryButton>
+                <SecondaryButton type="button" @click="closeModal">Cancel</SecondaryButton>
                 <DangerButton
                     class="ms-3"
-                    @click="insertAttachments"
                     type="button"
+                    @click="insertAttachments"
                 >
                     Attach Files
                 </DangerButton>

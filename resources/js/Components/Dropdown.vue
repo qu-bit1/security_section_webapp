@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import {computed, onMounted, onUnmounted, ref} from 'vue';
 
 const props = defineProps({
     align: {
@@ -47,7 +47,7 @@ const open = ref(false);
 <template>
     <div class="relative">
         <div @click="open = !open">
-            <slot name="trigger" />
+            <slot name="trigger"/>
         </div>
 
         <!-- Full Screen Dropdown Overlay -->
@@ -63,13 +63,13 @@ const open = ref(false);
         >
             <div
                 v-show="open"
-                class="absolute z-50 mt-2 rounded-md shadow-lg"
                 :class="[widthClass, alignmentClasses]"
+                class="absolute z-50 mt-2 rounded-md shadow-lg"
                 style="display: none"
                 @click="open = false"
             >
-                <div class="rounded-md ring-1 ring-black ring-opacity-5" :class="contentClasses">
-                    <slot name="content" />
+                <div :class="contentClasses" class="rounded-md ring-1 ring-black ring-opacity-5">
+                    <slot name="content"/>
                 </div>
             </div>
         </Transition>

@@ -24,14 +24,14 @@ const submit = () => {
 
             <TextInput
                 id="title"
-                type="text"
-                class="mt-1 block w-full"
                 v-model="form.title"
-                autofocus
                 autocomplete="title"
+                autofocus
+                class="mt-1 block w-full"
+                type="text"
             />
 
-            <InputError class="mt-2" :message="form.errors.title"/>
+            <InputError :message="form.errors.title" class="mt-2"/>
         </div>
 
         <div class="mt-4">
@@ -39,17 +39,17 @@ const submit = () => {
 
             <TextInput
                 id="description"
-                input-type="textarea"
-                class="mt-1 block w-full"
                 v-model="form.description"
                 autocomplete="description"
+                class="mt-1 block w-full"
+                input-type="textarea"
             />
 
-            <InputError class="mt-2" :message="form.errors.description"/>
+            <InputError :message="form.errors.description" class="mt-2"/>
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+            <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4">
                 Create Tag
             </PrimaryButton>
         </div>

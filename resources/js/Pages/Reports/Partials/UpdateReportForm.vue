@@ -57,14 +57,14 @@ const searchTags = async (search) => {
 
             <TextInput
                 id="title"
-                type="text"
-                class="mt-1 block w-full"
                 v-model="form.title"
-                autofocus
                 autocomplete="title"
+                autofocus
+                class="mt-1 block w-full"
+                type="text"
             />
 
-            <InputError class="mt-2" :message="form.errors.title"/>
+            <InputError :message="form.errors.title" class="mt-2"/>
         </div>
 
         <div class="mt-4">
@@ -72,13 +72,13 @@ const searchTags = async (search) => {
 
             <TextInput
                 id="description"
-                input-type="textarea"
-                class="mt-1 block w-full"
                 v-model="form.description"
                 autocomplete="description"
+                class="mt-1 block w-full"
+                input-type="textarea"
             />
 
-            <InputError class="mt-2" :message="form.errors.description"/>
+            <InputError :message="form.errors.description" class="mt-2"/>
         </div>
 
         <div class="mt-4">
@@ -86,19 +86,19 @@ const searchTags = async (search) => {
 
             <MultiSelectInput
                 id="tags"
-                class="mt-1 block w-full"
                 v-model="form.tags"
-                autocomplete="tags"
                 :search-function="searchTags"
+                autocomplete="tags"
+                class="mt-1 block w-full"
             />
 
-            <InputError class="mt-2" :message="form.errors.tags"/>
+            <InputError :message="form.errors.tags" class="mt-2"/>
         </div>
 
         <div class="mt-4">
             <InputLabel value="Attachments"/>
-            <FilePicker :attachments="attachments" v-model="form.attachments"/>
-            <InputError class="mt-2" :message="form.errors.attachments"/>
+            <FilePicker v-model="form.attachments" :attachments="attachments"/>
+            <InputError :message="form.errors.attachments" class="mt-2"/>
         </div>
 
         <div class="mt-4">
@@ -106,13 +106,13 @@ const searchTags = async (search) => {
 
             <TextInput
                 id="venue"
-                type="text"
-                class="mt-1 block w-full"
                 v-model="form.venue"
                 autocomplete="venue"
+                class="mt-1 block w-full"
+                type="text"
             />
 
-            <InputError class="mt-2" :message="form.errors.venue"/>
+            <InputError :message="form.errors.venue" class="mt-2"/>
         </div>
 
         <div class="mt-4">
@@ -120,13 +120,13 @@ const searchTags = async (search) => {
 
             <TextInput
                 id="reporter"
-                type="text"
-                class="mt-1 block w-full"
                 v-model="form.reporter"
                 autocomplete="reporter"
+                class="mt-1 block w-full"
+                type="text"
             />
 
-            <InputError class="mt-2" :message="form.errors.reporter"/>
+            <InputError :message="form.errors.reporter" class="mt-2"/>
         </div>
 
         <div class="mt-4">
@@ -134,17 +134,17 @@ const searchTags = async (search) => {
 
             <SelectInput
                 id="status"
-                class="mt-1 block w-full"
                 v-model="form.status"
-                autocomplete="status"
                 :options="statusOptions"
+                autocomplete="status"
+                class="mt-1 block w-full"
             />
 
-            <InputError class="mt-2" :message="form.errors.status"/>
+            <InputError :message="form.errors.status" class="mt-2"/>
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+            <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4">
                 Update Report
             </PrimaryButton>
         </div>

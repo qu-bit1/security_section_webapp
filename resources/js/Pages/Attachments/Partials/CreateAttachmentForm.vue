@@ -22,7 +22,7 @@ const submit = () => {
     <form @submit.prevent="submit">
         <div>
             <InputLabel for="attachment" value="Select File"/>
-            <FileInput class="mt-1 block w-full" v-model="form.attachments" :multiple="true"/>
+            <FileInput v-model="form.attachments" :multiple="true" class="mt-1 block w-full"/>
             <progress v-if="form.progress" :value="form.progress.percentage" max="100">
                 {{ form.progress.percentage }}%
             </progress>

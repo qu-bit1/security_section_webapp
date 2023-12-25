@@ -2,6 +2,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {Head} from "@inertiajs/vue3";
 import CreateReportForm from "@/Pages/Reports/Partials/CreateReportForm.vue";
+
 const props = defineProps({
     attachments: {
         type: Array,
@@ -10,7 +11,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <Head title="New Report" />
+    <Head title="New Report"/>
 
     <AuthenticatedLayout>
         <template #header>
@@ -20,7 +21,7 @@ const props = defineProps({
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <CreateReportForm class="max-w-xl" :attachments="attachments" />
+                    <CreateReportForm :attachments="attachments" class="max-w-xl"/>
                 </div>
             </div>
         </div>

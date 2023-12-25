@@ -14,7 +14,7 @@ const props = defineProps({
 let search = ref(props.filters.search);
 
 watch(search, (value) => {
-    router.get(route('tags.index'),{search: value}, {
+    router.get(route('tags.index'), {search: value}, {
         preserveState: true,
     });
 });
@@ -39,15 +39,15 @@ watch(search, (value) => {
             <div class="mt-4">
                 <div class="flex flex-row">
                     <div class="flex-1">
-                        <label for="search" class="sr-only">Search</label>
+                        <label class="sr-only" for="search">Search</label>
                         <input
-                            v-model="search"
                             id="search"
-                            name="search"
-                            type="search"
+                            v-model="search"
                             autocomplete="off"
                             class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                            name="search"
                             placeholder="Search..."
+                            type="search"
                         />
                     </div>
                 </div>
@@ -65,7 +65,7 @@ watch(search, (value) => {
                             >
                                 {{ tag.title }}
                             </span>
-                            <div class="mt-2" v-if="tag.description">
+                            <div v-if="tag.description" class="mt-2">
                                 <p class="text-sm text-gray-500">
                                     {{ tag.description }}
                                 </p>

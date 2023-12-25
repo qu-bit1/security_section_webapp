@@ -24,7 +24,7 @@ onMounted(() => {
     }
 });
 
-defineExpose({ focus: () => input.value.focus() });
+defineExpose({focus: () => input.value.focus()});
 
 const handleFileChange = (event) => {
     const files = event.target.files;
@@ -57,25 +57,25 @@ const resetPreviews = () => {
 
 <template>
     <input
-        type="file"
         v-show="false"
-        @change="handleFileChange"
         ref="input"
         :multiple="multiple"
+        type="file"
+        @change="handleFileChange"
     />
 
-    <SecondaryButton type="button" @click="openFilePicker" class="mt-1">
+    <SecondaryButton class="mt-1" type="button" @click="openFilePicker">
         Browse
     </SecondaryButton>
 
     <div v-if="previewImages.length > 0" class="py-4 grid grid-cols-4 gap-4">
         <template v-for="previewImage in previewImages" :key="previewImage">
             <div class="border shadow sm:rounded-lg bg-white">
-                <iframe :src="previewImage.url" class="w-full min-w-full rounded-t-lg h-32" />
+                <iframe :src="previewImage.url" class="w-full min-w-full rounded-t-lg h-32"/>
                 <div class="p-4 border-t">
                     <div class="flex justify-between">
                         <div class="flex-1">
-                            <h2 class="text-base font-medium text-gray-900" v-text="previewImage.name" />
+                            <h2 class="text-base font-medium text-gray-900" v-text="previewImage.name"/>
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import {Head} from '@inertiajs/vue3';
 import DeleteReportForm from "@/Pages/Reports/Partials/DeleteReportForm.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 
@@ -10,16 +10,16 @@ defineProps({
 </script>
 
 <template>
-    <Head :title="report.title" />
+    <Head :title="report.title"/>
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Report - {{ report.title}}</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Report - {{ report.title }}</h2>
             <div class="flex-1 flex justify-end">
                 <SecondaryButton :href="route('reports.edit', report.id)">
                     Edit Report
                 </SecondaryButton>
-                <DeleteReportForm class="ml-2" :report="report" :key="report.id"/>
+                <DeleteReportForm :key="report.id" :report="report" class="ml-2"/>
             </div>
         </template>
 
@@ -30,57 +30,69 @@ defineProps({
                     <div>
                         <div class="py-4 grid grid-cols-2 gap-4">
                             <div class="flex flex-col">
-                                <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                                <label class="block text-sm font-medium text-gray-700" for="title">Title</label>
                                 <div class="mt-1">
-                                    <input type="text" name="title" id="title" :value="report.title"
+                                    <input id="title" :value="report.title"
                                            class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                           readonly>
+                                           name="title"
+                                           readonly
+                                           type="text">
                                 </div>
                             </div>
                             <div class="flex flex-col">
-                                <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                                <label class="block text-sm font-medium text-gray-700"
+                                       for="description">Description</label>
                                 <div class="mt-1">
-                                    <textarea id="description" name="description" rows="3"
+                                    <textarea id="description"
                                               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                              readonly>{{ report.description }}</textarea>
+                                              name="description"
+                                              readonly
+                                              rows="3">{{ report.description }}</textarea>
                                 </div>
                             </div>
                             <div class="flex flex-col">
-                                <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                                <label class="block text-sm font-medium text-gray-700" for="status">Status</label>
                                 <div class="mt-1">
-                                    <input type="text" name="status" id="status" :value="report.status"
+                                    <input id="status" :value="report.status"
                                            class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                           readonly>
+                                           name="status"
+                                           readonly
+                                           type="text">
                                 </div>
                             </div>
                             <div class="flex flex-col">
-                                <label for="venue" class="block text-sm font-medium text-gray-700">Venue</label>
+                                <label class="block text-sm font-medium text-gray-700" for="venue">Venue</label>
                                 <div class="mt-1">
-                                    <input type="text" name="venue" id="venue" :value="report.venue"
+                                    <input id="venue" :value="report.venue"
                                            class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                           readonly>
+                                           name="venue"
+                                           readonly
+                                           type="text">
                                 </div>
                             </div>
                             <div class="flex flex-col">
-                                <label for="reporter" class="block text-sm font-medium text-gray-700">Reporter</label>
+                                <label class="block text-sm font-medium text-gray-700" for="reporter">Reporter</label>
                                 <div class="mt-1">
-                                    <input type="text" name="reporter" id="reporter" :value="report.reporter"
+                                    <input id="reporter" :value="report.reporter"
                                            class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                             readonly>
+                                           name="reporter"
+                                           readonly
+                                           type="text">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg" v-if="report.attachments.length>0">
+                <div v-if="report.attachments.length>0" class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                     <h2 class="font-semibold text-xl text-gray-800 leading-tight">Report Attachments</h2>
                     <div class="py-4 grid grid-cols-4 gap-4">
                         <template v-for="attachment in report.attachments">
                             <div
                                 class="border shadow sm:rounded-lg bg-white"
                             >
-                                <img :src="attachment.path" class="w-full h-32 object-cover" :alt="'preview of '+attachment.name"/>
+                                <img :alt="'preview of '+attachment.name" :src="attachment.path"
+                                     class="w-full h-32 object-cover"/>
                                 <div class="p-4 border-t">
                                     <div class="flex justify-between">
                                         <div class="flex-1">

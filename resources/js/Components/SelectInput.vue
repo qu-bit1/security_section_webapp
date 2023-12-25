@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import {computed} from 'vue';
 
 const props = defineProps({
     modelValue: {
@@ -19,10 +19,10 @@ const classes = computed(() => {
 
 <template>
     <select
+        ref="input"
         :class="classes"
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
-        ref="input"
     >
         <option v-for="option in options" :key="option.value" :value="option.value">
             {{ option.label }}

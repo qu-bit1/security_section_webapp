@@ -7,9 +7,10 @@ use App\Http\Requests\UpdateReportRequest;
 use App\Models\Attachment;
 use App\Models\Report;
 use App\Models\Tag;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
-use \Illuminate\Http\RedirectResponse;
+
 class ReportController extends Controller
 {
     /**
@@ -17,18 +18,42 @@ class ReportController extends Controller
      */
     public function index(): Response
     {
+        $reports = Report::query()
+            ->when(request('search'), function ($query, $search) {
+                $query->where('title', 'LIKE', "%{$search}%")
+                    ->orWhere('description', 'LIKE', "%{$search}%");
+            })
+            ->when(request('venue'), function ($query, $venue) {
+                $query->where('venue', 'LIKE', "%{$venue}%");
+            })
+            ->when(request('reporter'), function ($query, $reporter) {
+                $query->where('reporter', 'LIKE', "%{$reporter}%");
+            })
+            ->when(request('status'), function ($query, $status) {
+                $query->where('status', $status);
+            })
+            ->when(request('tags'), function ($query, $tag) {
+                $query->whereHas('tags', function ($query) use ($tag) {
+                    $query->where('title', $tag);
+                });
+            })
+            ->when(request('attachment'), function ($query, $attachment) {
+                $query->whereHas('attachments', function ($query) use ($attachment) {
+                    $query->where('name', $attachment)
+                        ->orWhere('mime_type', $attachment);
+                });
+            })
+            ->when(request('sort') == 'oldest', function ($query) {
+                $query->oldest();
+            }, function ($query) {
+                $query->latest();
+            })
+            ->with(['attachments', 'tags'])
+            ->paginate(12)
+            ->withQueryString();
         return Inertia::render('Reports/Index', [
-            'reports' => Report::with("tags")->withCount(['attachments'])->paginate(12),
-        ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): Response
-    {
-        return Inertia::render('Reports/Create', [
-            'attachments' => Attachment::where('user_id', auth()->user()->id)->get(),
+            'reports' => $reports,
+            'filters' => request()->all(),
         ]);
     }
 
@@ -57,6 +82,16 @@ class ReportController extends Controller
         $report->tags()->attach($tagIds);
 
         return redirect()->route('reports.index')->with('success', 'Report created.');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(): Response
+    {
+        return Inertia::render('Reports/Create', [
+            'attachments' => Attachment::where('user_id', auth()->user()->id)->get(),
+        ]);
     }
 
     /**
