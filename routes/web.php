@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\AttachmentController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
-use \App\Http\Controllers\CommentController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TagController;
 use Illuminate\Foundation\Application;

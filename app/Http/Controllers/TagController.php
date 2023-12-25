@@ -29,14 +29,6 @@ class TagController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): Response
-    {
-        return inertia('Tags/Create');
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreTagRequest $request)
@@ -48,6 +40,14 @@ class TagController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Tag created.');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(): Response
+    {
+        return inertia('Tags/Create');
     }
 
     /**
@@ -77,7 +77,7 @@ class TagController extends Controller
     public function search(): JsonResponse
     {
         return response()->json([
-            "tags"=>Tag::query()
+            "tags" => Tag::query()
                 ->when(request('search'), function ($query, $search) {
                     $query->where('title', 'LIKE', "%{$search}%");
                 })
@@ -88,7 +88,7 @@ class TagController extends Controller
                         'value' => $tag->title,
                     ];
                 }),
-            ]);
+        ]);
     }
 
     /**

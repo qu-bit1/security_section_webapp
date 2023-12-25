@@ -5,7 +5,6 @@ import {Head, router} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Paginator from "@/Components/Paginator.vue";
 import {ref, watch} from "vue";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const props = defineProps({
     attachments: Object,
@@ -16,7 +15,7 @@ let search = ref(props.filters.search);
 // let showFilters = ref(props.filters.search !== null);
 
 watch(search, (value) => {
-    router.get(route('attachments.index'),{search: value}, {
+    router.get(route('attachments.index'), {search: value}, {
         preserveState: true,
     });
 });
@@ -30,9 +29,9 @@ watch(search, (value) => {
             <div class="flex flex-row">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Attachments</h2>
                 <div class="flex-1 flex justify-end">
-<!--                    <SecondaryButton @click="showFilters = !showFilters">-->
-<!--                        Filter-->
-<!--                    </SecondaryButton>-->
+                    <!--                    <SecondaryButton @click="showFilters = !showFilters">-->
+                    <!--                        Filter-->
+                    <!--                    </SecondaryButton>-->
                     <PrimaryButton :href="route('attachments.create')" class="ml-2">
                         Upload Attachment
                     </PrimaryButton>
@@ -41,15 +40,15 @@ watch(search, (value) => {
             <div class="mt-4">
                 <div class="flex flex-row">
                     <div class="flex-1">
-                        <label for="search" class="sr-only">Search</label>
+                        <label class="sr-only" for="search">Search</label>
                         <input
-                            v-model="search"
                             id="search"
-                            name="search"
-                            type="search"
+                            v-model="search"
                             autocomplete="off"
                             class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                            name="search"
                             placeholder="Search..."
+                            type="search"
                         />
                     </div>
                 </div>
@@ -61,7 +60,8 @@ watch(search, (value) => {
                     <div
                         class="border shadow sm:rounded-lg bg-white"
                     >
-                        <img :src="attachment.path" class="w-full h-32 object-cover" :alt="'preview of '+attachment.name"/>
+                        <img :alt="'preview of '+attachment.name" :src="attachment.path"
+                             class="w-full h-32 object-cover"/>
                         <div class="p-4 border-t">
                             <div class="flex justify-between">
                                 <div class="flex-1">

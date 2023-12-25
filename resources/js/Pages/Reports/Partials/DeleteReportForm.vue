@@ -2,8 +2,9 @@
 import DangerButton from '@/Components/DangerButton.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import {useForm} from '@inertiajs/vue3';
+import {ref} from 'vue';
+
 const props = defineProps({
     report: {
         type: Object,
@@ -37,15 +38,15 @@ const closeModal = () => {
         <Modal :show="confirmingReportDeletion" @close="closeModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">
-                    Are you sure you want to delete report - <span class="font-bold">{{report.title}}</span>?
+                    Are you sure you want to delete report - <span class="font-bold">{{ report.title }}</span>?
                 </h2>
                 <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
+                    <SecondaryButton @click="closeModal"> Cancel</SecondaryButton>
 
                     <DangerButton
-                        class="ms-3"
                         :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing"
+                        class="ms-3"
                         @click="deleteReport"
                     >
                         Delete Report

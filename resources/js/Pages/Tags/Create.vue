@@ -5,7 +5,7 @@ import CreateTagForm from "@/Pages/Tags/Partials/CreateTagForm.vue";
 </script>
 
 <template>
-    <Head title="New Tag" />
+    <Head title="New Tag"/>
 
     <AuthenticatedLayout>
         <template #header>
