@@ -61,13 +61,17 @@ const submitFilter = () => {
 watch(() => props.showFilters, (newVal) => {
     searchParams.value.showFilters = newVal
 });
+
+const closeHints = () => {
+    showHints.value = false;
+}
 </script>
 
 
 <template>
     <div class="flex flex-row">
         <div class="flex-1">
-            <div class="relative">
+            <div class="relative" v-clickout="closeHints">
                 <InputLabel for="search" v-if="showFilters">Search</InputLabel>
                 <div class="flex flex-col sm:flex-row">
                     <TextInput
@@ -80,7 +84,6 @@ watch(() => props.showFilters, (newVal) => {
                         type="search"
                         @keyup.enter="submitFilter"
                         @focus="showHints = true"
-                        @blur="showHints = false"
                     />
                     <div class="mt-2 sm:mt-auto flex-1 flex justify-end items-center sm:hidden" @click="submitFilter">
                         <PrimaryButton class="ms-4" v-if="!showFilters" :disabled="!searchParams.search">
