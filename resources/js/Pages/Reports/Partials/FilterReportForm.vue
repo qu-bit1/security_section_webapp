@@ -7,6 +7,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import {ref, watch} from "vue";
 import {router} from "@inertiajs/vue3";
+import SearchHints from "@/Pages/Reports/Partials/SearchHints.vue";
 
 const props = defineProps({
     cancel: {
@@ -32,6 +33,8 @@ const statusOptions = [
     {value: 'resolved', label: 'Resolved'},
     {value: 'closed', label: 'Closed'},
 ];
+
+const showHints = ref(false);
 
 const searchTags = async (search) => {
     try {
@@ -64,7 +67,7 @@ watch(() => props.showFilters, (newVal) => {
 <template>
     <div class="flex flex-row">
         <div class="flex-1">
-            <div>
+            <div class="relative">
                 <InputLabel for="search" v-if="showFilters">Search</InputLabel>
                 <div class="flex flex-col sm:flex-row">
                     <TextInput
@@ -76,6 +79,8 @@ watch(() => props.showFilters, (newVal) => {
                         placeholder="Search..."
                         type="search"
                         @keyup.enter="submitFilter"
+                        @focus="showHints = true"
+                        @blur="showHints = false"
                     />
                     <div class="mt-2 sm:mt-auto flex-1 flex justify-end items-center sm:hidden" @click="submitFilter">
                         <PrimaryButton class="ms-4" v-if="!showFilters" :disabled="!searchParams.search">
@@ -83,6 +88,7 @@ watch(() => props.showFilters, (newVal) => {
                         </PrimaryButton>
                     </div>
                 </div>
+                <SearchHints :show-hints="showHints" />
             </div>
             <div v-if="showFilters" class="mt-4">
                 <div class="flex flex-col w-full md:flex-row">
