@@ -1,7 +1,24 @@
 <script setup>
 import {Link} from "@inertiajs/vue3";
+import {ref, watch} from "vue";
+import SelectInput from "@/Components/SelectInput.vue";
 
-defineProps({paginator: Object});
+const props = defineProps({paginator: Object});
+
+let perPage = ref(props.paginator.per_page ?? 25);
+
+const perPageOptions = [
+    {value: '2', label: '2'},
+    {value: '10', label: '10'},
+    {value: '25', label: '25'},
+    {value: '50', label: '50'},
+    {value: '100', label: '100'},
+    {value: '200', label: '200'},
+];
+
+watch(perPage, (value) => {
+    window.location.href = `${props.paginator.path}?per_page=${value}`;
+});
 </script>
 <template>
     <nav v-if="paginator.last_page>1" aria-label="Pagination Navigation"
@@ -76,7 +93,12 @@ defineProps({paginator: Object});
 
 
             <div>
-                    <span class="relative z-0 inline-flex shadow-sm rounded-md">
+                    <div class="relative z-0 inline-flex shadow-sm rounded-md">
+                        <!-- Per Page Select Input -->
+                        <div>
+                            <SelectInput :options="perPageOptions" v-model="perPage" class="text-sm mr-2"/>
+                        </div>
+
 <!--                        Previous Page Link-->
                         <template v-if="paginator.current_page === 1">
                             <span aria-disabled="true" aria-label="pagination.previous">
@@ -179,7 +201,7 @@ defineProps({paginator: Object});
                                 </span>
                             </span>
                         </template>
-                    </span>
+                    </div>
             </div>
         </div>
     </nav>

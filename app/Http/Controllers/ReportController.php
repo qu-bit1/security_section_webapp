@@ -44,7 +44,7 @@ class ReportController extends Controller
                 });
             })
             ->with(['attachments', 'tags'])
-            ->paginate(12)
+            ->paginate(request('per_page', 25))
             ->withQueryString();
         return Inertia::render('Reports/Index', [
             'reports' => $reports,

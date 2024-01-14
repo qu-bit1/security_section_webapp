@@ -22,7 +22,7 @@ class TagController extends Controller
                         ->orWhere('description', 'LIKE', "%{$search}%");
                 })
                 ->where('user_id', auth()->user()->id)
-                ->paginate(12)
+                ->paginate(request('per_page', 25))
                 ->withQueryString(),
             'filters' => request()->only(['search']),
         ]);
