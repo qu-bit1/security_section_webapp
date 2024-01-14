@@ -15,7 +15,8 @@ const props = defineProps({
     reports: Object,
     filters: Object,
 });
-let showFilters = ref(props.filters.showFilters);
+
+let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true');
 </script>
 
 
@@ -31,8 +32,8 @@ let showFilters = ref(props.filters.showFilters);
                     </PrimaryButton>
                 </div>
             </div>
-            <div v-if="showFilters" class="mt-4">
-                <FilterReportForm :cancel="()=> (showFilters = !showFilters)" :filters="filters"/>
+            <div class="mt-4">
+                <FilterReportForm v-model:showFilters="showFilters" :cancel="()=> (showFilters = !showFilters)" :filters="filters"/>
             </div>
         </template>
         <div class="max-w-7xl m-auto">

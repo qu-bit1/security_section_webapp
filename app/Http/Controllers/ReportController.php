@@ -8,6 +8,7 @@ use App\Models\Attachment;
 use App\Models\Report;
 use App\Models\Tag;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -20,8 +21,7 @@ class ReportController extends Controller
     {
         $reports = Report::query()
             ->when(request('search'), function ($query, $search) {
-                $query->where('title', 'LIKE', "%{$search}%")
-                    ->orWhere('description', 'LIKE', "%{$search}%");
+                $this->applySearchFilter($query, $search);
             })
             ->when(request('venue'), function ($query, $venue) {
                 $query->where('venue', 'LIKE', "%{$venue}%");
@@ -42,11 +42,6 @@ class ReportController extends Controller
                     $query->where('name', $attachment)
                         ->orWhere('mime_type', $attachment);
                 });
-            })
-            ->when(request('sort') == 'oldest', function ($query) {
-                $query->oldest();
-            }, function ($query) {
-                $query->latest();
             })
             ->with(['attachments', 'tags'])
             ->paginate(12)
@@ -150,5 +145,86 @@ class ReportController extends Controller
         $report->delete();
 
         return redirect()->route('reports.index')->with('success', 'Report deleted.');
+    }
+
+    private function applySearchFilter($query, $search): void
+    {
+        $tagPattern = '/\[(.*?)]/';
+        preg_match_all($tagPattern, $search, $tagMatches);
+
+        $tags = $tagMatches[1];
+
+        $searchWithoutTags = preg_replace($tagPattern, '', $search);
+
+        $pattern = '/(?<key>\w+)\s*:\s*(?<value>.*?)(?=\w+\s*:|$)/';
+        preg_match_all($pattern, $searchWithoutTags, $matches, PREG_SET_ORDER);
+        $searchCriteria = [];
+
+        foreach ($matches as $match) {
+            $searchCriteria[$match['key']] = trim($match['value']);
+        }
+        if(empty($searchCriteria)) {
+            $searchCriteria['full'] = trim($searchWithoutTags);
+        }
+        if($tags){
+            $searchCriteria['tags'] = $tags;
+        }
+
+        $query->where(function ($query) use ($searchCriteria) {
+            $fieldMappings = [
+                'title' => 'title',
+                'description' => 'description',
+                'status' => 'status',
+                'open' => 'status',
+                'resolved' => 'status',
+                'in_progress' => 'status',
+                'closed' => 'status',
+                'tags' => 'tags',
+                'venue' => 'venue',
+                'reporter' => 'reporter',
+                'full' => ['title', 'description', 'venue', 'reporter']
+            ];
+
+            foreach ($searchCriteria as $key => $value) {
+                if (array_key_exists($key, $fieldMappings)) {
+                    $field = $fieldMappings[$key];
+                    $this->applyFilter($query, $field, $key, $value);
+                }
+            }
+        });
+    }
+
+    private function applyFilter($query, $field, $key, $value): void
+    {
+        switch (true) {
+            case in_array($key, ['open', 'resolved', 'in_progress', 'closed']):
+                if ($value == 'no') {
+                    $query->where($field, '<>', $key);
+                } else {
+                    $query->where($field, $key);
+                }
+                break;
+            case $key == 'tags':
+                $query->whereHas($field, function ($query) use ($key, $value) {
+                    $query->where('title', $value);
+                });
+                break;
+            case $key == 'full':
+                if (is_array($field) || is_object($field)) {
+                    $query->where(function ($query) use ($key, $value, $field) {
+                        foreach ($field as $k=>$v) {
+                            $this->applyFilter($query, $v, $v, $value);
+                        }
+                    });
+                }
+                break;
+            default:
+                if (Str::startsWith($value, '"') && Str::endsWith($value, '"')) {
+                    $value = trim($value, '"');
+                    $query->orWhere($field, $value);
+                } else {
+                    $query->orWhere($field, 'LIKE', "%{$value}%");
+                }
+        }
     }
 }
