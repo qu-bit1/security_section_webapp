@@ -10,6 +10,7 @@ import ViewTags from "@/Pages/Reports/Partials/ViewTags.vue";
 import FilterReportForm from "@/Pages/Reports/Partials/FilterReportForm.vue";
 import {ref} from "vue";
 import ViewAttachments from "@/Pages/Reports/Partials/ViewAttachments.vue";
+import DownloadReport from "@/Pages/Reports/Partials/DownloadReport.vue";
 
 const props = defineProps({
     reports: Object,
@@ -27,7 +28,10 @@ let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true'
             <div class="flex flex-row ">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Reports</h2>
                 <div class="flex-1 flex justify-end">
-                    <PrimaryButton @click="showFilters = !showFilters">
+                    <DownloadReport>
+                        Export Reports
+                    </DownloadReport>
+                    <PrimaryButton @click="showFilters = !showFilters" class="ml-2">
                         Filter
                     </PrimaryButton>
                 </div>
@@ -114,8 +118,12 @@ let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true'
                                             {{ report.created_at }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row">
+                                            <DownloadReport :key="report.id" :report="report">
+                                                Download
+                                            </DownloadReport>
                                             <SecondaryButton
                                                 :href="route('reports.edit', report.id)"
+                                                class="ml-2"
                                             >
                                                 Edit
                                             </SecondaryButton>

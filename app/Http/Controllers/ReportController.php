@@ -7,13 +7,22 @@ use App\Http\Requests\UpdateReportRequest;
 use App\Models\Attachment;
 use App\Models\Report;
 use App\Models\Tag;
+use App\Services\ReportService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use \Illuminate\Http\Response as HTTPResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ReportController extends Controller
 {
+    private ReportService $reportService;
+
+    public function __construct(ReportService $reportService)
+    {
+        $this->reportService = $reportService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -145,6 +154,22 @@ class ReportController extends Controller
         $report->delete();
 
         return redirect()->route('reports.index')->with('success', 'Report deleted.');
+    }
+
+    /**
+     * Download the report in specified format.
+     */
+    public function generate(Report $report): HTTPResponse|BinaryFileResponse
+    {
+        return $this->reportService->generate($report, request('format'));
+    }
+
+    /**
+     * Export the reports in specified format.
+     */
+    public function export(): BinaryFileResponse
+    {
+        return $this->reportService->export(request("format"));
     }
 
     private function applySearchFilter($query, $search): void

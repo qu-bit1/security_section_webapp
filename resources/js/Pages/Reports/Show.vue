@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {Head} from '@inertiajs/vue3';
 import DeleteReportForm from "@/Pages/Reports/Partials/DeleteReportForm.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import DownloadReport from "@/Pages/Reports/Partials/DownloadReport.vue";
 
 defineProps({
     report: Object,
@@ -16,7 +17,10 @@ defineProps({
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Report - {{ report.title }}</h2>
             <div class="flex-1 flex justify-end">
-                <SecondaryButton :href="route('reports.edit', report.id)">
+                <DownloadReport :key="report.id" :report="report">
+                    Download
+                </DownloadReport>
+                <SecondaryButton :href="route('reports.edit', report.id)" class="ml-2">
                     Edit Report
                 </SecondaryButton>
                 <DeleteReportForm :key="report.id" :report="report" class="ml-2"/>
