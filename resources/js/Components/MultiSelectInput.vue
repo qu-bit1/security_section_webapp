@@ -1,5 +1,6 @@
 <script setup>
 import {computed, onMounted, ref, watch} from 'vue';
+import Tag from "@/Components/Tag.vue";
 
 const props = defineProps({
     modelValue: {
@@ -59,26 +60,21 @@ const removeItem = (value) => {
 const addItem = (value) => {
     if (selectedItems.value.includes(value)) return;
     selectedItems.value.push(value);
+    if (filteredItems.value.length < 1) {
+        searchQuery.value = '';
+    }
     emit('update:modelValue', selectedItems.value);
 };
 </script>
 
 <template>
     <div v-show="selectedItems.length > 0" class="mt-1 flex flex-wrap">
-          <span
+          <template
               v-for="selectedItem in selectedItems"
               :key="selectedItem.id"
-              class="inline-flex items-center py-1 px-2 mb-2 mx-1 text-xs leading-4 font-bold tracking-wide bg-rose-100 text-rose-600 border border-rose-400 rounded-full shadow-sm"
           >
-            <span>{{ selectedItem }}</span>
-            <button
-                class="ml-2 text-rose-600"
-                type="button"
-                @click="removeItem(selectedItem)"
-            >
-              &times;
-            </button>
-          </span>
+              <Tag :value="selectedItem" :remove="removeItem"/>
+          </template>
     </div>
     <div class="relative">
         <input
@@ -88,6 +84,9 @@ const addItem = (value) => {
             type="text"
             v-bind="$attrs"
             @input="searchItems"
+            @keydown.escape="filteredItems = []"
+            autocomplete="off"
+            @keydown.enter.prevent="addItem(searchQuery)"
         />
         <template v-if="filteredItems.length > 0">
             <ul class="list-none p-2 border rounded-lg shadow absolute w-full bg-white mt-1">

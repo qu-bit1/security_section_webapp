@@ -78,7 +78,7 @@ class ReportController extends Controller
         $report->attachments()->attach($request->attachments);
         $tagIds = [];
         foreach ($request->tags as $tag) {
-            $tag = Tag::firstOrCreate(['title' => $tag]);
+            $tag = Tag::firstOrCreate(['title' => $tag], ['user_id' => auth()->user()->id]);
             if ($tag) {
                 $tagIds[] = $tag->id;
             }
@@ -104,7 +104,7 @@ class ReportController extends Controller
     public function show(Report $report): Response
     {
         return Inertia::render('Reports/Show', [
-            'report' => $report->load('users', 'comments', "attachments"),
+            'report' => $report->load('users', 'comments', "attachments", "tags"),
         ]);
     }
 
@@ -136,7 +136,7 @@ class ReportController extends Controller
 
         $tagIds = [];
         foreach ($request->tags as $tag) {
-            $tag = Tag::firstOrCreate(['title' => $tag]);
+            $tag = Tag::firstOrCreate(['title' => $tag], ['user_id' => auth()->user()->id]);
             if ($tag) {
                 $tagIds[] = $tag->id;
             }

@@ -2,6 +2,7 @@
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import {ref} from 'vue';
+import Tag from "@/Components/Tag.vue";
 
 const props = defineProps({
     report: {
@@ -29,10 +30,7 @@ const closeModal = () => {
                 </h2>
                 <div class="mt-6">
                     <template v-for="tag in report.tags">
-                        <span
-                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-gray-100 text-gray-800 mr-2">
-                            {{ tag.title }}
-                        </span>
+                        <Tag :value="tag.title" />
                     </template>
                 </div>
                 <div class="mt-6 flex justify-end">

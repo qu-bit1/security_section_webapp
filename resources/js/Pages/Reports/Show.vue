@@ -4,6 +4,7 @@ import {Head} from '@inertiajs/vue3';
 import DeleteReportForm from "@/Pages/Reports/Partials/DeleteReportForm.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import DownloadReport from "@/Pages/Reports/Partials/DownloadReport.vue";
+import Tag from "@/Components/Tag.vue";
 
 defineProps({
     report: Object,
@@ -82,6 +83,14 @@ defineProps({
                                            name="reporter"
                                            readonly
                                            type="text">
+                                </div>
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="block text-sm font-medium text-gray-700" for="reporter">Tags</label>
+                                <div class="mt-1">
+                                    <template v-for="tag in report.tags">
+                                        <Tag :value="tag.title" />
+                                    </template>
                                 </div>
                             </div>
                         </div>
