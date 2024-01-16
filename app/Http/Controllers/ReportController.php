@@ -52,6 +52,7 @@ class ReportController extends Controller
                         ->orWhere('mime_type', $attachment);
                 });
             })
+            ->orderBy('created_at', 'desc')
             ->with(['attachments', 'tags'])
             ->paginate(request('per_page', 25))
             ->withQueryString();

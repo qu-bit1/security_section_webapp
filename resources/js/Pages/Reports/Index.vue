@@ -97,7 +97,7 @@ let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true'
                                             </Link>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            {{ report.description }}
+                                            {{ report?.description?.substring(0,50) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             {{ report.status }}
