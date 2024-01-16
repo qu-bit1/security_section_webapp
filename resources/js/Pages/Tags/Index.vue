@@ -5,6 +5,7 @@ import {Head, router} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Paginator from "@/Components/Paginator.vue";
 import {ref, watch} from "vue";
+import Tag from "@/Components/Tag.vue";
 
 const props = defineProps({
     tags: Object,
@@ -60,11 +61,7 @@ watch(search, (value) => {
                         class="border shadow sm:rounded-lg bg-white"
                     >
                         <div class="p-4">
-                            <span
-                                class="inline-flex items-center py-1 px-2 mx-1 text-xs leading-4 font-bold tracking-wide bg-rose-100 text-rose-600 border border-rose-400 rounded-full shadow-sm"
-                            >
-                                {{ tag.title }}
-                            </span>
+                            <Tag :value="tag.title"/>
                             <div v-if="tag.description" class="mt-2">
                                 <p class="text-sm text-gray-500">
                                     {{ tag.description }}

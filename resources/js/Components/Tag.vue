@@ -13,7 +13,7 @@ defineProps({
 })
 
 const classes = computed(() => {
-    return 'inline-flex items-center py-1 px-2 mb-2 mx-1 text-xs leading-4 font-bold tracking-wide bg-rose-100 text-rose-600 border border-rose-400 rounded-lg shadow-sm hover:border-rose-600';
+    return 'inline-flex items-center py-1 px-2 mb-2 mr-2 text-xs leading-4 font-bold tracking-wide bg-rose-100 text-rose-600 border border-rose-400 rounded-lg shadow-sm hover:border-rose-600';
 });
 
 </script>
