@@ -1,9 +1,8 @@
 <script setup>
 import {Head, useForm} from '@inertiajs/vue3';
 import InputError from "@/Components/InputError.vue";
-import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import FileInput from "@/Components/FileInput.vue";
+import DragDropInput from "@/Components/DragDropInput.vue";
 
 const form = useForm({
     attachments: null
@@ -21,8 +20,7 @@ const submit = () => {
 
     <form @submit.prevent="submit">
         <div>
-            <InputLabel for="attachment" value="Select File"/>
-            <FileInput v-model="form.attachments" :multiple="true" class="mt-1 block w-full"/>
+            <DragDropInput v-model="form.attachments" class="mt-1 block w-full"/>
             <progress v-if="form.progress" :value="form.progress.percentage" max="100">
                 {{ form.progress.percentage }}%
             </progress>
