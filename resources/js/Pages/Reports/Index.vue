@@ -40,7 +40,7 @@ let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true'
                 <FilterReportForm v-model:showFilters="showFilters" :cancel="()=> (showFilters = !showFilters)" :filters="filters"/>
             </div>
         </template>
-        <div class="max-w-7xl m-auto">
+        <div class="m-auto">
             <div class="bg-skin-base overflow-hidden  sm:rounded-lg p-2">
                 <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
