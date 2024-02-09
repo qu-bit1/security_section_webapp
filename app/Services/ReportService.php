@@ -38,6 +38,6 @@ class ReportService
 
     private function generateCsv(Report $report): BinaryFileResponse
     {
-        return Excel::download($report, "reports.csv");
+        return Excel::download(new ReportsExport($report), "reports.csv");
     }
 }
