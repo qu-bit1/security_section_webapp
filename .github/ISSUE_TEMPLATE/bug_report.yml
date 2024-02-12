@@ -1,0 +1,17 @@
+name: 🐛 Bug Feedback
+description: Create a feedback to help us improve
+title: "🐛 [Bug] "
+labels: ["☢️ Bug", "bug"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Please only use English or Hindi to fill in**
+  - type: textarea
+    id: describe
+    attributes:
+      label: Describe The Problem
+      value: Please describe the problem you encountered as much detail as possible, including code and pictures.
+    validations:
+      required: true
