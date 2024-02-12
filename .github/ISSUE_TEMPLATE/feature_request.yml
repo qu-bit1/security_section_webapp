@@ -1,0 +1,24 @@
+name: ✨ Feature
+description: Suggest an new idea
+title: "✨ [Feature] "
+labels: ["✏️ Feature", "enhancement"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Please only use English or Hindi to fill in**
+  - type: checkboxes
+    attributes:
+      label: Before feedback
+      options:
+        - label: There are no features that I want to submit in Issues
+          required: true
+  - type: textarea
+    id: feature
+    attributes:
+      label: Describe Feature
+      description: |
+        Please describe the feature you want as much detail as possible, including code and pictures.
+    validations:
+      required: true
