@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
@@ -20,7 +21,7 @@ class PermissionController extends Controller
         }
 
         return Inertia::render('Permissions/Index', [
-            'permissions' => PermissionsEnum::toArray(),
+            'permissions' => Permission::withCount("roles")->orderBy('name', 'ASC')->get()
         ]);
     }
 }
