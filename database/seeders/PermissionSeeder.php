@@ -15,15 +15,17 @@ class PermissionSeeder extends Seeder
     {
         $roles = [
             'super-admin',
-            'admin',
             'user'
         ];
         $permissions = [
-            'create reports'=> ['super-admin','admin'],
+            'admin access'=> ['super-admin'],
+            'create reports'=> ['super-admin', 'user'],
             'edit all reports'=> ['super-admin'],
-            'edit own reports'=> ['super-admin','admin'],
-            'delete own reports'=> ['super-admin','admin'],
+            'edit own reports'=> ['super-admin','user'],
+            'delete own reports'=> ['super-admin','user'],
             'delete all reports'=> ['super-admin'],
+            'access own reports'=> ['super-admin', 'user'],
+            'access all reports'=> ['super-admin', 'user'],
             'access permissions'=> ['super-admin'],
             'assign permissions'=> ['super-admin'],
             'access roles'=> ['super-admin'],
@@ -36,7 +38,6 @@ class PermissionSeeder extends Seeder
             'access users'=> ['super-admin'],
             'edit users'=> ['super-admin'],
             'delete users'=> ['super-admin'],
-            'admin access'=> ['super-admin','admin'],
         ];
         //create roles
         foreach ($roles as $role) {
