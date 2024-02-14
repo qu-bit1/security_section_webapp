@@ -2,7 +2,8 @@
 
 namespace App\Enums;
 
-enum PermissionEnum: string {
+enum PermissionsEnum: string {
+    case ADMIN_ACCESS = "admin access";
     case ACCESS_USERS = "access users";
     case CREATE_USERS = "create users";
     case EDIT_USERS = "edit users";

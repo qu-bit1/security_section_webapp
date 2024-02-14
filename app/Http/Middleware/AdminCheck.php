@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\PermissionsEnum;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,12 +13,14 @@ class AdminCheck
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param Request $request
+     * @param Closure(Request): (Response) $next
+     * @return Response
      */
     public function handle(Request $request, Closure $next): Response
     {
         if(Auth::check()) {
-            if(Auth::user()->can('admin access')) {
+            if(Auth::user()->can(PermissionsEnum::ADMIN_ACCESS->value)) {
                 return $next($request);
             } else {
                 return redirect()->route('home');

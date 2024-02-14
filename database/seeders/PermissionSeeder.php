@@ -36,6 +36,7 @@ class PermissionSeeder extends Seeder
             'access users'=> ['super-admin'],
             'edit users'=> ['super-admin'],
             'delete users'=> ['super-admin'],
+            'admin access'=> ['super-admin','admin'],
         ];
         //create roles
         foreach ($roles as $role) {
