@@ -90,7 +90,7 @@ class ReportPolicy
      */
     public function restore(User $user, Report $report): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -98,6 +98,6 @@ class ReportPolicy
      */
     public function forceDelete(User $user, Report $report): bool
     {
-        //
+        return false;
     }
 }
