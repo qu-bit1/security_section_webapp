@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "ahmedsaoud31/laravel-permission-to-vuejs": "dev-master",
         "barryvdh/laravel-dompdf": "^2.0",
         "dompdf/dompdf": "^2.0",
         "guzzlehttp/guzzle": "^7.2",

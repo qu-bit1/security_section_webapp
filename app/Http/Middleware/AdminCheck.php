@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminCheck
-{reports
+{
     /**
      * Handle an incoming request.
      *
