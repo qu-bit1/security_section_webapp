@@ -22,29 +22,4 @@ enum PermissionsEnum: string {
     case ASSIGN_ROLES = "assign roles";
     case ACCESS_PERMISSIONS = "access permissions";
     case ASSIGN_PERMISSIONS = "assign permissions";
-
-    public static function toArray(): array
-    {
-        return [
-            self::ADMIN_ACCESS,
-            self::ACCESS_USERS,
-            self::CREATE_USERS,
-            self::EDIT_USERS,
-            self::DELETE_USERS,
-            self::ACCESS_ALL_REPORTS,
-            self::ACCESS_OWN_REPORTS,
-            self::CREATE_REPORTS,
-            self::EDIT_ALL_REPORTS,
-            self::EDIT_OWN_REPORTS,
-            self::DELETE_ALL_REPORTS,
-            self::DELETE_OWN_REPORTS,
-            self::ACCESS_ROLES,
-            self::CREATE_ROLES,
-            self::EDIT_ROLES,
-            self::DELETE_ROLES,
-            self::ASSIGN_ROLES,
-            self::ACCESS_PERMISSIONS,
-            self::ASSIGN_PERMISSIONS,
-        ];
-    }
 }
