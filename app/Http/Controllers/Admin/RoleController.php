@@ -44,6 +44,11 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request): RedirectResponse
     {
+        if (Role::where('name', $request->name)->exists()) {
+            return redirect()->route('roles.create')
+                ->withErrors(['name' => 'The role name already exists. Please choose a different name.']);
+        }
+
         Role::create(['name' => $request->name])->syncPermissions($request->permissions);
         return redirect()->route('roles.index');
     }
@@ -74,6 +79,12 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, Role $role): RedirectResponse
     {
+        // Check if the role name already exists except for the current role being updated
+        if (Role::where('name', $request->name)->where('id', '!=', $role->id)->exists()) {
+            return redirect()->route('roles.edit', $role)
+                ->withErrors(['name' => 'The role name already exists. Please choose a different name.']);
+        }
+
         $role->update(['name' => $request->name]);
         $role->syncPermissions($request->permissions);
         return redirect()->route('roles.index')->with('success', 'Role updated.');

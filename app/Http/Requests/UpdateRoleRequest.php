@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateRoleRequest extends FormRequest
 {
@@ -23,7 +24,13 @@ class UpdateRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255', 'min:3'],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'min:3',
+                Rule::notIn(['super-admin']) // Ensure name is not 'super-admin'
+            ],
             'permissions' => ['array']
         ];
     }
