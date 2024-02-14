@@ -141,7 +141,7 @@ const searchTags = async (search) => {
             <InputError :message="form.errors.status" class="mt-2"/>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="flex items-center justify-end mt-4"  v-if="can('create reports')">
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4">
                 Create Report
             </PrimaryButton>

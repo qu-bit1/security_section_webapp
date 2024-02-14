@@ -14,7 +14,15 @@ class ReportPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        if ($user->can(PermissionsEnum::ACCESS_ALL_REPORTS->value)) {
+            return true;
+        }
+
+        if ($user->can(PermissionsEnum::ACCESS_OWN_REPORTS->value)){
+            return true;
+        }
+
+        return false;
     }
 
     /**

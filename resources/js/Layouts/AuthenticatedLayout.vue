@@ -7,6 +7,7 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import {Link} from '@inertiajs/vue3';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -33,7 +34,10 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :active="route().current('dashboard')" :href="route('dashboard')">
                                     Dashboard
                                 </NavLink>
-                                <NavLink :active="route().current('reports.index')" :href="route('reports.index')">
+                                <NavLink
+                                    :active="route().current('reports.index')" :href="route('reports.index')"
+                                    v-if="can('access own reports | access all reports')"
+                                >
                                     Reports
                                 </NavLink>
                                 <NavLink :active="route().current('attachments.index')"
@@ -45,11 +49,27 @@ const showingNavigationDropdown = ref(false);
                                 </NavLink>
                             </div>
                         </div>
-                        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex justify-end flex-1 items-center">
-                            <div>
+                        <div
+                            class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex justify-end flex-1 items-center"
+                        >
+                            <div v-if="can('create reports')">
                                 <PrimaryButton :href="route('reports.create')">
                                     New Report
                                 </PrimaryButton>
+                            </div>
+                            <div v-if="can('admin access')">
+                                <Dropdown align="right" width="48">
+                                    <template #trigger>
+                                        <SecondaryButton class="ml-0">
+                                            Manage
+                                        </SecondaryButton>
+                                    </template>
+
+                                    <template #content>
+                                        <DropdownLink :href="route('roles.index')">Roles</DropdownLink>
+                                        <DropdownLink :href="route('permissions.index')">Permissions</DropdownLink>
+                                    </template>
+                                </Dropdown>
                             </div>
                         </div>
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -119,12 +139,31 @@ const showingNavigationDropdown = ref(false);
                         <ResponsiveNavLink :active="route().current('dashboard')" :href="route('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :active="route().current('reports.index')" :href="route('reports.index')">
+                        <ResponsiveNavLink
+                            :active="route().current('reports.index')" :href="route('reports.index')"
+                            v-if="can('access own reports | access all reports')"
+                        >
                             Reports
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :active="route().current('attachments.index')"
                                            :href="route('attachments.index')">
                             Attachments
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :active="route().current('tags.index')"
+                                           :href="route('tags.index')">
+                            Tags
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :active="route().current('roles.index')"
+                                           :href="route('roles.index')"
+                                           v-if="can('admin access')"
+                        >
+                            Roles
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :active="route().current('permissions.index')"
+                                           :href="route('permissions.index')"
+                                           v-if="can('admin access')"
+                        >
+                            Permissions
                         </ResponsiveNavLink>
                     </div>
 
