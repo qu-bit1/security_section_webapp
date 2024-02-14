@@ -29,6 +29,7 @@ class ReportController extends Controller
     public function index(): Response
     {
         $reports = Report::query()
+            ->where('user_id', auth()->user()->id)
             ->when(request('search'), function ($query, $search) {
                 $this->applySearchFilter($query, $search);
             })
@@ -67,6 +68,8 @@ class ReportController extends Controller
      */
     public function store(StoreReportRequest $request): RedirectResponse
     {
+        $this->authorize('create', Report::class);
+
         $report = Report::create([
             'title' => $request->title,
             'description' => $request->description,
@@ -94,6 +97,8 @@ class ReportController extends Controller
      */
     public function create(): Response
     {
+        $this->authorize('create', Report::class);
+
         return Inertia::render('Reports/Create', [
             'attachments' => Attachment::where('user_id', auth()->user()->id)->get(),
         ]);
@@ -104,6 +109,8 @@ class ReportController extends Controller
      */
     public function show(Report $report): Response
     {
+        $this->authorize('view', $report);
+
         return Inertia::render('Reports/Show', [
             'report' => $report->load('users', 'comments', "attachments", "tags"),
         ]);
@@ -114,6 +121,8 @@ class ReportController extends Controller
      */
     public function edit(Report $report): Response
     {
+        $this->authorize('update', $report);
+
         return Inertia::render('Reports/Edit', [
             'report' => $report->load('users', 'attachments', "tags"),
             'attachments' => Attachment::where('user_id', auth()->user()->id)->get(),
@@ -125,6 +134,8 @@ class ReportController extends Controller
      */
     public function update(UpdateReportRequest $request, Report $report): RedirectResponse
     {
+        $this->authorize('update', $report);
+
         $report->update([
             'title' => $request->title,
             'description' => $request->description,
@@ -152,6 +163,8 @@ class ReportController extends Controller
      */
     public function destroy(Report $report): RedirectResponse
     {
+        $this->authorize('delete', $report);
+
         $report->delete();
 
         return redirect()->route('reports.index')->with('success', 'Report deleted.');
