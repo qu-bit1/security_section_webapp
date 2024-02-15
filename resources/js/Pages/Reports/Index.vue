@@ -124,10 +124,13 @@ let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true'
                                             <SecondaryButton
                                                 :href="route('reports.edit', report.id)"
                                                 class="ml-2"
+                                                v-if="can('edit own reports | edit all reports')"
                                             >
                                                 Edit
                                             </SecondaryButton>
-                                            <DeleteReportForm :key="report.id" :report="report" class="ml-2"/>
+                                            <DeleteReportForm
+                                                v-if="can('delete own reports | delete all reports')"
+                                                :key="report.id" :report="report" class="ml-2"/>
                                         </td>
 
                                     </tr>

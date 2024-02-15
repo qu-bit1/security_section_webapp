@@ -49,7 +49,7 @@ const searchTags = async (search) => {
 </script>
 
 <template>
-    <Head title="New Report"/>
+    <Head title="Edit Report"/>
 
     <form @submit.prevent="submit">
         <div>
@@ -143,7 +143,7 @@ const searchTags = async (search) => {
             <InputError :message="form.errors.status" class="mt-2"/>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="flex items-center justify-end mt-4" v-if="can('edit own reports | edit all reports')">
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4">
                 Update Report
             </PrimaryButton>

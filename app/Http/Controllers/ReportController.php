@@ -21,6 +21,7 @@ class ReportController extends Controller
 
     public function __construct(ReportService $reportService)
     {
+        $this->authorizeResource(Report::class, 'report');
         $this->reportService = $reportService;
     }
     /**
@@ -28,7 +29,12 @@ class ReportController extends Controller
      */
     public function index(): Response
     {
+        $user = auth()->user();
+
         $reports = Report::query()
+            ->when($user->cannot('access-all-reports'), function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
             ->when(request('search'), function ($query, $search) {
                 $this->applySearchFilter($query, $search);
             })

@@ -4,15 +4,16 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreReportRequest extends FormRequest
+class StoreRoleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return (bool)auth()->user();
     }
 
     /**
@@ -23,8 +24,14 @@ class StoreReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'min:20', 'max:255'],
-            'status' => ['required'],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'min:3',
+                Rule::notIn(['super-admin']) // Ensure name is not 'super-admin'
+            ],
+            'permissions' => ['array']
         ];
     }
 }
