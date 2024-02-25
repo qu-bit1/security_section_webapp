@@ -1,25 +1,28 @@
 <script setup>
 
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import {Head, Link} from "@inertiajs/vue3";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
+import {Head, Link, useForm} from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import DeleteReportForm from "@/Pages/Reports/Partials/DeleteReportForm.vue";
 import Paginator from "@/Components/Paginator.vue";
 import ViewTags from "@/Pages/Reports/Partials/ViewTags.vue";
-import FilterReportForm from "@/Pages/Reports/Partials/FilterReportForm.vue";
-import {ref} from "vue";
 import ViewAttachments from "@/Pages/Reports/Partials/ViewAttachments.vue";
-import DownloadReport from "@/Pages/Reports/Partials/DownloadReport.vue";
-import Tag from "@/Components/Tag.vue";
 import {statusOptions} from "@/Compositions/Constants.js";
 
 const props = defineProps({
     reports: Object,
-    filters: Object,
 });
 
-let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true');
+const form = useForm({});
+
+const approveReport = async (reportId) => {
+    if (confirm('Are you sure you want to approve this report?')) {
+        form.post(route('reports.approveOne', reportId), {
+            preserveScroll: true,
+            onSuccess: () => form.reset(),
+            onFinish: () => form.reset(),
+        });
+    }
+}
 </script>
 
 
@@ -28,25 +31,7 @@ let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true'
     <AuthenticatedLayout>
         <template #header>
             <div class="flex flex-row ">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Reports</h2>
-                <div class="flex-1 flex justify-end">
-                    <DownloadReport>
-                        Export Reports
-                    </DownloadReport>
-                    <SecondaryButton
-                        :href="route('reports.approve')"
-                        class="ml-2"
-                        v-if="can('approve reports')"
-                    >
-                        Approve Reports
-                    </SecondaryButton>
-                    <PrimaryButton @click="showFilters = !showFilters" class="ml-2">
-                        Filter
-                    </PrimaryButton>
-                </div>
-            </div>
-            <div class="mt-4">
-                <FilterReportForm v-model:showFilters="showFilters" :cancel="()=> (showFilters = !showFilters)" :filters="filters"/>
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Approve Reports</h2>
             </div>
         </template>
         <div class="m-auto">
@@ -70,9 +55,6 @@ let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true'
                                         Status
                                     </th>
                                     <th class="px-6 py-4 uppercase tracking-wider" scope="col">
-                                        Approved
-                                    </th>
-                                    <th class="px-6 py-4 uppercase tracking-wider" scope="col">
                                         Venue
                                     </th>
                                     <th class="px-6 py-4 uppercase tracking-wider" scope="col">
@@ -87,16 +69,13 @@ let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true'
                                     <th class="px-6 py-4 uppercase tracking-wider" scope="col">
                                         Created At
                                     </th>
-
-                                    <!--                                    <th scope="col" class="px-6 py-4 uppercase tracking-wider">-->
-                                    <!--                                        color</th>-->
                                     <th class="relative px-6 py-4" scope="col">
                                         <span class="sr-only">Edit</span>
                                     </th>
                                 </tr>
                                 </thead>
                                 <tbody class="bg-skin-base divide-y divide-gray-200 text-gray-600">
-                                <template v-for="report in reports.data" :key="report.id">
+                                <template v-for="report in reports" :key="report.id">
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             {{ report.serial_number }}
@@ -115,10 +94,6 @@ let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true'
                                             {{ statusOptions.find(option => option.value === report.status).label}}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <Tag v-if="report.approved" value="Approved" class="bg-green-100 text-green-800 border-green-400 hover:border-green-600"/>
-                                            <Tag value="Pending" class="bg-yellow-100 text-yellow-800 border-yellow-400 hover:border-yellow-600" v-else/>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
                                             {{ report.venue }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
@@ -134,20 +109,13 @@ let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true'
                                             {{ report.created_at }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row">
-                                            <DownloadReport :key="report.id" :report="report">
-                                                Download
-                                            </DownloadReport>
                                             <SecondaryButton
-                                                :href="route('reports.edit', report.id)"
+                                                @click="approveReport(report.id)"
                                                 class="ml-2"
-                                                v-if="can('edit own reports | edit all reports') && !report.approved"
+                                                v-if="can('approve reports')"
                                             >
-                                                Edit
+                                                Approve
                                             </SecondaryButton>
-
-                                            <DeleteReportForm
-                                                v-if="can('delete own reports | delete all reports') && !report.approved"
-                                                :key="report.id" :report="report" class="ml-2"/>
                                         </td>
                                     </tr>
                                 </template>

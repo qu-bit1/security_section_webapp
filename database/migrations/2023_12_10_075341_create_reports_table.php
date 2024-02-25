@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\StatusEnum;
 
 return new class extends Migration {
     /**
@@ -12,11 +13,13 @@ return new class extends Migration {
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->ulid("serial_number")->unique();
             $table->text('description')->nullable();
-            $table->enum('status', ['open', 'in_progress', 'resolved', 'closed'])->default('open');
+            $table->string('shift')->nullable();
+            $table->enum('status', StatusEnum::getValues())->default(StatusEnum::NORMAL);
             $table->string('venue')->nullable();
             $table->string('reporter')->nullable();
+            $table->boolean('approved')->default(false);
             $table->foreignId('user_id')
                 ->constrained("users")
                 ->onUpdate('cascade');

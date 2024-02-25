@@ -46,7 +46,8 @@ class ReportsExport implements FromCollection, WithHeadings
     {
         return [
             "id" => $report->id,
-            "title" => $report->title,
+            'serial_number' => $report->serial_number,
+            'shift' => $report->shift,
             "description" => $report->description,
             "venue" => $report->venue,
             "reporter" => $report->reporter,
@@ -62,7 +63,8 @@ class ReportsExport implements FromCollection, WithHeadings
     {
         return [
             "ID",
-            "Title",
+            "Serial Number",
+            "Shift",
             "Description",
             "Venue",
             "Reporter",

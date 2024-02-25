@@ -23,7 +23,7 @@ class StoreReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'min:20', 'max:255'],
+            'shift' => ['required'],
             'status' => ['required'],
         ];
     }

@@ -3,8 +3,8 @@
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\AttachmentController;
 use \App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RemarkController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TagController;
 use Illuminate\Foundation\Application;
@@ -45,11 +45,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::get("reports/approve", [ReportController::class, 'approve'])->name('reports.approve');
+    Route::post("reports/approve/{report}", [ReportController::class, 'approveOne'])->name('reports.approveOne');
+    Route::post("reports/approve", [ReportController::class, 'approveAll'])->name('reports.approveAll');
     Route::get('reports/export', [ReportController::class, 'export'])->name('reports.export');
     Route::get('reports/{report}/generate', [ReportController::class, 'generate'])->name('reports.generate');
     Route::resource('reports', ReportController::class);
-
-    Route::resource('reports.comments', CommentController::class);
+    Route::resource('reports.remarks', RemarkController::class)->shallow();
 
     Route::get('/tags', [TagController::class, 'index'])->name('tags.index');
     Route::get('/tags/create', [TagController::class, 'create'])->name('tags.create');

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $report->title }}</title>
+    <title>Report {{ $report->serial_number }}</title>
     <style>
         body {
             font-family: 'figtree', sans-serif;
@@ -55,7 +55,7 @@
 </head>
 <body class="font-sans">
 <div>
-    <h1 class="text-3xl font-bold mb-4">Title - {{ $report->title }}</h1>
+    <h1 class="text-3xl font-bold mb-4">Serial Number - {{ $report->serial_number }}</h1>
     @if(count($report->tags) > 0)
         <div class="mb-4">
                 @foreach($report->tags as $tag)

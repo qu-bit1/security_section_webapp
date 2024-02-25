@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Remark;
 use App\Models\Report;
+use App\Policies\RemarkPolicy;
 use App\Policies\ReportPolicy;
 use App\Policies\RolePolicy;
 use Illuminate\Support\Facades\Gate;
@@ -19,6 +21,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         Report::class => ReportPolicy::class,
         Role::class => RolePolicy::class,
+        Remark::class => RemarkPolicy::class,
     ];
 
     /**

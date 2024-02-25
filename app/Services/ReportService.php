@@ -16,7 +16,7 @@ class ReportService
 {
     public function generate(Report $report, string $format = "pdf"): Response|BinaryFileResponse
     {
-        $slug = Str::slug("report {$report->title}", separator: "_");
+        $slug = Str::slug("report {$report->serial_number}", separator: "_");
         if ($format === "pdf") {
             return $this->generatePdf($report)->download("{$slug}.pdf");
         } elseif ($format === "csv") {

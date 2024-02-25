@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PermissionsEnum;
+use App\Enums\StatusEnum;
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
 use App\Models\Attachment;
 use App\Models\Report;
 use App\Models\Tag;
 use App\Services\ReportService;
+use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -30,9 +33,8 @@ class ReportController extends Controller
     public function index(): Response
     {
         $user = auth()->user();
-
         $reports = Report::query()
-            ->when($user->cannot('access-all-reports'), function ($query) use ($user) {
+            ->when($user->cannot(PermissionsEnum::ACCESS_ALL_REPORTS->value), function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
             ->when(request('search'), function ($query, $search) {
@@ -74,7 +76,7 @@ class ReportController extends Controller
     public function store(StoreReportRequest $request): RedirectResponse
     {
         $report = Report::create([
-            'title' => $request->title,
+            'shift' => $request->shift,
             'description' => $request->description,
             'status' => $request->status,
             'venue' => $request->venue,
@@ -110,8 +112,16 @@ class ReportController extends Controller
      */
     public function show(Report $report): Response
     {
+        $remarks = [];
+        if (auth()->user()->can(PermissionsEnum::ACCESS_ALL_REMARKS->value)) {
+            $remarks = $report->remarks()->with('user')->get();
+        } elseif (auth()->user()->can(PermissionsEnum::ACCESS_OWN_REMARKS->value)) {
+            $remarks = $report->remarks()->where('user_id', auth()->user()->id)->with('user')->get();
+        }
+
         return Inertia::render('Reports/Show', [
-            'report' => $report->load('users', 'comments', "attachments", "tags"),
+            'report' => $report->load(['attachments', 'tags']),
+            'remarks' => $remarks,
         ]);
     }
 
@@ -132,7 +142,7 @@ class ReportController extends Controller
     public function update(UpdateReportRequest $request, Report $report): RedirectResponse
     {
         $report->update([
-            'title' => $request->title,
+            'shift' => $request->shift,
             'description' => $request->description,
             'status' => $request->status,
             'venue' => $request->venue,
@@ -151,6 +161,38 @@ class ReportController extends Controller
         $report->tags()->sync($tagIds);
 
         return redirect()->route('reports.show', $report->id)->with('success', 'Report updated.');
+    }
+
+    public function approve(): Response
+    {
+        $this->authorize('approve', Report::class);
+        $reports = Report::query()
+            ->where('approved', false)
+            ->with(['attachments', 'tags'])
+            ->get();
+
+        return Inertia::render('Reports/Approve', [
+            'reports' => $reports,
+        ]);
+    }
+
+    public function approveOne(Report $report): RedirectResponse
+    {
+        $this->authorize('approveOne', $report);
+
+        $report->update(['approved' => true]);
+
+        return redirect()->route('reports.approve')->with('success', 'Report approved.');
+    }
+
+    public function approveAll(Request $request): RedirectResponse
+    {
+        $this->authorize('approveAll', Report::class);
+
+        $reportIds = $request->reports;
+        Report::whereIn('id', $reportIds)->update(['approved' => true]);
+
+        return redirect()->route('reports.index')->with('success', 'Reports approved.');
     }
 
     /**
@@ -204,7 +246,7 @@ class ReportController extends Controller
 
         $query->where(function ($query) use ($searchCriteria) {
             $fieldMappings = [
-                'title' => 'title',
+                'shift' => 'shift',
                 'description' => 'description',
                 'status' => 'status',
                 'open' => 'status',
@@ -214,7 +256,7 @@ class ReportController extends Controller
                 'tags' => 'tags',
                 'venue' => 'venue',
                 'reporter' => 'reporter',
-                'full' => ['title', 'description', 'venue', 'reporter']
+                'full' => ['description', 'venue', 'reporter']
             ];
 
             foreach ($searchCriteria as $key => $value) {
@@ -253,8 +295,14 @@ class ReportController extends Controller
             default:
                 if (Str::startsWith($value, '"') && Str::endsWith($value, '"')) {
                     $value = trim($value, '"');
+                    if ($key == "status"){
+                        $value = StatusEnum::getValueFromLabel($value)->value;
+                    }
                     $query->orWhere($field, $value);
                 } else {
+                    if ($key == "status"){
+                        $value = StatusEnum::getValueFromLabel($value)->value;
+                    }
                     $query->orWhere($field, 'LIKE', "%{$value}%");
                 }
         }

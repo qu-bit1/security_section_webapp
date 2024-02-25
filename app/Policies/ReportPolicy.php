@@ -56,8 +56,12 @@ class ReportPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Report $report): bool
+    public function update(User $user, Report $report): bool|Response
     {
+        if ($report->approved) {
+            return Response::deny('You cannot edit an approved report');
+        }
+
         if ($user->can(PermissionsEnum::EDIT_ALL_REPORTS->value)) {
             return true;
         }
@@ -72,14 +76,54 @@ class ReportPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Report $report): bool
+    public function delete(User $user, Report $report): bool|Response
     {
+        if ($report->approved) {
+            return Response::deny('You cannot delete an approved report');
+        }
+
         if ($user->can(PermissionsEnum::DELETE_ALL_REPORTS->value)) {
             return true;
         }
 
         if ($user->can(PermissionsEnum::DELETE_OWN_REPORTS->value)){
             return $user->id === $report->user_id;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can view approval page.
+     */
+    public function approve(User $user): bool
+    {
+        if ($user->can(PermissionsEnum::APPROVE_REPORTS->value)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can approve the model.
+     */
+    public function approveOne(User $user, Report $report): bool
+    {
+        if ($user->can(PermissionsEnum::APPROVE_REPORTS->value)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can approve the model.
+     */
+    public function approveAll(User $user, Report $report): bool
+    {
+        if ($user->can(PermissionsEnum::APPROVE_REPORTS->value)) {
+            return true;
         }
 
         return false;

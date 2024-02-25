@@ -28,6 +28,7 @@ const searchParams = ref({
 });
 
 const statusOptions = [
+    {value: 'normal', label: 'Normal'},
     {value: 'open', label: 'Open'},
     {value: 'in_progress', label: 'In Progress'},
     {value: 'resolved', label: 'Resolved'},

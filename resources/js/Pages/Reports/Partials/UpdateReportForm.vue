@@ -7,6 +7,7 @@ import {Head, useForm} from '@inertiajs/vue3';
 import SelectInput from "@/Components/SelectInput.vue";
 import FilePicker from "@/Components/FilePicker.vue";
 import MultiSelectInput from "@/Components/MultiSelectInput.vue";
+import {shiftOptions, statusOptions} from "@/Compositions/Constants.js";
 
 const props = defineProps({
     report: {
@@ -18,7 +19,7 @@ const props = defineProps({
 });
 
 const form = useForm({
-    title: props.report.title,
+    shift: props.report.shift,
     description: props.report.description,
     venue: props.report.venue,
     reporter: props.report.reporter,
@@ -32,12 +33,6 @@ const submit = () => {
     form.put(route('reports.update', props.report.id));
 };
 
-const statusOptions = [
-    {value: 'open', label: 'Open'},
-    {value: 'in_progress', label: 'In Progress'},
-    {value: 'resolved', label: 'Resolved'},
-    {value: 'closed', label: 'Closed'},
-];
 const searchTags = async (search) => {
     try {
         const response = await axios.get(route('tags.search', {search}));
@@ -53,35 +48,6 @@ const searchTags = async (search) => {
 
     <form @submit.prevent="submit">
         <div>
-            <InputLabel for="name" value="Title"/>
-
-            <TextInput
-                id="title"
-                v-model="form.title"
-                autocomplete="title"
-                autofocus
-                class="mt-1 block w-full"
-                type="text"
-            />
-
-            <InputError :message="form.errors.title" class="mt-2"/>
-        </div>
-
-        <div class="mt-4">
-            <InputLabel for="description" value="Description"/>
-
-            <TextInput
-                id="description"
-                v-model="form.description"
-                autocomplete="description"
-                class="mt-1 block w-full"
-                input-type="textarea"
-            />
-
-            <InputError :message="form.errors.description" class="mt-2"/>
-        </div>
-
-        <div class="mt-4">
             <InputLabel for="tags" value="Tags"/>
 
             <MultiSelectInput
@@ -96,37 +62,17 @@ const searchTags = async (search) => {
         </div>
 
         <div class="mt-4">
-            <InputLabel value="Attachments"/>
-            <FilePicker v-model="form.attachments" :attachments="attachments"/>
-            <InputError :message="form.errors.attachments" class="mt-2"/>
-        </div>
+            <InputLabel for="shift" value="Shift"/>
 
-        <div class="mt-4">
-            <InputLabel for="venue" value="Venue"/>
-
-            <TextInput
-                id="venue"
-                v-model="form.venue"
-                autocomplete="venue"
+            <SelectInput
+                id="shift"
+                v-model="form.shift"
+                :options="shiftOptions"
+                autocomplete="shift"
                 class="mt-1 block w-full"
-                type="text"
             />
 
-            <InputError :message="form.errors.venue" class="mt-2"/>
-        </div>
-
-        <div class="mt-4">
-            <InputLabel for="reporter" value="Reporter"/>
-
-            <TextInput
-                id="reporter"
-                v-model="form.reporter"
-                autocomplete="reporter"
-                class="mt-1 block w-full"
-                type="text"
-            />
-
-            <InputError :message="form.errors.reporter" class="mt-2"/>
+            <InputError :message="form.errors.shift" class="mt-2"/>
         </div>
 
         <div class="mt-4">
@@ -143,6 +89,55 @@ const searchTags = async (search) => {
             <InputError :message="form.errors.status" class="mt-2"/>
         </div>
 
+        <div v-if="form.status !== 'normal'">
+            <div class="mt-4">
+                <InputLabel for="description" value="Description"/>
+
+                <TextInput
+                    id="description"
+                    v-model="form.description"
+                    autocomplete="description"
+                    class="mt-1 block w-full"
+                    input-type="textarea"
+                />
+
+                <InputError :message="form.errors.description" class="mt-2"/>
+            </div>
+
+            <div class="mt-4">
+                <InputLabel value="Attachments"/>
+                <FilePicker v-model="form.attachments" :attachments="attachments"/>
+                <InputError :message="form.errors.attachments" class="mt-2"/>
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="venue" value="Venue"/>
+
+                <TextInput
+                    id="venue"
+                    v-model="form.venue"
+                    autocomplete="venue"
+                    class="mt-1 block w-full"
+                    type="text"
+                />
+
+                <InputError :message="form.errors.venue" class="mt-2"/>
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="reporter" value="Reporter"/>
+
+                <TextInput
+                    id="reporter"
+                    v-model="form.reporter"
+                    autocomplete="reporter"
+                    class="mt-1 block w-full"
+                    type="text"
+                />
+
+                <InputError :message="form.errors.reporter" class="mt-2"/>
+            </div>
+        </div>
         <div class="flex items-center justify-end mt-4" v-if="can('edit own reports | edit all reports')">
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4">
                 Update Report
