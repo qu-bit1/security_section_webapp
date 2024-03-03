@@ -64,7 +64,7 @@ const tableHeaders = [
                     </div>
                 </div>
             </div>
-            <Paginator :paginator="remarks" />
+            <Paginator :paginator="remarks" per-page-key="per_page_remarks"/>
         </div>
     </div>
 </template>

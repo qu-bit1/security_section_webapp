@@ -117,12 +117,12 @@ class ReportController extends Controller
     {
         $remarks = [];
         if (auth()->user()->can(PermissionsEnum::ACCESS_ALL_REMARKS->value)) {
-            $remarks = $report->remarks()->with('user')->paginate(request('per_page', 25), ['*'], 'remarks');
+            $remarks = $report->remarks()->with('user')->paginate(request('per_page_remarks', 2), ['*'], 'remarks');
         } elseif (auth()->user()->can(PermissionsEnum::ACCESS_OWN_REMARKS->value)) {
-            $remarks = $report->remarks()->where('user_id', auth()->user()->id)->with('user')->paginate(request('per_page', 25), ['*'], 'remarks');
+            $remarks = $report->remarks()->where('user_id', auth()->user()->id)->with('user')->paginate(request('per_page_remarks', 2), ['*'], 'remarks');
         }
 
-        $comments = $report->comments()->with('user')->paginate(request('per_page', 25), ['*'], 'comments');
+        $comments = $report->comments()->with('user')->paginate(request('per_page_comments', 2), ['*'], 'comments');
         return Inertia::render('Reports/Show', [
             'report' => $report->load(['attachments', 'tags']),
             'remarks' => $remarks,

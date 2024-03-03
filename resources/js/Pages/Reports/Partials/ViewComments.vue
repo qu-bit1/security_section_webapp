@@ -71,7 +71,7 @@ const canDeleteComment = () => {
                 <div class="mt-2 prose max-w-none sm:max-w-full prose-img:rounded-xl prose-a:text-rose-600">{{ comment.body }}</div>
             </div>
             <!-- Paginator for comment pagination -->
-            <Paginator :paginator="comments" />
+            <Paginator :paginator="comments" per-page-key="per_page_comments"/>
         </div>
     </div>
 </template>

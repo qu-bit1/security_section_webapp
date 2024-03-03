@@ -3,7 +3,13 @@ import {Link} from "@inertiajs/vue3";
 import {ref, watch} from "vue";
 import SelectInput from "@/Components/SelectInput.vue";
 
-const props = defineProps({paginator: Object});
+const props = defineProps({
+    paginator: Object,
+    perPageKey: {
+        type: String,
+        default: 'per_page'
+    }
+});
 
 let perPage = ref(props.paginator.per_page ?? 25);
 
@@ -17,8 +23,12 @@ const perPageOptions = [
 ];
 
 watch(perPage, (value) => {
-    window.location.href = `${props.paginator.path}?per_page=${value}`;
+    let queryParams = new URLSearchParams(window.location.search);
+    queryParams.set(props.perPageKey, value);
+    window.location.href = `${window.location.pathname}?${queryParams.toString()}`;
 });
+
+
 </script>
 <template>
     <nav v-if="paginator.last_page>1" aria-label="Pagination Navigation"
