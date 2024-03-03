@@ -30,4 +30,9 @@ enum PermissionsEnum: string {
     case ASSIGN_ROLES = "assign roles";
     case ACCESS_PERMISSIONS = "access permissions";
     case ASSIGN_PERMISSIONS = "assign permissions";
+    case CREATE_COMMENTS = "create comments";
+    case EDIT_OWN_COMMENTS = "edit own comments";
+    case EDIT_ALL_COMMENTS = "edit all comments";
+    case DELETE_OWN_COMMENTS = "delete own comments";
+    case DELETE_ALL_COMMENTS = "delete all comments";
 }

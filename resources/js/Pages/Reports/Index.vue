@@ -8,11 +8,17 @@ import DeleteReportForm from "@/Pages/Reports/Partials/DeleteReportForm.vue";
 import Paginator from "@/Components/Paginator.vue";
 import ViewTags from "@/Pages/Reports/Partials/ViewTags.vue";
 import FilterReportForm from "@/Pages/Reports/Partials/FilterReportForm.vue";
-import {ref} from "vue";
+import {inject, ref} from "vue";
 import ViewAttachments from "@/Pages/Reports/Partials/ViewAttachments.vue";
 import DownloadReport from "@/Pages/Reports/Partials/DownloadReport.vue";
 import Tag from "@/Components/Tag.vue";
 import {statusOptions} from "@/Compositions/Constants.js";
+import Edit from "@/Components/icons/Edit.vue";
+import Download from "@/Components/icons/Download.vue";
+import Check from "@/Components/icons/Check.vue";
+import Export from "@/Components/icons/Export.vue";
+import Filter from "@/Components/icons/Filter.vue";
+import formatDate from "../../Compositions/DateTime.js";
 
 const props = defineProps({
     reports: Object,
@@ -20,6 +26,33 @@ const props = defineProps({
 });
 
 let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true');
+
+const tableHeaders = [
+    'S.NO.',
+    'Shift',
+    'Description',
+    'Status',
+    'Approved',
+    'Venue',
+    'Reporter',
+    'Tags',
+    'Attachments',
+    'Created At',
+    'Action',
+];
+
+const can = inject('can');
+const canApproveReports = () => {
+    return can('approve reports');
+};
+
+const canEditReports = () => {
+    return can('edit own reports | edit all reports');
+};
+
+const canDeleteReports = () => {
+    return can('delete own reports | delete all reports');
+};
 </script>
 
 
@@ -30,25 +63,20 @@ let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true'
             <div class="flex flex-row ">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Reports</h2>
                 <div class="flex-1 flex justify-end">
-                    <DownloadReport>
-                        Export Reports
-                    </DownloadReport>
-                    <SecondaryButton
-                        :href="route('reports.approve')"
-                        class="ml-2"
-                        v-if="can('approve reports')"
-                    >
-                        Approve Reports
-                    </SecondaryButton>
-                    <PrimaryButton @click="showFilters = !showFilters" class="ml-2">
-                        Filter
-                    </PrimaryButton>
+                    <DownloadReport><Export/></DownloadReport>
+
+                    <template v-if="canApproveReports()">
+                        <SecondaryButton :href="route('reports.approve')" class="ml-2"><Check/></SecondaryButton>
+                    </template>
+
+                    <PrimaryButton @click="showFilters = !showFilters" class="ml-2"><Filter/></PrimaryButton>
                 </div>
             </div>
             <div class="mt-4">
                 <FilterReportForm v-model:showFilters="showFilters" :cancel="()=> (showFilters = !showFilters)" :filters="filters"/>
             </div>
         </template>
+
         <div class="m-auto">
             <div class="bg-skin-base overflow-hidden  sm:rounded-lg p-2">
                 <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -57,41 +85,8 @@ let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true'
                             <table class="min-w-full divide-y divide-gray-200 sm:rounded-lg">
                                 <thead class="bg-gray-50 font-medium text-left">
                                 <tr>
-                                    <th class="px-6 py-4 uppercase tracking-wider" scope="col">
-                                        S.NO.
-                                    </th>
-                                    <th class="px-6 py-4 uppercase tracking-wider" scope="col">
-                                        Shift
-                                    </th>
-                                    <th class="px-6 py-4 uppercase tracking-wider" scope="col">
-                                        Description
-                                    </th>
-                                    <th class="px-6 py-4 uppercase tracking-wider" scope="col">
-                                        Status
-                                    </th>
-                                    <th class="px-6 py-4 uppercase tracking-wider" scope="col">
-                                        Approved
-                                    </th>
-                                    <th class="px-6 py-4 uppercase tracking-wider" scope="col">
-                                        Venue
-                                    </th>
-                                    <th class="px-6 py-4 uppercase tracking-wider" scope="col">
-                                        Reporter
-                                    </th>
-                                    <th class="px-6 py-4 uppercase tracking-wider" scope="col">
-                                        Tags
-                                    </th>
-                                    <th class="px-6 py-4 uppercase tracking-wider" scope="col">
-                                        Attachments
-                                    </th>
-                                    <th class="px-6 py-4 uppercase tracking-wider" scope="col">
-                                        Created At
-                                    </th>
-
-                                    <!--                                    <th scope="col" class="px-6 py-4 uppercase tracking-wider">-->
-                                    <!--                                        color</th>-->
-                                    <th class="relative px-6 py-4" scope="col">
-                                        <span class="sr-only">Edit</span>
+                                    <th v-for="(header, index) in tableHeaders" :key="index" class="px-6 py-4 uppercase tracking-wider" scope="col">
+                                        {{ header }}
                                     </th>
                                 </tr>
                                 </thead>
@@ -130,24 +125,19 @@ let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true'
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <ViewAttachments :report="report"/>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            {{ report.created_at }}
+                                        <td class="px-6 py-4 whitespace-pre">
+                                            {{ formatDate(report.created_at) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row">
-                                            <DownloadReport :key="report.id" :report="report">
-                                                Download
-                                            </DownloadReport>
-                                            <SecondaryButton
-                                                :href="route('reports.edit', report.id)"
-                                                class="ml-2"
-                                                v-if="can('edit own reports | edit all reports') && !report.approved"
-                                            >
-                                                Edit
-                                            </SecondaryButton>
+                                            <DownloadReport :key="report.id" :report="report"><Download/></DownloadReport>
 
-                                            <DeleteReportForm
-                                                v-if="can('delete own reports | delete all reports') && !report.approved"
-                                                :key="report.id" :report="report" class="ml-2"/>
+                                            <template v-if="canEditReports() && !report.approved">
+                                                <SecondaryButton :href="route('reports.edit', report.id)" class="ml-2"><Edit/></SecondaryButton>
+                                            </template>
+
+                                            <template v-if="canDeleteReports() && !report.approved">
+                                                <DeleteReportForm :key="report.id" :report="report" class="ml-2"/>
+                                            </template>
                                         </td>
                                     </tr>
                                 </template>

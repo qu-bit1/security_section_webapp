@@ -12,10 +12,10 @@ return new class extends Migration {
     {
         Schema::create('action_report', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('report_id')
+            $table->foreignUuid('report_id')
                 ->constrained("reports")
                 ->onUpdate('cascade');
-            $table->foreignId('action_id')
+            $table->foreignUuid('action_id')
                 ->constrained("actions")
                 ->onUpdate('cascade');
             $table->timestamps();

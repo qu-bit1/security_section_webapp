@@ -4,6 +4,7 @@ import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import {useForm} from '@inertiajs/vue3';
 import {ref} from 'vue';
+import Delete from "@/Components/icons/Delete.vue";
 
 const props = defineProps({
     report: {
@@ -33,12 +34,12 @@ const closeModal = () => {
 
 <template>
     <section class="space-y-6">
-        <DangerButton @click="confirmReportDeletion">Delete</DangerButton>
+        <DangerButton @click="confirmReportDeletion"><Delete/></DangerButton>
 
         <Modal :show="confirmingReportDeletion" @close="closeModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">
-                    Are you sure you want to delete report - <span class="font-bold">{{ report.title }}</span>?
+                    Are you sure you want to delete report - <span class="font-bold">{{ report.serial_number }}</span>?
                 </h2>
                 <div class="mt-6 flex justify-end">
                     <SecondaryButton @click="closeModal"> Cancel</SecondaryButton>

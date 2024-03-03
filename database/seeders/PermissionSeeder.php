@@ -46,6 +46,11 @@ class PermissionSeeder extends Seeder
             'delete all remarks'=> ['super-admin'],
             'delete own remarks'=> ['super-admin'],
             'approve reports'=> ['super-admin'],
+            'create comments'=> ['super-admin', 'user'],
+            'edit all comments'=> ['super-admin'],
+            'edit own comments'=> ['super-admin', 'user'],
+            'delete all comments'=> ['super-admin'],
+            'delete own comments'=> ['super-admin', 'user'],
         ];
         //create roles
         foreach ($roles as $role) {

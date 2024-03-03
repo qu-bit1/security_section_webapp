@@ -11,11 +11,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('tags', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('title')->unique();
             $table->text('description')->nullable();
             $table->string('color')->nullable();
-            $table->foreignId('user_id')->nullable()
+            $table->foreignUuid('user_id')->nullable()
                 ->constrained("users")
                 ->onUpdate('cascade');
             $table->softDeletes();

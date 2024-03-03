@@ -76,12 +76,15 @@ class ReportController extends Controller
     public function store(StoreReportRequest $request): RedirectResponse
     {
         $report = Report::create([
+            'serial_number' => $request->serial_number,
             'shift' => $request->shift,
             'description' => $request->description,
             'status' => $request->status,
             'venue' => $request->venue,
             'reporter' => $request->reporter,
             'user_id' => auth()->user()->id,
+            'reported_at' => $request->reported_at ?? now(),
+            'dealing_officer' => $request->dealing_officer ?? auth()->user()->id,
         ]);
 
         $report->attachments()->attach($request->attachments);
@@ -114,14 +117,16 @@ class ReportController extends Controller
     {
         $remarks = [];
         if (auth()->user()->can(PermissionsEnum::ACCESS_ALL_REMARKS->value)) {
-            $remarks = $report->remarks()->with('user')->get();
+            $remarks = $report->remarks()->with('user')->paginate(request('per_page', 25), ['*'], 'remarks');
         } elseif (auth()->user()->can(PermissionsEnum::ACCESS_OWN_REMARKS->value)) {
-            $remarks = $report->remarks()->where('user_id', auth()->user()->id)->with('user')->get();
+            $remarks = $report->remarks()->where('user_id', auth()->user()->id)->with('user')->paginate(request('per_page', 25), ['*'], 'remarks');
         }
 
+        $comments = $report->comments()->with('user')->paginate(request('per_page', 25), ['*'], 'comments');
         return Inertia::render('Reports/Show', [
             'report' => $report->load(['attachments', 'tags']),
             'remarks' => $remarks,
+            'comments' => $comments,
         ]);
     }
 
@@ -180,7 +185,10 @@ class ReportController extends Controller
     {
         $this->authorize('approveOne', $report);
 
-        $report->update(['approved' => true]);
+        $report->update([
+            'approved' => true,
+            'approved_by' => auth()->user()->id,
+        ]);
 
         return redirect()->route('reports.approve')->with('success', 'Report approved.');
     }
@@ -190,7 +198,10 @@ class ReportController extends Controller
         $this->authorize('approveAll', Report::class);
 
         $reportIds = $request->reports;
-        Report::whereIn('id', $reportIds)->update(['approved' => true]);
+        Report::whereIn('id', $reportIds)->update([
+            'approved' => true,
+            'approved_by' => auth()->user()->id,
+        ]);
 
         return redirect()->route('reports.index')->with('success', 'Reports approved.');
     }

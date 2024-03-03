@@ -5,6 +5,7 @@ import {Head, Link} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import DeleteRoleForm from "@/Pages/Roles/Partials/DeleteRoleForm.vue";
+import Edit from "@/Components/icons/Edit.vue";
 
 defineProps({
     roles: Object
@@ -74,7 +75,7 @@ defineProps({
                                                 :href="route('roles.edit', role.id)"
                                                 class="ml-2"
                                             >
-                                                Edit
+                                                <Edit/>
                                             </SecondaryButton>
                                             <DeleteRoleForm :key="role.id" :role="role" class="ml-2"/>
                                         </td>

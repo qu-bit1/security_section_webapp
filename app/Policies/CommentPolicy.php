@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use App\Enums\PermissionsEnum;
 use App\Models\Comment;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class CommentPolicy
 {
@@ -13,7 +13,7 @@ class CommentPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class CommentPolicy
      */
     public function view(User $user, Comment $comment): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,7 +29,11 @@ class CommentPolicy
      */
     public function create(User $user): bool
     {
-        //
+        if ($user->can(PermissionsEnum::CREATE_COMMENTS->value)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -37,7 +41,15 @@ class CommentPolicy
      */
     public function update(User $user, Comment $comment): bool
     {
-        //
+        if ($user->can(PermissionsEnum::EDIT_ALL_COMMENTS->value)) {
+            return true;
+        }
+
+        if ($user->can(PermissionsEnum::EDIT_OWN_COMMENTS->value)){
+            return $user->id === $comment->user_id;
+        }
+
+        return false;
     }
 
     /**
@@ -45,7 +57,15 @@ class CommentPolicy
      */
     public function delete(User $user, Comment $comment): bool
     {
-        //
+        if ($user->can(PermissionsEnum::DELETE_ALL_COMMENTS->value)) {
+            return true;
+        }
+
+        if ($user->can(PermissionsEnum::DELETE_OWN_COMMENTS->value)){
+            return $user->id === $comment->user_id;
+        }
+
+        return false;
     }
 
     /**
@@ -53,7 +73,7 @@ class CommentPolicy
      */
     public function restore(User $user, Comment $comment): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -61,6 +81,6 @@ class CommentPolicy
      */
     public function forceDelete(User $user, Comment $comment): bool
     {
-        //
+        return false;
     }
 }

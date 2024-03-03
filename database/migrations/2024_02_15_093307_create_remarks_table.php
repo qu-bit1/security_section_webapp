@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('remarks', function (Blueprint $table) {
-            $table->id();
-            $table->text('description');
-            $table->foreignId('user_id')
+            $table->uuid('id')->primary();
+            $table->text('body');
+            $table->foreignUuid('user_id')
                 ->constrained("users")
                 ->onUpdate('cascade');
-            $table->foreignId('report_id')
+            $table->foreignUuid('report_id')
                 ->constrained("reports")
                 ->onUpdate('cascade');
             $table->timestamps();

@@ -4,10 +4,21 @@ import {Head} from '@inertiajs/vue3';
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Tag from "@/Components/Tag.vue";
 import DeleteRoleForm from "@/Pages/Roles/Partials/DeleteRoleForm.vue";
+import Edit from "@/Components/icons/Edit.vue";
 
 defineProps({
     role: Object,
 });
+
+const displayFields = [
+    {key: 'name', label: 'Name', inline: true},
+    {key: 'guard_name', label: 'Guard', inline: true},
+    {key: 'permissions', label: 'Permissions', inline: false},
+];
+
+const getHeadingClass = (inline) => {
+    return inline ? 'inline-block mr-2' : '';
+};
 </script>
 
 <template>
@@ -15,55 +26,34 @@ defineProps({
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Role - {{ role.name }}</h2>
-            <div class="flex-1 flex justify-end">
-                <SecondaryButton :href="route('roles.edit', role.id)" class="ml-2">
-                    Edit Role
-                </SecondaryButton>
-                <DeleteRoleForm :key="role.id" :role="role" class="ml-2"/>
+            <div class="flex flex-row justify-center items-center">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Role - {{ role.name }}</h2>
+                <div class="flex-1 flex justify-end">
+                    <SecondaryButton :href="route('roles.edit', role.id)" class="ml-2">
+                        <Edit />
+                    </SecondaryButton>
+                    <DeleteRoleForm :key="role.id" :role="role" class="ml-2"/>
+                </div>
             </div>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">Role Details</h2>
-                    <div>
-                        <div class="py-4 grid grid-cols-2 gap-4">
-                            <div class="flex flex-col">
-                                <label class="block text-sm font-medium text-gray-700" for="name">Name</label>
-                                <div class="mt-1">
-                                    <input id="name" :value="role.name"
-                                           class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                           name="name"
-                                           readonly
-                                           type="text">
-                                </div>
-                            </div>
-                            <div class="flex flex-col">
-                                <label class="block text-sm font-medium text-gray-700"
-                                       for="guard">Guard</label>
-                                <div class="mt-1">
-                                    <input id="guard"
-                                              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                              name="guard"
-                                              readonly
-                                              :value="role.guard_name"
-                                              type="text">
-                                </div>
-                            </div>
-                            <div class="flex flex-col">
-                                <p class="block text-sm font-medium text-gray-700">Permissions</p>
-                                <div class="mt-1">
-                                    <template v-for="permission in role.permissions">
-                                        <Tag :value="permission.name" />
-                                    </template>
-                                </div>
-                            </div>
+        <div
+            class="relative prose max-w-none lg:max-w-full xl:max-w-none prose-img:rounded-xl prose-img:w-full mx-auto prose-a:no-underline prose-a:text-rose-600 prose-table p-4 sm:p-8 bg-white">
+            <template v-for="field in displayFields" :key="field.key">
+                <div class="mb-1">
+                    <h3 :class="getHeadingClass(field.inline)">{{ field.label }} {{ field.inline ? ':' : '' }}</h3>
+                    <template v-if="field.key === 'permissions'">
+                        <div class="flex space-x-2">
+                            <template v-for="permission in role[field.key]">
+                                <Tag :value="permission.name"/>
+                            </template>
                         </div>
-                    </div>
+                    </template>
+                    <template v-else>
+                        <span>{{ role[field.key] }}</span>
+                    </template>
                 </div>
-            </div>
+            </template>
         </div>
     </AuthenticatedLayout>
 </template>

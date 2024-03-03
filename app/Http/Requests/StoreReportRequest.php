@@ -23,6 +23,7 @@ class StoreReportRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'serial_number' => ['required', 'unique:reports'],
             'shift' => ['required'],
             'status' => ['required'],
         ];

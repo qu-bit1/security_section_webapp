@@ -16,6 +16,7 @@ const props = defineProps({
 });
 
 const form = useForm({
+    serial_number: '',
     shift: shiftOptions[0].value,
     description: '',
     venue: '',
@@ -56,6 +57,18 @@ const searchTags = async (search) => {
             />
 
             <InputError :message="form.errors.tags" class="mt-2"/>
+        </div>
+        <div class="mt-4">
+            <InputLabel for="serial_number" value="Serial Number"/>
+
+            <TextInput
+                id="serial_number"
+                v-model="form.serial_number"
+                autocomplete="serial_number"
+                class="mt-1 block w-full"
+            />
+
+            <InputError :message="form.errors.serial_number" class="mt-2"/>
         </div>
         <div class="mt-4">
             <InputLabel for="shift" value="Shift"/>

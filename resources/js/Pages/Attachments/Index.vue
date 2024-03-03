@@ -54,7 +54,7 @@ watch(search, (value) => {
                 </div>
             </div>
         </template>
-        <div class="max-w-7xl m-auto p-2 sm:px-6 lg:px-8">
+        <div class="p-2 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <template v-for="attachment in attachments.data">
                     <div

@@ -12,20 +12,25 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('reports', function (Blueprint $table) {
-            $table->id();
-            $table->ulid("serial_number")->unique();
+            $table->uuid('id')->primary();
+            $table->string('serial_number')->unique();
             $table->text('description')->nullable();
             $table->string('shift')->nullable();
-            $table->enum('status', StatusEnum::getValues())->default(StatusEnum::NORMAL);
+            $table->enum('status', StatusEnum::getValues())->default(StatusEnum::NORMAL->value);
             $table->string('venue')->nullable();
             $table->string('reporter')->nullable();
             $table->boolean('approved')->default(false);
-            $table->foreignId('user_id')
+            $table->foreignUuid('approved_by')->nullable()
                 ->constrained("users")
                 ->onUpdate('cascade');
-            $table->foreignId('category_id')->nullable()
-                ->constrained("categories")
+            $table->foreignUuid('dealing_officer')->nullable()
+                ->constrained("users")
                 ->onUpdate('cascade');
+            $table->foreignUuid('user_id')
+                ->constrained("users")
+                ->onUpdate('cascade');
+            $table->timestamp('approved_at')->nullable();
+            $table->timestamp('reported_at')->nullable();
             $table->timestamps();
         });
     }

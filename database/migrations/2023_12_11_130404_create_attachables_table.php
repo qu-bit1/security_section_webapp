@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('attachables', function (Blueprint $table) {
             $table->id();
-            $table->morphs('attachable');
-            $table->foreignId('attachment_id')
+            $table->uuidMorphs('attachable');
+            $table->foreignUuid('attachment_id')
                 ->constrained("attachments")
                 ->onUpdate('cascade');
             $table->timestamps();

@@ -4,9 +4,9 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import {useForm} from '@inertiajs/vue3';
 import {ref} from 'vue';
 import TextInput from "@/Components/TextInput.vue";
-import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import Edit from "@/Components/icons/Edit.vue";
 
 const props = defineProps({
     remark: {
@@ -15,7 +15,7 @@ const props = defineProps({
 })
 const confirmingRemarkUpdate = ref(false);
 const form = useForm({
-    description: props.remark.description,
+    body: props.remark.body,
 });
 const confirmRemarkUpdate = () => {
     confirmingRemarkUpdate.value = true;
@@ -40,7 +40,7 @@ const closeModal = () => {
 
 <template>
     <section class="space-y-6">
-        <SecondaryButton @click="confirmRemarkUpdate">Edit</SecondaryButton>
+        <SecondaryButton @click="confirmRemarkUpdate"><Edit/></SecondaryButton>
 
         <Modal :show="confirmingRemarkUpdate" @close="closeModal">
             <form @submit.prevent="submit">
@@ -49,17 +49,15 @@ const closeModal = () => {
                         Edit Remark
                     </h2>
                     <div class="mt-4">
-                        <InputLabel for="description" value="Description"/>
-
                         <TextInput
-                            id="description"
-                            v-model="form.description"
-                            autocomplete="description"
+                            id="body"
+                            v-model="form.body"
+                            autocomplete="body"
                             class="mt-1 block w-full"
                             input-type="textarea"
                         />
 
-                        <InputError :message="form.errors.description" class="mt-2"/>
+                        <InputError :message="form.errors.body" class="mt-2"/>
                     </div>
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton @click="closeModal"> Cancel</SecondaryButton>

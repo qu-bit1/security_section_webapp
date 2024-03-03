@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\AttachmentController;
 use \App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RemarkController;
 use App\Http\Controllers\ReportController;
@@ -52,6 +53,7 @@ Route::middleware('auth')->group(function () {
     Route::get('reports/{report}/generate', [ReportController::class, 'generate'])->name('reports.generate');
     Route::resource('reports', ReportController::class);
     Route::resource('reports.remarks', RemarkController::class)->shallow();
+    Route::resource('reports.comments', CommentController::class)->shallow();
 
     Route::get('/tags', [TagController::class, 'index'])->name('tags.index');
     Route::get('/tags/create', [TagController::class, 'create'])->name('tags.create');

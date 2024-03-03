@@ -23,7 +23,7 @@ class UpdateRemarkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "description" => "required|string",
+            "body" => "required|string",
         ];
     }
 }

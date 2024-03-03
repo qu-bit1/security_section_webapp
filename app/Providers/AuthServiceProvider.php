@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Comment;
 use App\Models\Remark;
 use App\Models\Report;
+use App\Policies\CommentPolicy;
 use App\Policies\RemarkPolicy;
 use App\Policies\ReportPolicy;
 use App\Policies\RolePolicy;
@@ -22,6 +24,7 @@ class AuthServiceProvider extends ServiceProvider
         Report::class => ReportPolicy::class,
         Role::class => RolePolicy::class,
         Remark::class => RemarkPolicy::class,
+        Comment::class => CommentPolicy::class,
     ];
 
     /**

@@ -4,6 +4,7 @@ import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import {useForm} from '@inertiajs/vue3';
 import {ref} from 'vue';
+import Delete from "@/Components/icons/Delete.vue";
 
 const props = defineProps({
     role: {
@@ -33,7 +34,7 @@ const closeModal = () => {
 
 <template>
     <section class="space-y-6">
-        <DangerButton @click="confirmRoleDeletion">Delete</DangerButton>
+        <DangerButton @click="confirmRoleDeletion"><Delete/></DangerButton>
 
         <Modal :show="confirmingRoleDeletion" @close="closeModal">
             <div class="p-6">

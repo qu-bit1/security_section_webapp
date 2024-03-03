@@ -41,7 +41,7 @@ class RemarkController extends Controller
     public function store(StoreRemarkRequest $request, Report $report): RedirectResponse
     {
         $remark = new Remark([
-            'description' => $request->description,
+            'body' => $request->body,
             'user_id' => auth()->user()->id,
             'report_id' => $report->id
         ]);
@@ -74,7 +74,7 @@ class RemarkController extends Controller
     public function update(UpdateRemarkRequest $request, Remark $remark): RedirectResponse
     {
         $remark->update([
-            'description' => $request->description
+            'body' => $request->body
         ]);
 
         return redirect()->back()->with('success', 'Remark updated.');
@@ -83,7 +83,7 @@ class RemarkController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Remark $remark)
+    public function destroy(Remark $remark): RedirectResponse
     {
         $remark->delete();
 

@@ -14,7 +14,7 @@ const showingNavigationDropdown = ref(false);
 
 <template>
     <div>
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-white">
             <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
                 <div class="mx-auto px-4 sm:px-6 lg:px-8">
@@ -47,6 +47,9 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :active="route().current('tags.index')" :href="route('tags.index')">
                                     Tags
                                 </NavLink>
+                                <NavLink v-if="can('admin access')" :active="route().current('roles.index')" :href="route('roles.index')">
+                                    Roles
+                                </NavLink>
                             </div>
                         </div>
                         <div
@@ -56,20 +59,6 @@ const showingNavigationDropdown = ref(false);
                                 <PrimaryButton :href="route('reports.create')">
                                     New Report
                                 </PrimaryButton>
-                            </div>
-                            <div v-if="can('admin access')">
-                                <Dropdown align="right" width="48">
-                                    <template #trigger>
-                                        <SecondaryButton class="ml-0">
-                                            Manage
-                                        </SecondaryButton>
-                                    </template>
-
-                                    <template #content>
-                                        <DropdownLink :href="route('roles.index')">Roles</DropdownLink>
-                                        <DropdownLink :href="route('permissions.index')">Permissions</DropdownLink>
-                                    </template>
-                                </Dropdown>
                             </div>
                         </div>
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -188,7 +177,7 @@ const showingNavigationDropdown = ref(false);
             </nav>
 
             <!-- Page Heading -->
-            <header v-if="$slots.header" class="bg-white shadow">
+            <header v-if="$slots.header" class="bg-white">
                 <div class="mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header"/>
                 </div>

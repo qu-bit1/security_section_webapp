@@ -11,12 +11,12 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('comments', function (Blueprint $table) {
-            $table->id();
-            $table->text('description');
-            $table->foreignId('report_id')
+            $table->uuid('id')->primary();
+            $table->text('body');
+            $table->foreignUuid('report_id')
                 ->constrained("reports")
                 ->onUpdate('cascade');
-            $table->foreignId('user_id')
+            $table->foreignUuid('user_id')
                 ->constrained("users")
                 ->onUpdate('cascade');
             $table->softDeletes();

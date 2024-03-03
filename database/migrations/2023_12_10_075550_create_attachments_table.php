@@ -11,11 +11,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('attachments', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('path');
             $table->string('mime_type')->nullable();
-            $table->foreignId('user_id')
+            $table->foreignUuid('user_id')
                 ->constrained("users")
                 ->onUpdate('cascade');
             $table->timestamps();

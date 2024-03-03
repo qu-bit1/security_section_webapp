@@ -14,11 +14,11 @@ enum StatusEnum: string {
     public static function getValues(): array
     {
         return [
-            self::OPEN,
-            self::IN_PROGRESS,
-            self::RESOLVED,
-            self::CLOSED,
-            self::NORMAL
+            self::OPEN->value,
+            self::IN_PROGRESS->value,
+            self::RESOLVED->value,
+            self::CLOSED->value,
+            self::NORMAL->value
         ];
     }
 

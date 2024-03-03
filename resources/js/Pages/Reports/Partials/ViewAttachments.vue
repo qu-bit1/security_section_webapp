@@ -2,6 +2,7 @@
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import {ref} from 'vue';
+import Attachment from "@/Components/icons/Attachment.vue";
 
 const props = defineProps({
     report: {
@@ -20,7 +21,7 @@ const closeModal = () => {
 
 <template>
     <section class="space-y-6">
-        <SecondaryButton @click="viewReportAttachments">{{ report.attachments.length }} attachments</SecondaryButton>
+        <SecondaryButton @click="viewReportAttachments">{{ report.attachments.length }} <Attachment class="ml-0.5"/></SecondaryButton>
 
         <Modal :show="viewingReportAttachments" @close="closeModal">
             <div class="p-6">
