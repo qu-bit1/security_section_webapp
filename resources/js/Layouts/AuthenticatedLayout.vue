@@ -7,15 +7,16 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import {Link} from '@inertiajs/vue3';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
+import Toast from 'primevue/toast';
 
 const showingNavigationDropdown = ref(false);
 </script>
 
 <template>
     <div>
-        <div class="min-h-screen bg-white">
-            <nav class="bg-white border-b border-gray-100">
+        <Toast />
+        <div class="min-h-screen">
+            <nav class="bg-white border-b">
                 <!-- Primary Navigation Menu -->
                 <div class="mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
@@ -24,7 +25,7 @@ const showingNavigationDropdown = ref(false);
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('dashboard')">
                                     <ApplicationLogo
-                                        class="block h-9 w-auto fill-current text-gray-800"
+                                        class="block h-9 w-auto fill-current"
                                     />
                                 </Link>
                             </div>
@@ -68,7 +69,7 @@ const showingNavigationDropdown = ref(false);
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button
-                                                class="inline-flex items-center px-3 py-3 border rounded-full text-sm leading-4 font-medium text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+                                                class="inline-flex items-center px-3 py-3 border rounded-full text-sm leading-4 font-medium focus:outline-none transition ease-in-out duration-150"
                                                 type="button"
                                             >
                                                 {{ $page.props.auth.user.name.substring(0, 2).toUpperCase() }}
@@ -89,7 +90,7 @@ const showingNavigationDropdown = ref(false);
                         <!-- Hamburger -->
                         <div class="-me-2 flex items-center sm:hidden">
                             <button
-                                class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
+                                class="inline-flex items-center justify-center p-2 rounded-md focus:outline-none transition duration-150 ease-in-out"
                                 @click="showingNavigationDropdown = !showingNavigationDropdown"
                             >
                                 <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,9 +159,9 @@ const showingNavigationDropdown = ref(false);
 
 
                     <!-- Responsive Settings Options -->
-                    <div class="pt-4 pb-1 border-t border-gray-200">
+                    <div class="pt-4 pb-1 border-t border-surface-200">
                         <div class="px-4">
-                            <div class="font-medium text-base text-gray-800">
+                            <div class="font-medium text-base text-surface-800">
                                 {{ $page.props.auth.user.name }}
                             </div>
                             <div class="font-medium text-sm text-gray-500">{{ $page.props.auth.user.email }}</div>

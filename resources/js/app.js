@@ -11,6 +11,7 @@ import {clickoutDirective} from "@/directives.js";
 import LaravelPermissionToVueJS from 'laravel-permission-to-vuejs'
 import PrimeVue from "primevue/config";
 import Lara from "@/presets/lara";
+import ToastService from 'primevue/toastservice';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -27,6 +28,7 @@ createInertiaApp({
                 unstyled: true,
                 pt: Lara,
             })
+            .use(ToastService)
             .use(LaravelPermissionToVueJS)
             .provide("can", app.config.globalProperties.can)
             .provide("is", app.config.globalProperties.is)

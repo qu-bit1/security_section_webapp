@@ -2,5 +2,6 @@
 </script>
 
 <template>
-    <i class="pi pi-pencil text-base"></i>
+    <i class="pi pi-eye text-base"></i>
 </template>
+

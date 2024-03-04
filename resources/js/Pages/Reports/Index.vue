@@ -19,6 +19,9 @@ import Calendar from "primevue/calendar"
 import MultiSelect from "primevue/multiselect";
 import TriStateCheckbox from "primevue/tristatecheckbox";
 import Filter from "@/Components/icons/Filter.vue";
+import Export from "@/Components/icons/Export.vue";
+import Check from "@/Components/icons/Check.vue";
+import Eye from "@/Components/icons/Eye.vue";
 
 const props = defineProps({
     reports: Object,
@@ -131,9 +134,9 @@ const onDisplayFilter = () => {
                         <div class="flex-1 flex flex-row items-center">
                             <SecondaryButton @click.prevent="onDisplayFilter()"><Filter/></SecondaryButton>
                             <template v-if="selectedReports?.length > 0">
-                                <DownloadReport>Export</DownloadReport>
+                                <DownloadReport><Export/></DownloadReport>
                                 <template v-if="canApproveReports()">
-                                    <SecondaryButton :href="route('reports.approve')" class="ml-2">Approve</SecondaryButton>
+                                    <SecondaryButton :href="route('reports.approve')" class="ml-2"><Check/></SecondaryButton>
                                 </template>
                             </template>
                         </div>
@@ -244,7 +247,7 @@ const onDisplayFilter = () => {
                     <template #body="data">
                         <div class="flex flex-row">
 <!--                            <DownloadReport :key="data.data.id" :report="data.data"><Download/></DownloadReport>-->
-                            <SecondaryButton :href="route('reports.show', data.data.id)">view</SecondaryButton>
+                            <SecondaryButton :href="route('reports.show', data.data.id)"><Eye/></SecondaryButton>
                             <template v-if="canEditReports() && !data.data.approved">
                                 <SecondaryButton :href="route('reports.edit', data.data.id)" class="ml-2"><Edit/></SecondaryButton>
                             </template>

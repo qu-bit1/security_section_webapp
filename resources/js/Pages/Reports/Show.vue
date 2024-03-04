@@ -69,26 +69,20 @@ const canCreateRemarks = () => {
 
     <AuthenticatedLayout>
         <template #header>
-            <div class="flex flex-row">
-                <Tag v-if="report.approved" class="bg-green-100 text-green-800 border-green-400 hover:border-green-600"
-                     value="approved"/>
-                <Tag v-else class="bg-green-100 text-green-800 border-green-400 hover:border-green-600"
-                     value="pending"/>
-                <div class="flex-1 flex justify-end">
-                    <template v-if="canCreateRemarks()">
-                        <CreateRemarkForm :key="report.id" :report="report" class="ml-2"/>
-                    </template>
-                    <DownloadReport :key="report.id" :report="report"><Download/></DownloadReport>
-                    <template v-if="canApproveReports() && !report.approved">
-                        <SecondaryButton class="ml-2" @click="approveReport(report.id)"><Check/></SecondaryButton>
-                    </template>
-                    <template v-if="canEditReports() && !report.approved">
-                        <SecondaryButton :href="route('reports.edit', report.id)" class="ml-2"><Edit/></SecondaryButton>
-                    </template>
-                    <template v-if="canDeleteReports() && !report.approved">
-                        <DeleteReportForm :key="report.id" :report="report" class="ml-2"/>
-                    </template>
-                </div>
+            <div class="flex flex-row justify-end">
+                <template v-if="canCreateRemarks()">
+                    <CreateRemarkForm :key="report.id" :report="report" class="ml-2"/>
+                </template>
+                <DownloadReport :key="report.id" :report="report"><Download/></DownloadReport>
+                <template v-if="canApproveReports() && !report.approved">
+                    <SecondaryButton class="ml-2" @click="approveReport(report.id)"><Check/></SecondaryButton>
+                </template>
+                <template v-if="canEditReports() && !report.approved">
+                    <SecondaryButton :href="route('reports.edit', report.id)" class="ml-2"><Edit/></SecondaryButton>
+                </template>
+                <template v-if="canDeleteReports() && !report.approved">
+                    <DeleteReportForm :key="report.id" :report="report" class="ml-2"/>
+                </template>
             </div>
         </template>
 

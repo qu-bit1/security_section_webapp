@@ -5,6 +5,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import {useForm} from '@inertiajs/vue3';
 import {ref} from 'vue';
 import Delete from "@/Components/icons/Delete.vue";
+import {useToast} from "primevue/usetoast";
 
 const props = defineProps({
     report: {
@@ -17,10 +18,15 @@ const confirmReportDeletion = () => {
     confirmingReportDeletion.value = true;
 };
 
+const toast = useToast();
+
 const deleteReport = () => {
     form.delete(route('reports.destroy', props.report.id), {
         preserveScroll: true,
-        onSuccess: () => closeModal(),
+        onSuccess: () =>{
+            closeModal();
+            toast.add({ severity: 'success', summary: 'Success', detail: 'deleted successfully', life: 3000 });
+        } ,
         onFinish: () => form.reset(),
     });
 };
