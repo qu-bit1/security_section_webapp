@@ -21,13 +21,14 @@ const canEditRemarks = () => {
 const canDeleteRemarks = () => {
     return can('delete own remarks | delete all remarks');
 };
+
 </script>
 
 <template>
     <div>
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">Remarks</h2>
         <div class="py-4 not-prose">
-            <DataTable showGridlines :value="remarks.data" dataKey="id" tableStyle="min-width: 50rem" class="border-t border-l">
+            <DataTable showGridlines :value="remarks.data" dataKey="id" tableStyle="min-width: 50rem">
                 <Column header="#" style="width: 3rem">
                     <template #body="data">
                         {{ data.index + 1 }}

@@ -1,45 +1,89 @@
 <script setup>
 
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import {Head, Link} from "@inertiajs/vue3";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
+import {Head, Link, router} from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import DeleteReportForm from "@/Pages/Reports/Partials/DeleteReportForm.vue";
-import Paginator from "@/Components/Paginator.vue";
 import ViewTags from "@/Pages/Reports/Partials/ViewTags.vue";
-import FilterReportForm from "@/Pages/Reports/Partials/FilterReportForm.vue";
 import {inject, ref} from "vue";
 import ViewAttachments from "@/Pages/Reports/Partials/ViewAttachments.vue";
 import DownloadReport from "@/Pages/Reports/Partials/DownloadReport.vue";
-import Tag from "@/Components/Tag.vue";
-import {statusOptions} from "@/Compositions/Constants.js";
+import {shiftOptions, statusOptions} from "@/Compositions/Constants.js";
 import Edit from "@/Components/icons/Edit.vue";
-import Download from "@/Components/icons/Download.vue";
-import Check from "@/Components/icons/Check.vue";
-import Export from "@/Components/icons/Export.vue";
-import Filter from "@/Components/icons/Filter.vue";
 import formatDate from "../../Compositions/DateTime.js";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
+import InputText from "primevue/inputtext";
+import {FilterMatchMode} from "primevue/api";
+import Calendar from "primevue/calendar"
+import MultiSelect from "primevue/multiselect";
+import TriStateCheckbox from "primevue/tristatecheckbox";
+import Filter from "@/Components/icons/Filter.vue";
 
 const props = defineProps({
     reports: Object,
     filters: Object,
 });
 
-let showFilters = ref(String(props.filters.showFilters).toLowerCase() === 'true');
+const loading = ref(false);
+const totalRecords = ref(props.reports.total);
+const selectedReports = ref();
+const first = ref(props.reports.from);
+const rows = ref(props.reports.per_page);
+const lazyParams = ref(props.filters);
+const obj = JSON.parse(props.filters.lazyEvent ?? '{}');
+const filterDisplay = ref(obj.filterDisplay ?? '');
+const customFilters = ref(obj.filters ?? {
+    global: {value: null, matchMode: FilterMatchMode.CONTAINS},
+    serial_number: {value: null, matchMode: FilterMatchMode.EQUALS},
+    description: {value: null, matchMode: FilterMatchMode.CONTAINS},
+    shift: {value: null, matchMode: FilterMatchMode.IN},
+    status: {value: null, matchMode: FilterMatchMode.IN},
+    created_at: {value: null, matchMode: FilterMatchMode.DATE_IS},
+    approved: {value: null, matchMode: FilterMatchMode.EQUALS},
+    venue: {value: null, matchMode: FilterMatchMode.CONTAINS},
+    reporter: {value: null, matchMode: FilterMatchMode.CONTAINS},
+});
 
+// Injected Dependencies
 const can = inject('can');
-const canApproveReports = () => {
-    return can('approve reports');
+
+// Methods
+const canApproveReports = () => can('approve reports');
+const canEditReports = () => can('edit own reports | edit all reports');
+const canDeleteReports = () => can('delete own reports | delete all reports');
+
+const loadLazyData = (event) => {
+    loading.value = true;
+    lazyParams.value = {...lazyParams.value, first: event?.first || first.value, filterDisplay: filterDisplay.value};
+    router.get(route('reports.index'), {lazyEvent: JSON.stringify(lazyParams.value)}, {
+        preserveState: true,
+        onSuccess: (data) => {
+            first.value = data.props.reports.from;
+            totalRecords.value = data.props.reports.total;
+            loading.value = false;
+        }
+    });
 };
 
-const canEditReports = () => {
-    return can('edit own reports | edit all reports');
+const onPage = (event) => {
+    lazyParams.value = event;
+    loadLazyData(event);
 };
 
-const canDeleteReports = () => {
-    return can('delete own reports | delete all reports');
+const onSort = (event) => {
+    lazyParams.value = event;
+    loadLazyData(event);
+};
+
+const onFilter = (event) => {
+    lazyParams.value.filters = customFilters.value;
+    loadLazyData(event);
+};
+
+const onDisplayFilter = () => {
+    filterDisplay.value = filterDisplay.value === '' ? 'row' : '';
+    lazyParams.value.filterDisplay = filterDisplay.value;
 };
 </script>
 
@@ -48,84 +92,169 @@ const canDeleteReports = () => {
     <Head title="Reports"/>
     <AuthenticatedLayout>
         <template #header>
-            <div class="flex flex-row ">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Reports</h2>
-                <div class="flex-1 flex justify-end">
-                    <DownloadReport><Export/></DownloadReport>
-
-                    <template v-if="canApproveReports()">
-                        <SecondaryButton :href="route('reports.approve')" class="ml-2"><Check/></SecondaryButton>
-                    </template>
-
-                    <PrimaryButton @click="showFilters = !showFilters" class="ml-2"><Filter/></PrimaryButton>
-                </div>
-            </div>
-            <div class="mt-4">
-                <FilterReportForm v-model:showFilters="showFilters" :cancel="()=> (showFilters = !showFilters)" :filters="filters"/>
-            </div>
+            <h2 class="font-semibold text-xl leading-tight">Reports</h2>
         </template>
 
         <div class="m-auto">
-            <DataTable class="border-t" showGridlines scrollable highlightOnSelect :value="reports.data" dataKey="id" tableStyle="min-width: 50rem">
-                <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
-                <Column field="serial_number" header="S.NO.">
+            <DataTable
+                v-model:selection="selectedReports"
+                sortMode="multiple"
+                removableSort
+                lazy
+                paginator
+                :first="first"
+                :rows="rows"
+                :totalRecords="totalRecords"
+                :loading="loading"
+                @page="onPage($event)"
+                @sort="onSort($event)"
+                showGridlines
+                scrollable
+                highlightOnSelect
+                :globalFilterFields="['description', 'reporter', 'venue']"
+                v-model:filters="customFilters"
+                @filter="onFilter($event)"
+                :filterDisplay="filterDisplay"
+                :value="reports.data"
+                dataKey="id"
+                tableStyle="min-width: 50rem"
+            >
+                <template #empty>
+                    <div class="flex flex-col items-center justify-center">
+                        No reports found
+                    </div>
+                </template>
+
+                <!-- Header Template -->
+                <template #header='{ event }'>
+                    <div class="flex flex-col md:flex-row justify-end ">
+                        <div class="flex-1 flex flex-row items-center">
+                            <SecondaryButton @click.prevent="onDisplayFilter()"><Filter/></SecondaryButton>
+                            <template v-if="selectedReports?.length > 0">
+                                <DownloadReport>Export</DownloadReport>
+                                <template v-if="canApproveReports()">
+                                    <SecondaryButton :href="route('reports.approve')" class="ml-2">Approve</SecondaryButton>
+                                </template>
+                            </template>
+                        </div>
+                        <div class="flex flex-row items-center justify-end mt-2 md:mt-0">
+                            <div class="relative">
+                                <i class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600" />
+                                <InputText v-model="customFilters['global'].value" placeholder="Keyword Search" @keyup.enter="onFilter(event)" class="pl-10" />
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <Column headerStyle="width: 3rem" selectionMode="multiple"></Column>
+
+                <Column field="serial_number" header="S.NO." sortable>
                     <template #body="data">
                         <Link :href="route('reports.show', data.data.id)">
                             {{ data.data.serial_number }}
                         </Link>
                     </template>
-                </Column>
-                <Column field="shift" header="Shift"></Column>
-                <Column field="description" header="Description">
-                    <template #body="data">
-                        {{ data.data?.description?.substring(0,50) }}
+                    <template #filter="{filterModel, filterCallback}">
+                        <InputText v-model="filterModel.value" class="p-column-filter" placeholder="Search by S.NO"
+                                   type="text" @keyup.enter="filterCallback"/>
                     </template>
                 </Column>
-                <Column field="status" header="Status">
-                    <template #body="data">
-                        {{ statusOptions.find(option => option.value === data.data.status).label}}
+
+                <Column field="shift" filterField="shift" header="Shift">
+                    <template #filter="{ filterModel, filterCallback }">
+                        <MultiSelect v-model="filterModel.value" :options="shiftOptions" class="p-column-filter"
+                                     optionLabel="value" placeholder="Any" @change="filterCallback()">
+                            <template #option="slotProps">
+                                <span>{{ slotProps.option.label }}</span>
+                            </template>
+                        </MultiSelect>
                     </template>
                 </Column>
-                <Column field="approved" header="Approved">
+
+                <Column field="description" filterField="description" header="Description">
                     <template #body="data">
-                        <Tag v-if="data.data.approved" value="Approved" class="bg-green-100 text-green-800 border-green-400 hover:border-green-600"/>
-                        <Tag value="Pending" class="bg-yellow-100 text-yellow-800 border-yellow-400 hover:border-yellow-600" v-else/>
+                        {{ data.data?.description?.substring(0, 50) }}
+                    </template>
+                    <template #filter="{filterModel, filterCallback}">
+                        <InputText v-model="filterModel.value" class="p-column-filter" placeholder="Search in description"
+                                   type="text" @keyup.enter="filterCallback"/>
                     </template>
                 </Column>
-                <Column field="venue" header="Venue"></Column>
-                <Column field="reporter" header="Reporter"></Column>
-                <Column field="tags" header="Tags">
+
+                <Column field="status" filterField="status" header="Status">
+                    <template #body="data">
+                        {{ statusOptions.find(option => option.value === data.data.status).label }}
+                    </template>
+                    <template #filter="{ filterModel, filterCallback }">
+                        <MultiSelect v-model="filterModel.value" :options="statusOptions" class="p-column-filter"
+                                     optionLabel="value" placeholder="Any" @change="filterCallback()">
+                            <template #option="slotProps">
+                                <span>{{ slotProps.option.label }}</span>
+                            </template>
+                        </MultiSelect>
+                    </template>
+                </Column>
+
+                <Column :showFilterMenu="false" field="approved" header="Approved" sortable>
+                    <template #filter="{ filterModel, filterCallback }">
+                        <TriStateCheckbox v-model="filterModel.value" inputId="verified-filter"
+                                          @change="filterCallback()"/>
+                    </template>
+                </Column>
+
+                <Column field="venue" header="Venue" sortable>
+                    <template #filter="{filterModel, filterCallback}">
+                        <InputText v-model="filterModel.value" class="p-column-filter" placeholder="Search by venue"
+                                   type="text" @keyup.enter="filterCallback"/>
+                    </template>
+                </Column>
+
+                <Column field="reporter" header="Reporter" sortable>
+                    <template #filter="{filterModel, filterCallback}">
+                        <InputText v-model="filterModel.value" class="p-column-filter" placeholder="Search by reporter"
+                                   type="text" @keyup.enter="filterCallback"/>
+                    </template>
+                </Column>
+
+                <Column field="tags" header="Tags" sortable>
                     <template #body="data">
                         <ViewTags :report="data.data"/>
                     </template>
                 </Column>
-                <Column field="attachments" header="Attachments">
+
+                <Column field="attachments" header="Attachments" sortable>
                     <template #body="data">
                         <ViewAttachments :report="data.data"/>
                     </template>
                 </Column>
-                <Column field="created_at" header="Created At">
+
+                <Column dataType="date" field="created_at" filterField="created_at" header="Created At" sortable>
                     <template #body="data">
                         {{ formatDate(data.data.created_at) }}
                     </template>
+                    <template #filter="{ filterModel, filterCallback }">
+                        <Calendar v-model="filterModel.value" dateFormat="mm/dd/yy" hourFormat="24" mask="99/99/9999"
+                                  placeholder="mm/dd/yyyy" showTime @keyup.enter="filterCallback"/>
+                    </template>
                 </Column>
+
+                <!-- Action Column -->
                 <Column field="action" header="Action" style="min-width: 200px">
+<!--                    frozen alignFrozen="right"-->
                     <template #body="data">
                         <div class="flex flex-row">
-                        <DownloadReport :key="data.data.id" :report="data.data"><Download/></DownloadReport>
-
-                        <template v-if="canEditReports() && !data.data.approved">
-                            <SecondaryButton :href="route('reports.edit', data.data.id)" class="ml-2"><Edit/></SecondaryButton>
-                        </template>
-
-                        <template v-if="canDeleteReports() && !data.data.approved">
-                            <DeleteReportForm :key="data.data.id" :report="data.data" class="ml-2"/>
-                        </template>
+<!--                            <DownloadReport :key="data.data.id" :report="data.data"><Download/></DownloadReport>-->
+                            <SecondaryButton :href="route('reports.show', data.data.id)">view</SecondaryButton>
+                            <template v-if="canEditReports() && !data.data.approved">
+                                <SecondaryButton :href="route('reports.edit', data.data.id)" class="ml-2"><Edit/></SecondaryButton>
+                            </template>
+                            <template v-if="canDeleteReports() && !data.data.approved">
+                                <DeleteReportForm :key="data.data.id" :report="data.data" class="ml-2"/>
+                            </template>
                         </div>
                     </template>
                 </Column>
             </DataTable>
-            <Paginator :paginator="reports" class="mx-2"/>
         </div>
     </AuthenticatedLayout>
 </template>
