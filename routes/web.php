@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\AttachmentController;
-use \App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RemarkController;
@@ -38,7 +37,6 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth', 'admin'])->prefix("manage")->group(function (){
     Route::resource('roles', RoleController::class);
-    Route::get('permissions', [PermissionController::class, 'index'])->name('permissions.index');
 });
 
 Route::middleware('auth')->group(function () {

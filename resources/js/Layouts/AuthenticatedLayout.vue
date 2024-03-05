@@ -149,12 +149,6 @@ const showingNavigationDropdown = ref(false);
                         >
                             Roles
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :active="route().current('permissions.index')"
-                                           :href="route('permissions.index')"
-                                           v-if="can('admin access')"
-                        >
-                            Permissions
-                        </ResponsiveNavLink>
                     </div>
 
 
