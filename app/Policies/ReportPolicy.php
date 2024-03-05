@@ -94,18 +94,6 @@ class ReportPolicy
     }
 
     /**
-     * Determine whether the user can view approval page.
-     */
-    public function approve(User $user): bool
-    {
-        if ($user->can(PermissionsEnum::APPROVE_REPORTS->value)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Determine whether the user can approve the model.
      */
     public function approveOne(User $user, Report $report): bool
@@ -120,7 +108,7 @@ class ReportPolicy
     /**
      * Determine whether the user can approve the model.
      */
-    public function approveAll(User $user, Report $report): bool
+    public function massApprove(User $user, Report $report): bool
     {
         if ($user->can(PermissionsEnum::APPROVE_REPORTS->value)) {
             return true;

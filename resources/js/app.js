@@ -12,6 +12,7 @@ import LaravelPermissionToVueJS from 'laravel-permission-to-vuejs'
 import PrimeVue from "primevue/config";
 import Lara from "@/presets/lara";
 import ToastService from 'primevue/toastservice';
+import Tooltip from 'primevue/tooltip';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -29,6 +30,7 @@ createInertiaApp({
                 pt: Lara,
             })
             .use(ToastService)
+            .directive('tooltip', Tooltip)
             .use(LaravelPermissionToVueJS)
             .provide("can", app.config.globalProperties.can)
             .provide("is", app.config.globalProperties.is)

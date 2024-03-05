@@ -46,11 +46,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get("reports/approve", [ReportController::class, 'approve'])->name('reports.approve');
     Route::post("reports/approve/{report}", [ReportController::class, 'approveOne'])->name('reports.approveOne');
-    Route::post("reports/approve", [ReportController::class, 'approveAll'])->name('reports.approveAll');
+    Route::post("reports/mass-approve", [ReportController::class, 'massApprove'])->name('reports.massApprove');
     Route::get('reports/export', [ReportController::class, 'export'])->name('reports.export');
     Route::get('reports/{report}/generate', [ReportController::class, 'generate'])->name('reports.generate');
+    Route::delete('reports/mass-destroy', [ReportController::class, 'massDestroy'])->name('reports.massDestroy');
     Route::resource('reports', ReportController::class);
     Route::resource('reports.remarks', RemarkController::class)->shallow();
     Route::resource('reports.comments', CommentController::class)->shallow();

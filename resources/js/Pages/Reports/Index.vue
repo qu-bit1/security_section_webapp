@@ -10,7 +10,7 @@ import ViewAttachments from "@/Pages/Reports/Partials/ViewAttachments.vue";
 import DownloadReport from "@/Pages/Reports/Partials/DownloadReport.vue";
 import {shiftOptions, statusOptions} from "@/Compositions/Constants.js";
 import Edit from "@/Components/icons/Edit.vue";
-import formatDate from "../../Compositions/DateTime.js";
+import {formatDate, truncate } from "@/Compositions/DateTime.js";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
 import InputText from "primevue/inputtext";
@@ -20,8 +20,8 @@ import MultiSelect from "primevue/multiselect";
 import TriStateCheckbox from "primevue/tristatecheckbox";
 import Filter from "@/Components/icons/Filter.vue";
 import Export from "@/Components/icons/Export.vue";
-import Check from "@/Components/icons/Check.vue";
 import Eye from "@/Components/icons/Eye.vue";
+import ApproveReportForm from "@/Pages/Reports/Partials/ApproveReportForm.vue";
 
 const props = defineProps({
     reports: Object,
@@ -136,7 +136,10 @@ const onDisplayFilter = () => {
                             <template v-if="selectedReports?.length > 0">
                                 <DownloadReport><Export/></DownloadReport>
                                 <template v-if="canApproveReports()">
-                                    <SecondaryButton :href="route('reports.approve')" class="ml-2"><Check/></SecondaryButton>
+                                    <ApproveReportForm :reports="selectedReports" class="ml-2"/>
+                                </template>
+                                <template v-if="canDeleteReports()">
+                                    <DeleteReportForm :reports="selectedReports" class="ml-2"/>
                                 </template>
                             </template>
                         </div>
@@ -176,7 +179,9 @@ const onDisplayFilter = () => {
 
                 <Column field="description" filterField="description" header="Description">
                     <template #body="data">
-                        {{ data.data?.description?.substring(0, 50) }}
+                        <div v-tooltip="data.data?.description">
+                            {{ truncate(data.data.description, 10)}}
+                        </div>
                     </template>
                     <template #filter="{filterModel, filterCallback}">
                         <InputText v-model="filterModel.value" class="p-column-filter" placeholder="Search in description"
@@ -252,7 +257,7 @@ const onDisplayFilter = () => {
                                 <SecondaryButton :href="route('reports.edit', data.data.id)" class="ml-2"><Edit/></SecondaryButton>
                             </template>
                             <template v-if="canDeleteReports() && !data.data.approved">
-                                <DeleteReportForm :key="data.data.id" :report="data.data" class="ml-2"/>
+                                <DeleteReportForm :key="data.data.id" :reports="[data.data]" class="ml-2"/>
                             </template>
                         </div>
                     </template>

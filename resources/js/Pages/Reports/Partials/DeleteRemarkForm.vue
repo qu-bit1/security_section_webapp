@@ -38,7 +38,7 @@ const closeModal = () => {
 
         <Modal :show="confirmingRemarkDeletion" @close="closeModal">
             <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
+                <h2 class="text-lg font-medium">
                     Are you sure you want to delete remark ?
                 </h2>
                 <div class="mt-6 flex justify-end">

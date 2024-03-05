@@ -160,19 +160,6 @@ class ReportController extends Controller
         return redirect()->route('reports.show', $report->id)->with('success', 'Report updated.');
     }
 
-    public function approve(): Response
-    {
-        $this->authorize('approve', Report::class);
-        $reports = Report::query()
-            ->where('approved', false)
-            ->with(['attachments', 'tags'])
-            ->get();
-
-        return Inertia::render('Reports/Approve', [
-            'reports' => $reports,
-        ]);
-    }
-
     public function approveOne(Report $report): RedirectResponse
     {
         $this->authorize('approveOne', $report);
@@ -185,15 +172,18 @@ class ReportController extends Controller
         return redirect()->route('reports.approve')->with('success', 'Report approved.');
     }
 
-    public function approveAll(Request $request): RedirectResponse
+    public function massApprove(Request $request): RedirectResponse
     {
-        $this->authorize('approveAll', Report::class);
+        $this->authorize('massApprove', Report::class);
 
         $reportIds = $request->reports;
-        Report::whereIn('id', $reportIds)->update([
-            'approved' => true,
-            'approved_by' => auth()->user()->id,
-        ]);
+        Report::whereIn('id', $reportIds)
+            ->where('approved', false)
+            ->update([
+                'approved' => true,
+                'approved_by' => auth()->user()->id,
+                'approved_at' => now(),
+            ]);
 
         return redirect()->route('reports.index')->with('success', 'Reports approved.');
     }
@@ -206,6 +196,33 @@ class ReportController extends Controller
         $report->delete();
 
         return redirect()->route('reports.index')->with('success', 'Report deleted.');
+    }
+
+    /**
+     * Remove the specified resources from storage.
+     */
+    public function massDestroy(Request $request): RedirectResponse
+    {
+        if (empty($request->reports)) {
+            return redirect()->route('reports.index')->with('error', 'No reports selected.');
+        }
+
+        $user = auth()->user();
+
+        if ($user->can(PermissionsEnum::DELETE_ALL_REPORTS->value)) {
+            Report::destroy($request->reports);
+            return redirect()->route('reports.index')->with('success', 'Reports deleted.');
+        }
+
+        if ($user->can(PermissionsEnum::DELETE_OWN_REPORTS->value)) {
+            Report::query()->whereIn('id', $request->reports)->where([
+                ['user_id', $user->id],
+                ['approved', false]
+            ])->delete();
+            return redirect()->route('reports.index')->with('success', 'Reports deleted.');
+        }
+
+        return redirect()->route('reports.index')->with('error', 'You are not authorized to delete reports.');
     }
 
     /**

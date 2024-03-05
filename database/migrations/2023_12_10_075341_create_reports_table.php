@@ -31,6 +31,7 @@ return new class extends Migration {
                 ->onUpdate('cascade');
             $table->timestamp('approved_at')->nullable();
             $table->timestamp('reported_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -11,25 +11,13 @@ import ViewComments from "@/Pages/Reports/Partials/ViewComments.vue";
 import {inject} from "vue";
 import Download from "@/Components/icons/Download.vue";
 import Edit from "@/Components/icons/Edit.vue";
-import Check from "@/Components/icons/Check.vue";
+import ApproveReportForm from "@/Pages/Reports/Partials/ApproveReportForm.vue";
 
 defineProps({
     report: Object,
     remarks: Object,
     comments: Object,
 });
-
-const form = useForm({});
-
-const approveReport = async (reportId) => {
-    if (confirm('Are you sure you want to approve this report?')) {
-        form.post(route('reports.approveOne', reportId), {
-            preserveScroll: true,
-            onSuccess: () => form.reset(),
-            onFinish: () => form.reset(),
-        });
-    }
-}
 
 const displayFields = [
     {key: 'serial_number', label: 'Serial Number', inline: true},
@@ -75,13 +63,13 @@ const canCreateRemarks = () => {
                 </template>
                 <DownloadReport :key="report.id" :report="report"><Download/></DownloadReport>
                 <template v-if="canApproveReports() && !report.approved">
-                    <SecondaryButton class="ml-2" @click="approveReport(report.id)"><Check/></SecondaryButton>
+                    <ApproveReportForm :reports="[report]" class="ml-2"/>
                 </template>
                 <template v-if="canEditReports() && !report.approved">
                     <SecondaryButton :href="route('reports.edit', report.id)" class="ml-2"><Edit/></SecondaryButton>
                 </template>
                 <template v-if="canDeleteReports() && !report.approved">
-                    <DeleteReportForm :key="report.id" :report="report" class="ml-2"/>
+                    <DeleteReportForm :key="report.id" :reports="[report]" class="ml-2"/>
                 </template>
             </div>
         </template>

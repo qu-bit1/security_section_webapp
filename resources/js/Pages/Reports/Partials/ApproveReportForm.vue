@@ -1,40 +1,40 @@
 <script setup>
-import DangerButton from '@/Components/DangerButton.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import {useForm} from '@inertiajs/vue3';
 import {ref} from 'vue';
-import Delete from "@/Components/icons/Delete.vue";
 import {useToast} from "primevue/usetoast";
+import Check from "@/Components/icons/Check.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const props = defineProps({
     reports: {
         type: Object,
     }
 })
-const confirmingReportDeletion = ref(false);
+const confirmingReportApprove = ref(false);
 const form = useForm({});
-const confirmReportDeletion = () => {
-    confirmingReportDeletion.value = true;
+const confirmReportApprove = () => {
+    confirmingReportApprove.value = true;
 };
 
 const toast = useToast();
 
-const deleteReports = () => {
+const approveReports = () => {
     const reportIds = props.reports.map(report => report.id);
-    form.delete(route('reports.massDestroy', { reports: reportIds }), {
+    form.post(route('reports.massApprove', { reports: reportIds }), {
         preserveScroll: true,
         onSuccess: () => {
             form.reset();
-            confirmingReportDeletion.value = false;
-            toast.add({severity: 'success', summary: 'Success', detail: 'Reports deleted successfully', life:3000});
+            confirmingReportApprove.value = false;
+            toast.add({severity: 'success', summary: 'Success', detail: 'Reports approved successfully', life: 3000});
         },
         onFinish: () => form.reset(),
     });
 };
 
 const closeModal = () => {
-    confirmingReportDeletion.value = false;
+    confirmingReportApprove.value = false;
 
     form.reset();
 };
@@ -42,24 +42,24 @@ const closeModal = () => {
 
 <template>
     <section class="space-y-6">
-        <DangerButton @click="confirmReportDeletion"><Delete/></DangerButton>
+        <SecondaryButton @click="confirmReportApprove"><Check/></SecondaryButton>
 
-        <Modal :show="confirmingReportDeletion" @close="closeModal">
+        <Modal :show="confirmingReportApprove" @close="closeModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium">
-                    Are you sure you want to delete report - {{ reports.length }} reports?
+                    Are you sure you want to approve report - {{ reports.length }} reports?
                 </h2>
                 <div class="mt-6 flex justify-end">
                     <SecondaryButton @click="closeModal"> Cancel</SecondaryButton>
 
-                    <DangerButton
+                    <PrimaryButton
                         :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing"
                         class="ms-3"
-                        @click="deleteReports"
+                        @click="approveReports"
                     >
-                        Delete Reports
-                    </DangerButton>
+                        Approve Reports
+                    </PrimaryButton>
                 </div>
             </div>
         </Modal>
