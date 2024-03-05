@@ -2,42 +2,35 @@
 
 namespace App\Services;
 
-use App\Exports\ReportsExport;
 use App\Models\Report;
 
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Http\Response;
 use \Barryvdh\DomPDF\PDF as PDFResponse;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Maatwebsite\Excel\Facades\Excel;
-use Symfony\Component\HttpFoundation\Response as ResponseAlias;
-use \Symfony\Component\HttpFoundation\BinaryFileResponse;
+use STS\ZipStream\ZipStream;
+use Zip;
+
 class ReportService
 {
-    public function generate(Report $report, string $format = "pdf"): Response|BinaryFileResponse
+    public function export(Collection $reports): ZipStream
     {
-        $slug = Str::slug("report {$report->serial_number}", separator: "_");
-        if ($format === "pdf") {
-            return $this->generatePdf($report)->download("{$slug}.pdf");
-        } elseif ($format === "csv") {
-            return $this->generateCsv($report);
-        } else{
-            return response("Unsupported format", ResponseAlias::HTTP_BAD_REQUEST);
+        $mainFolder = config('app.name')."_".sha1(time());
+        $zip = Zip::create("{$mainFolder}.zip");
+        foreach ($reports as $report) {
+            $folder = Str::slug("report {$report->serial_number}", separator: "_");
+            foreach ($report->attachments as $attachment) {
+                $zip->add(Storage::get($attachment->path), "{$folder}/attachments/{$attachment->name}");
+            }
+            $pdf = $this->generatePdf($report);
+            $zip->add($pdf->output(), "{$folder}/report.pdf");
         }
-    }
-
-    public function export(string $format): BinaryFileResponse
-    {
-        return Excel::download(new ReportsExport, "reports.csv");
+        return $zip;
     }
 
     private function generatePdf(Report $report): PDFResponse
     {
         return Pdf::loadView('reports.pdf', compact('report'));
-    }
-
-    private function generateCsv(Report $report): BinaryFileResponse
-    {
-        return Excel::download(new ReportsExport($report), "reports.csv");
     }
 }

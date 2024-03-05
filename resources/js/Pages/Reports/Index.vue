@@ -22,6 +22,7 @@ import Filter from "@/Components/icons/Filter.vue";
 import Export from "@/Components/icons/Export.vue";
 import Eye from "@/Components/icons/Eye.vue";
 import ApproveReportForm from "@/Pages/Reports/Partials/ApproveReportForm.vue";
+import Download from "@/Components/icons/Download.vue";
 
 const props = defineProps({
     reports: Object,
@@ -134,7 +135,7 @@ const onDisplayFilter = () => {
                         <div class="flex-1 flex flex-row items-center">
                             <SecondaryButton @click.prevent="onDisplayFilter()"><Filter/></SecondaryButton>
                             <template v-if="selectedReports?.length > 0">
-                                <DownloadReport><Export/></DownloadReport>
+                                <DownloadReport :reports="selectedReports"><Export/></DownloadReport>
                                 <template v-if="canApproveReports()">
                                     <ApproveReportForm :reports="selectedReports" class="ml-2"/>
                                 </template>
@@ -251,8 +252,8 @@ const onDisplayFilter = () => {
 <!--                    frozen alignFrozen="right"-->
                     <template #body="data">
                         <div class="flex flex-row">
-<!--                            <DownloadReport :key="data.data.id" :report="data.data"><Download/></DownloadReport>-->
                             <SecondaryButton :href="route('reports.show', data.data.id)"><Eye/></SecondaryButton>
+                            <DownloadReport :key="data.data.id" :reports="[data.data]"><Download/></DownloadReport>
                             <template v-if="canEditReports() && !data.data.approved">
                                 <SecondaryButton :href="route('reports.edit', data.data.id)" class="ml-2"><Edit/></SecondaryButton>
                             </template>

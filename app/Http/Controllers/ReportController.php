@@ -16,8 +16,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
-use \Illuminate\Http\Response as HTTPResponse;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use STS\ZipStream\ZipStream;
 
 class ReportController extends Controller
 {
@@ -226,19 +225,28 @@ class ReportController extends Controller
     }
 
     /**
-     * Download the report in specified format.
+     * Export the reports in zip format
      */
-    public function generate(Report $report): HTTPResponse|BinaryFileResponse
+    public function export(Request $request): RedirectResponse|ZipStream
     {
-        return $this->reportService->generate($report, request('format'));
-    }
 
-    /**
-     * Export the reports in specified format.
-     */
-    public function export(): BinaryFileResponse
-    {
-        return $this->reportService->export(request("format"));
+        if(empty($request->reports)){
+            return redirect()->route('reports.index')->with('error', 'No reports selected.');
+        }
+
+        $user = auth()->user();
+
+        if ($user->can(PermissionsEnum::ACCESS_ALL_REPORTS->value)) {
+            $reports = Report::whereIn('id', $request->reports)->with(['tags', 'attachments'])->get();
+            return $this->reportService->export($reports);
+        }
+
+        if ($user->can(PermissionsEnum::ACCESS_OWN_REPORTS->value)) {
+            $reports = Report::whereIn('id', $request->reports)->where('user_id', $user->id)->with(['tags', 'attachments'])->get();
+            return $this->reportService->export($reports);
+        }
+
+        return redirect()->route('reports.index')->with('error', 'You are not authorized to export reports.');
     }
 
     private function applySorting($query, $sortMeta)

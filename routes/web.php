@@ -49,7 +49,6 @@ Route::middleware('auth')->group(function () {
     Route::post("reports/approve/{report}", [ReportController::class, 'approveOne'])->name('reports.approveOne');
     Route::post("reports/mass-approve", [ReportController::class, 'massApprove'])->name('reports.massApprove');
     Route::get('reports/export', [ReportController::class, 'export'])->name('reports.export');
-    Route::get('reports/{report}/generate', [ReportController::class, 'generate'])->name('reports.generate');
     Route::delete('reports/mass-destroy', [ReportController::class, 'massDestroy'])->name('reports.massDestroy');
     Route::resource('reports', ReportController::class);
     Route::resource('reports.remarks', RemarkController::class)->shallow();

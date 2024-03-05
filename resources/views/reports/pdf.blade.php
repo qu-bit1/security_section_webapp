@@ -85,6 +85,11 @@
     </div>
 
     <div class="mb-4">
+        <h4>Approved</h4>
+        <p class="text-gray-600 text-sm">{{ $report->approved ?? 'No' }}</p>
+    </div>
+
+    <div class="mb-4">
         <h4>Attachments</h4>
         @if(count($report->attachments) > 0)
             @foreach($report->attachments as $attachment)
