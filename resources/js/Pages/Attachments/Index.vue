@@ -3,22 +3,42 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {Head, router} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import Paginator from "@/Components/Paginator.vue";
-import {ref, watch} from "vue";
+import Paginator from "primevue/paginator";
+import {ref} from "vue";
+import {perPageOptions} from "@/Compositions/Constants.js";
 
 const props = defineProps({
     attachments: Object,
     filters: Object,
 });
+const totalRecords = ref(props.attachments.total);
+const first = ref(props.attachments.from - 1);
+const rows = ref(props.attachments.per_page);
 
 let search = ref(props.filters.search);
-// let showFilters = ref(props.filters.search !== null);
 
-watch(search, (value) => {
-    router.get(route('attachments.index'), {search: value}, {
+const loadLazyData = (event) => {
+    const currentUrl = window.location.href;
+    const url = new URL(currentUrl);
+
+    // Append parameters to the URL
+    url.searchParams.set('per_page', event?.rows || rows.value);
+    url.searchParams.set('page', (event?.page??first.value)+1);
+    url.searchParams.set('search', search.value??'');
+
+    router.get(url, {}, {
         preserveState: true,
+        onSuccess: (data) => {
+            first.value = data.props.attachments.from-1;
+            totalRecords.value = data.props.attachments.total;
+            rows.value = data.props.attachments.per_page;
+        }
     });
-});
+};
+
+const onPage = (event) => {
+    loadLazyData(event);
+};
 </script>
 
 
@@ -29,9 +49,6 @@ watch(search, (value) => {
             <div class="flex flex-row">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Attachments</h2>
                 <div class="flex-1 flex justify-end">
-                    <!--                    <SecondaryButton @click="showFilters = !showFilters">-->
-                    <!--                        Filter-->
-                    <!--                    </SecondaryButton>-->
                     <PrimaryButton :href="route('attachments.create')" class="ml-2">
                         Upload Attachment
                     </PrimaryButton>
@@ -49,6 +66,7 @@ watch(search, (value) => {
                             name="search"
                             placeholder="Search..."
                             type="search"
+                            @keyup.enter="loadLazyData"
                         />
                     </div>
                 </div>
@@ -72,7 +90,7 @@ watch(search, (value) => {
                     </div>
                 </template>
             </div>
-            <Paginator :paginator="attachments"/>
+            <Paginator v-model:first="first" @page="onPage($event)" :rows="rows" :totalRecords="totalRecords" :rowsPerPageOptions="perPageOptions"/>
         </div>
     </AuthenticatedLayout>
 </template>
