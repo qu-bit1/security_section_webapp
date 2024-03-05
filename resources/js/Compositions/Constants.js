@@ -12,5 +12,7 @@ const shiftOptions = [
     {value: 'night', label: 'Night'},
 ];
 
+const perPageOptions = [2, 10, 25, 50, 100,200];
 
-export { statusOptions, shiftOptions }
+
+export { statusOptions, shiftOptions, perPageOptions }

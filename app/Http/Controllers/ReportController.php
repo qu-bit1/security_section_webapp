@@ -8,6 +8,7 @@ use App\Enums\StatusEnum;
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
 use App\Models\Attachment;
+use App\Models\Remark;
 use App\Models\Report;
 use App\Models\Tag;
 use App\Services\ReportService;
@@ -106,18 +107,27 @@ class ReportController extends Controller
      */
     public function show(Report $report): Response
     {
+        $params = json_decode(request()->input('lazyEvent'), true);
+
+        $query = Remark::query()->with('user');
         $remarks = [];
         if (auth()->user()->can(PermissionsEnum::ACCESS_ALL_REMARKS->value)) {
-            $remarks = $report->remarks()->with('user')->paginate(request('per_page_remarks', 2), ['*'], 'remarks');
+            $remarks = $this->buildQuery($query, $params)
+                ->paginate(perPage: $params["rows"]??2, page: ($params["page"]??0)+1)
+                ->withQueryString();
         } elseif (auth()->user()->can(PermissionsEnum::ACCESS_OWN_REMARKS->value)) {
-            $remarks = $report->remarks()->where('user_id', auth()->user()->id)->with('user')->paginate(request('per_page_remarks', 2), ['*'], 'remarks');
+            $remarks = $this->buildQuery($query, $params)
+                ->where('user_id', auth()->user()->id)
+                ->paginate(perPage: $params["rows"]??2, page: ($params["page"]??0)+1)
+                ->withQueryString();
         }
 
-        $comments = $report->comments()->with('user')->paginate(request('per_page_comments', 2), ['*'], 'comments');
+        $comments = $report->comments()->with('user')->paginate(request('per_page', 25));
         return Inertia::render('Reports/Show', [
             'report' => $report->load(['attachments', 'tags']),
             'remarks' => $remarks,
             'comments' => $comments,
+            'filters' => request()->all(),
         ]);
     }
 

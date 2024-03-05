@@ -17,6 +17,7 @@ defineProps({
     report: Object,
     remarks: Object,
     comments: Object,
+    filters: Object,
 });
 
 const displayFields = [
@@ -61,7 +62,7 @@ const canCreateRemarks = () => {
                 <template v-if="canCreateRemarks()">
                     <CreateRemarkForm :key="report.id" :report="report" class="ml-2"/>
                 </template>
-                <DownloadReport :key="report.id" :report="report"><Download/></DownloadReport>
+                <DownloadReport :key="report.id" :reports="[report]"><Download/></DownloadReport>
                 <template v-if="canApproveReports() && !report.approved">
                     <ApproveReportForm :reports="[report]" class="ml-2"/>
                 </template>
@@ -104,8 +105,8 @@ const canCreateRemarks = () => {
                     </template>
                 </div>
             </template>
-            <ViewRemarks v-if="remarks.data && remarks.data.length > 0" :remarks="remarks" class="py-4"/>
-            <ViewComments :comments="comments" :report="report" class="py-4"/>
+            <ViewRemarks v-if="remarks.data && remarks.data.length > 0" :remarks="remarks" :report="report" :filters="filters" class="py-4"/>
+            <ViewComments :comments="comments" :report="report" class="py-4" :filters="filters"/>
         </div>
     </AuthenticatedLayout>
 </template>

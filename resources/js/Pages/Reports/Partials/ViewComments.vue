@@ -1,14 +1,16 @@
 <script setup>
 import CreateCommentForm from "@/Pages/Reports/Partials/CreateCommentForm.vue";
-import Paginator from "@/Components/Paginator.vue";
 import Avatar from "@/Components/Avatar.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import DeleteCommentForm from "@/Pages/Reports/Partials/DeleteCommentForm.vue";
 import UpdateCommentForm from "@/Pages/Reports/Partials/UpdateCommentForm.vue";
-import formatDate from "../../../Compositions/DateTime.js";
-import {inject} from "vue";
+import {formatDate} from "@/Compositions/DateTime.js";
+import {inject, ref} from "vue";
 import KebabHorizontal from "@/Components/icons/KebabHorizontal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import Paginator from "primevue/paginator";
+import {router} from "@inertiajs/vue3";
+import {perPageOptions} from "@/Compositions/Constants.js";
 
 const props = defineProps({
     report: {
@@ -16,8 +18,14 @@ const props = defineProps({
     },
     comments: {
         type: Object,
+    },
+    filters:{
+        type: Object,
     }
-})
+});
+const totalRecords = ref(props.comments.total);
+const first = ref(props.comments.from - 1);
+const rows = ref(props.comments.per_page);
 
 const can = inject('can')
 const showDropdown = () => {
@@ -31,11 +39,39 @@ const canEditComment = () => {
 const canDeleteComment = () => {
     return can('delete own comments | delete all comments');
 };
+
+const loadLazyData = (event) => {
+    const sectionTop = document.getElementById('commentSection').getBoundingClientRect().top + window.scrollY;
+
+    const currentUrl = window.location.href;
+    const url = new URL(currentUrl);
+
+    // Append parameters to the URL
+    url.searchParams.set('per_page', event?.rows || rows.value);
+    url.searchParams.set('page', (event?.page??first.value)+1);
+
+    router.get(url, {}, {
+        preserveState: true,
+        onSuccess: (data) => {
+            first.value = data.props.comments.from-1;
+            totalRecords.value = data.props.comments.total;
+            rows.value = data.props.comments.per_page;
+
+            // After loading, scroll back to the saved section top position
+            window.scrollTo(0, sectionTop);
+            // loading.value = false;
+        }
+    });
+};
+
+const onPage = (event) => {
+    loadLazyData(event);
+};
 </script>
 
 <template>
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">Comments ({{comments.total}})</h2>
-    <div class="py-4">
+    <div class="py-4" id="commentSection">
         <CreateCommentForm :report="report"/>
 
         <div class="mt-4 space-y-4">
@@ -71,7 +107,7 @@ const canDeleteComment = () => {
                 <div class="mt-2 prose max-w-none sm:max-w-full prose-img:rounded-xl prose-a:text-rose-600">{{ comment.body }}</div>
             </div>
             <!-- Paginator for comment pagination -->
-            <Paginator :paginator="comments" per-page-key="per_page_comments"/>
+            <Paginator v-model:first="first" @page="onPage($event)" :rows="rows" :totalRecords="totalRecords" :rowsPerPageOptions="perPageOptions"/>
         </div>
     </div>
 </template>

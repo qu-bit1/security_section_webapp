@@ -8,7 +8,7 @@ import ViewTags from "@/Pages/Reports/Partials/ViewTags.vue";
 import {inject, ref} from "vue";
 import ViewAttachments from "@/Pages/Reports/Partials/ViewAttachments.vue";
 import DownloadReport from "@/Pages/Reports/Partials/DownloadReport.vue";
-import {shiftOptions, statusOptions} from "@/Compositions/Constants.js";
+import {perPageOptions, shiftOptions, statusOptions} from "@/Compositions/Constants.js";
 import Edit from "@/Components/icons/Edit.vue";
 import {formatDate, truncate } from "@/Compositions/DateTime.js";
 import Column from "primevue/column";
@@ -109,6 +109,7 @@ const onDisplayFilter = () => {
                 :first="first"
                 :rows="rows"
                 :totalRecords="totalRecords"
+                :rowsPerPageOptions="perPageOptions"
                 :loading="loading"
                 @page="onPage($event)"
                 @sort="onSort($event)"
