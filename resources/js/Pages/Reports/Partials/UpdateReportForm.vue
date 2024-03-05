@@ -2,12 +2,13 @@
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import {Head, useForm} from '@inertiajs/vue3';
 import SelectInput from "@/Components/SelectInput.vue";
 import FilePicker from "@/Components/FilePicker.vue";
 import MultiSelectInput from "@/Components/MultiSelectInput.vue";
 import {shiftOptions, statusOptions} from "@/Compositions/Constants.js";
+import InputText from "primevue/inputtext";
+import Textarea from "primevue/textarea";
 
 const props = defineProps({
     report: {
@@ -90,52 +91,38 @@ const searchTags = async (search) => {
         </div>
 
         <div v-if="form.status !== 'normal'">
-            <div class="mt-4">
+            <div class="flex flex-col gap-2 mt-4">
                 <InputLabel for="description" value="Description"/>
-
-                <TextInput
-                    id="description"
-                    v-model="form.description"
-                    autocomplete="description"
-                    class="mt-1 block w-full"
-                    input-type="textarea"
-                />
-
-                <InputError :message="form.errors.description" class="mt-2"/>
+                <Textarea id="description" v-model="form.description" autocomplete="description" autoResize rows="5" cols="30" />
+                <InputError :message="form.errors.description"/>
             </div>
 
             <div class="mt-4">
                 <InputLabel value="Attachments"/>
-                <FilePicker v-model="form.attachments" :attachments="attachments"/>
+                <FilePicker v-model="form.attachments" :attachments="attachments" class="mt-2"/>
                 <InputError :message="form.errors.attachments" class="mt-2"/>
             </div>
 
-            <div class="mt-4">
+            <div class="flex flex-col gap-2 mt-4">
                 <InputLabel for="venue" value="Venue"/>
-
-                <TextInput
+                <InputText
+                    type="text"
                     id="venue"
                     v-model="form.venue"
                     autocomplete="venue"
-                    class="mt-1 block w-full"
-                    type="text"
                 />
-
-                <InputError :message="form.errors.venue" class="mt-2"/>
+                <InputError :message="form.errors.venue"/>
             </div>
 
-            <div class="mt-4">
+            <div class="flex flex-col gap-2 mt-4">
                 <InputLabel for="reporter" value="Reporter"/>
-
-                <TextInput
+                <InputText
+                    type="text"
                     id="reporter"
                     v-model="form.reporter"
                     autocomplete="reporter"
-                    class="mt-1 block w-full"
-                    type="text"
                 />
-
-                <InputError :message="form.errors.reporter" class="mt-2"/>
+                <InputError :message="form.errors.reporter"/>
             </div>
         </div>
         <div class="flex items-center justify-end mt-4" v-if="can('edit own reports | edit all reports')">

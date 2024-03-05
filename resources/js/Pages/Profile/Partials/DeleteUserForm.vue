@@ -4,9 +4,10 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import {useForm} from '@inertiajs/vue3';
 import {nextTick, ref} from 'vue';
+import Panel from "primevue/panel";
+import InputText from "primevue/inputtext";
 
 const confirmingUserDeletion = ref(false);
 const passwordInput = ref(null);
@@ -39,16 +40,18 @@ const closeModal = () => {
 
 <template>
     <section class="space-y-6">
-        <header>
-            <h2 class="text-lg font-medium text-gray-900">Delete Account</h2>
-
-            <p class="mt-1 text-sm text-gray-600">
-                Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting
-                your account, please download any data or information that you wish to retain.
-            </p>
-        </header>
-
-        <DangerButton @click="confirmUserDeletion">Delete Account</DangerButton>
+        <Panel toggleable>
+            <template #header>
+                <div class="flex flex-col justify-start">
+                    <h2 class="text-lg font-medium">Delete Account</h2>
+                    <p class="mt-1 text-sm">
+                        Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting
+                        your account, please download any data or information that you wish to retain.
+                    </p>
+                </div>
+            </template>
+            <DangerButton @click="confirmUserDeletion">Delete Account</DangerButton>
+        </Panel>
 
         <Modal :show="confirmingUserDeletion" @close="closeModal">
             <div class="p-6">
@@ -61,20 +64,20 @@ const closeModal = () => {
                     enter your password to confirm you would like to permanently delete your account.
                 </p>
 
-                <div class="mt-6">
+                <div class="flex flex-col gap-2 mt-6">
                     <InputLabel class="sr-only" for="password" value="Password"/>
-
-                    <TextInput
+                    <InputText
                         id="password"
                         ref="passwordInput"
-                        v-model="form.password"
-                        class="mt-1 block w-3/4"
-                        placeholder="Password"
                         type="password"
+                        autocomplete="password"
+                        v-model="form.password"
+                        aria-describedby="password"
                         @keyup.enter="deleteUser"
+                        placeholder="Password"
+                        required
                     />
-
-                    <InputError :message="form.errors.password" class="mt-2"/>
+                    <InputError :message="form.errors.password"/>
                 </div>
 
                 <div class="mt-6 flex justify-end">

@@ -2,8 +2,9 @@
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import {Head, useForm} from '@inertiajs/vue3';
+import InputText from "primevue/inputtext";
+import Textarea from "primevue/textarea";
 
 const form = useForm({
     title: '',
@@ -19,35 +20,16 @@ const submit = () => {
     <Head title="New Tag"/>
 
     <form @submit.prevent="submit">
-        <div>
-            <InputLabel for="name" value="Title"/>
-
-            <TextInput
-                id="title"
-                v-model="form.title"
-                autocomplete="title"
-                autofocus
-                class="mt-1 block w-full"
-                type="text"
-            />
-
-            <InputError :message="form.errors.title" class="mt-2"/>
+        <div class="flex flex-col gap-2">
+            <InputLabel for="tag-title" value="Title"/>
+            <InputText id="tag-title" v-model="form.title" aria-describedby="tag-title" />
+            <InputError :message="form.errors.title"/>
         </div>
-
-        <div class="mt-4">
-            <InputLabel for="description" value="Description"/>
-
-            <TextInput
-                id="description"
-                v-model="form.description"
-                autocomplete="description"
-                class="mt-1 block w-full"
-                input-type="textarea"
-            />
-
-            <InputError :message="form.errors.description" class="mt-2"/>
+        <div class="flex flex-col gap-2 mt-4">
+            <InputLabel for="tag-description" value="Description"/>
+            <Textarea id="tag-description" v-model="form.description" autoResize rows="5" cols="30" />
+            <InputError :message="form.errors.description"/>
         </div>
-
         <div class="flex items-center justify-end mt-4">
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4">
                 Create Tag

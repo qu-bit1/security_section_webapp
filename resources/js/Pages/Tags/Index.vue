@@ -7,6 +7,8 @@ import Paginator from "primevue/paginator";
 import {ref} from "vue";
 import Tag from "@/Components/Tag.vue";
 import {perPageOptions} from "@/Compositions/Constants.js";
+import InputText from "primevue/inputtext";
+import Card from "primevue/card";
 
 const props = defineProps({
     tags: Object,
@@ -56,38 +58,23 @@ const onPage = (event) => {
                 </div>
             </div>
             <div class="mt-4">
-                <div class="flex flex-row">
-                    <div class="flex-1">
-                        <label class="sr-only" for="search">Search</label>
-                        <input
-                            id="search"
-                            v-model="search"
-                            autocomplete="off"
-                            class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                            name="search"
-                            placeholder="Search..."
-                            type="search"
-                            @keyup.enter="loadLazyData"
-                        />
-                    </div>
-                </div>
+                <span class="relative">
+                    <i class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600" />
+                    <InputText v-model="search" placeholder="Search" class="pl-10 w-full" @keyup.enter="loadLazyData"/>
+                </span>
             </div>
         </template>
-        <div class="p-2 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div class="p-2 pb-2 sm:px-6 sm:pb-6 lg:px-8 lg:pb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
                 <template v-for="tag in tags.data">
-                    <div
-                        class="border shadow sm:rounded-lg bg-white"
-                    >
-                        <div class="p-4">
+                    <Card>
+                        <template #subtitle>
                             <Tag :value="tag.title"/>
-                            <div v-if="tag.description" class="mt-2">
-                                <p class="text-sm text-gray-500">
-                                    {{ tag.description }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                        </template>
+                        <template #content>
+                            {{ tag.description }}
+                        </template>
+                    </Card>
                 </template>
             </div>
             <Paginator v-model:first="first" @page="onPage($event)" :rows="rows" :totalRecords="totalRecords" :rowsPerPageOptions="perPageOptions"/>

@@ -76,7 +76,7 @@ const canCreateRemarks = () => {
         </template>
 
         <div
-            class="relative prose max-w-none lg:max-w-full xl:max-w-none prose-img:rounded-xl prose-img:w-full mx-auto prose-a:no-underline prose-a:text-rose-600 prose-table p-4 sm:p-8 bg-white">
+            class="relative prose max-w-none lg:max-w-full xl:max-w-none prose-img:rounded-xl prose-img:w-full mx-auto prose-a:no-underline prose-a:text-rose-600 prose-table px-4 pb-4 sm:px-8 sm:pb-8 bg-white">
             <template v-for="field in displayFields" :key="field.key">
                 <div class="mb-1">
                     <h3 :class="getHeadingClass(field.inline)">{{ field.label }} {{ field.inline ? ':' : '' }}</h3>

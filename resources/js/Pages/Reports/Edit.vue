@@ -21,7 +21,7 @@ const props = defineProps({
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Edit Report - {{ report.serial_number }}</h2>
         </template>
 
-        <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+        <div class="px-4 pb-4 sm:px-8 sm:pb-8">
             <UpdateReportForm :attachments="attachments" :report="report"/>
         </div>
     </AuthenticatedLayout>

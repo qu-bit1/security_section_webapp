@@ -21,7 +21,7 @@ defineProps({
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Edit Role - {{ role.name }}</h2>
         </template>
 
-        <div class="p-4 sm:p-8">
+        <div class="px-4 pb-4 sm:px-8 sm:pb-8">
             <UpdateRoleForm :permissions="permissions" :role="role"/>
         </div>
     </AuthenticatedLayout>

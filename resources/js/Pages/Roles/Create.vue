@@ -18,7 +18,7 @@ const props = defineProps({
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create Role</h2>
         </template>
 
-        <div class="p-4 sm:p-8">
+        <div class="px-4 pb-4 sm:px-8 sm:pb-8">
             <CreateRoleForm :permissions="permissions" class="max-w-xl"/>
         </div>
     </AuthenticatedLayout>
