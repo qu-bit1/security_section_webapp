@@ -5,10 +5,10 @@ import {Head, router} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Paginator from "primevue/paginator";
 import {ref} from "vue";
-import Tag from "@/Components/Tag.vue";
 import {perPageOptions} from "@/Compositions/Constants.js";
 import InputText from "primevue/inputtext";
 import Card from "primevue/card";
+import Tag from "primevue/tag";
 
 const props = defineProps({
     tags: Object,
@@ -69,7 +69,7 @@ const onPage = (event) => {
                 <template v-for="tag in tags.data">
                     <Card>
                         <template #subtitle>
-                            <Tag :value="tag.title"/>
+                            <Tag :value="tag.title" class="mr-2 mb-2"/>
                         </template>
                         <template #content>
                             {{ tag.description }}

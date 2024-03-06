@@ -2,9 +2,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {Head} from '@inertiajs/vue3';
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import Tag from "@/Components/Tag.vue";
 import DeleteRoleForm from "@/Pages/Roles/Partials/DeleteRoleForm.vue";
 import Edit from "@/Components/icons/Edit.vue";
+import Tag from "primevue/tag";
 
 defineProps({
     role: Object,
@@ -45,7 +45,7 @@ const getHeadingClass = (inline) => {
                     <template v-if="field.key === 'permissions'">
                         <div class="flex space-x-2">
                             <template v-for="permission in role[field.key]">
-                                <Tag :value="permission.name"/>
+                                <Tag :value="permission.name" class="mr-2 mb-2"/>
                             </template>
                         </div>
                     </template>

@@ -76,7 +76,7 @@ class ReportController extends Controller
             'reporter' => $request->reporter,
             'user_id' => auth()->user()->id,
             'reported_at' => $request->reported_at ?? now(),
-            'dealing_officer' => $request->dealing_officer ?? auth()->user()->id,
+            'dealing_officer' => $request->dealing_officer,
         ]);
 
         $report->attachments()->attach($request->attachments);
@@ -99,6 +99,11 @@ class ReportController extends Controller
     {
         return Inertia::render('Reports/Create', [
             'attachments' => Attachment::where('user_id', auth()->user()->id)->get(),
+            'tags' => Tag::query()
+                ->withCount("reports")
+                ->orderBy("reports_count", "desc")
+                ->limit(10)
+                ->get(),
         ]);
     }
 
@@ -139,6 +144,11 @@ class ReportController extends Controller
         return Inertia::render('Reports/Edit', [
             'report' => $report->load('users', 'attachments', "tags"),
             'attachments' => Attachment::where('user_id', auth()->user()->id)->get(),
+            'tags' => Tag::query()
+                ->withCount("reports")
+                ->orderBy("reports_count", "desc")
+                ->limit(10)
+                ->get(),
         ]);
     }
 
@@ -153,6 +163,8 @@ class ReportController extends Controller
             'status' => $request->status,
             'venue' => $request->venue,
             'reporter' => $request->reporter,
+            'reported_at' => $request->reported_at ?? now(),
+            'dealing_officer' => $request->dealing_officer,
         ]);
 
         $report->attachments()->sync($request->attachments);

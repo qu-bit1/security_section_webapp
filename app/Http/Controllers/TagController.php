@@ -82,12 +82,7 @@ class TagController extends Controller
                     $query->where('title', 'LIKE', "%{$search}%");
                 })
                 ->limit(10)
-                ->get()->map(function ($tag) {
-                    return [
-                        'key' => $tag->id,
-                        'value' => $tag->title,
-                    ];
-                }),
+                ->get(),
         ]);
     }
 

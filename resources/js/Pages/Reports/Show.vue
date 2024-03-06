@@ -1,10 +1,9 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import {Head, useForm} from '@inertiajs/vue3';
+import {Head} from '@inertiajs/vue3';
 import DeleteReportForm from "@/Pages/Reports/Partials/DeleteReportForm.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import DownloadReport from "@/Pages/Reports/Partials/DownloadReport.vue";
-import Tag from "@/Components/Tag.vue";
 import CreateRemarkForm from "@/Pages/Reports/Partials/CreateRemarkForm.vue";
 import ViewRemarks from "@/Pages/Reports/Partials/ViewRemarks.vue";
 import ViewComments from "@/Pages/Reports/Partials/ViewComments.vue";
@@ -12,6 +11,7 @@ import {inject} from "vue";
 import Download from "@/Components/icons/Download.vue";
 import Edit from "@/Components/icons/Edit.vue";
 import ApproveReportForm from "@/Pages/Reports/Partials/ApproveReportForm.vue";
+import Tag from "primevue/tag";
 
 defineProps({
     report: Object,
@@ -27,6 +27,8 @@ const displayFields = [
     {key: 'status', label: 'Status', inline: true},
     {key: 'shift', label: 'Shift', inline: true},
     {key: 'venue', label: 'Venue', inline: true},
+    {key: 'reported_at', label: 'Reported At', inline: true},
+    {key: 'dealing_officer', label: 'Dealing Officer', inline: true},
     {key: 'tags', label: 'Tags', inline: false},
     {key: 'attachments', label: 'Attachments', inline: false},
 ];
@@ -81,9 +83,9 @@ const canCreateRemarks = () => {
                 <div class="mb-1">
                     <h3 :class="getHeadingClass(field.inline)">{{ field.label }} {{ field.inline ? ':' : '' }}</h3>
                     <template v-if="field.key === 'tags'">
-                        <div class="flex space-x-2">
+                        <div class="flex">
                             <template v-for="tag in report[field.key]">
-                                <Tag :value="tag.title"/>
+                                <Tag :value="tag.title" class="mr-2 mb-2"/>
                             </template>
                         </div>
                     </template>

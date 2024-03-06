@@ -1,9 +1,9 @@
 <script setup>
-import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import {ref} from 'vue';
-import Tag from "@/Components/Tag.vue";
 import TagIcon from "@/Components/icons/Tag.vue"
+import Tag from "primevue/tag";
+import Dialog from "primevue/dialog";
 
 const props = defineProps({
     report: {
@@ -14,30 +14,15 @@ const viewingReportTags = ref(false);
 const viewReportTags = () => {
     viewingReportTags.value = true;
 };
-
-const closeModal = () => {
-    viewingReportTags.value = false;
-};
 </script>
 
 <template>
     <section class="space-y-6">
         <SecondaryButton @click="viewReportTags">{{ report.tags.length }} <TagIcon class="ml-0.5" /></SecondaryButton>
-
-        <Modal :show="viewingReportTags" @close="closeModal">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    Tags associated to <span class="font-bold">{{ report.serial_number }}</span>
-                </h2>
-                <div class="mt-6">
-                    <template v-for="tag in report.tags">
-                        <Tag :value="tag.title" />
-                    </template>
-                </div>
-                <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal"> Cancel</SecondaryButton>
-                </div>
-            </div>
-        </Modal>
+        <Dialog v-model:visible="viewingReportTags" maximizable modal :header="'Tags associated to '+report.serial_number" :style="{ width: '50rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+            <template v-for="tag in report.tags">
+                <Tag :value="tag.title" class="mr-2 mb-2"/>
+            </template>
+        </Dialog>
     </section>
 </template>

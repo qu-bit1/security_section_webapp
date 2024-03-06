@@ -2,12 +2,11 @@
 import DangerButton from '@/Components/DangerButton.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import Modal from '@/Components/Modal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import {useForm} from '@inertiajs/vue3';
 import {nextTick, ref} from 'vue';
 import Panel from "primevue/panel";
 import InputText from "primevue/inputtext";
+import Dialog from "primevue/dialog";
 
 const confirmingUserDeletion = ref(false);
 const passwordInput = ref(null);
@@ -30,12 +29,6 @@ const deleteUser = () => {
         onFinish: () => form.reset(),
     });
 };
-
-const closeModal = () => {
-    confirmingUserDeletion.value = false;
-
-    form.reset();
-};
 </script>
 
 <template>
@@ -52,47 +45,38 @@ const closeModal = () => {
             </template>
             <DangerButton @click="confirmUserDeletion">Delete Account</DangerButton>
         </Panel>
+        <Dialog v-model:visible="confirmingUserDeletion" maximizable modal header="Are you sure you want to delete your account?" :style="{ width: '50rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+            <p class="mt-1 text-sm text-gray-600">
+                Once your account is deleted, all of its resources and data will be permanently deleted. Please
+                enter your password to confirm you would like to permanently delete your account.
+            </p>
 
-        <Modal :show="confirmingUserDeletion" @close="closeModal">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    Are you sure you want to delete your account?
-                </h2>
-
-                <p class="mt-1 text-sm text-gray-600">
-                    Once your account is deleted, all of its resources and data will be permanently deleted. Please
-                    enter your password to confirm you would like to permanently delete your account.
-                </p>
-
-                <div class="flex flex-col gap-2 mt-6">
-                    <InputLabel class="sr-only" for="password" value="Password"/>
-                    <InputText
-                        id="password"
-                        ref="passwordInput"
-                        type="password"
-                        autocomplete="password"
-                        v-model="form.password"
-                        aria-describedby="password"
-                        @keyup.enter="deleteUser"
-                        placeholder="Password"
-                        required
-                    />
-                    <InputError :message="form.errors.password"/>
-                </div>
-
-                <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal"> Cancel</SecondaryButton>
-
-                    <DangerButton
-                        :class="{ 'opacity-25': form.processing }"
-                        :disabled="form.processing"
-                        class="ms-3"
-                        @click="deleteUser"
-                    >
-                        Delete Account
-                    </DangerButton>
-                </div>
+            <div class="flex flex-col gap-2 mt-6">
+                <InputLabel class="sr-only" for="password" value="Password"/>
+                <InputText
+                    id="password"
+                    ref="passwordInput"
+                    type="password"
+                    autocomplete="password"
+                    v-model="form.password"
+                    aria-describedby="password"
+                    @keyup.enter="deleteUser"
+                    placeholder="Password"
+                    required
+                />
+                <InputError :message="form.errors.password"/>
             </div>
-        </Modal>
+
+            <div class="mt-6 flex justify-end">
+                <DangerButton
+                    :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing"
+                    class="ms-3"
+                    @click="deleteUser"
+                >
+                    Delete Account
+                </DangerButton>
+            </div>
+        </Dialog>
     </section>
 </template>

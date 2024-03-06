@@ -23,9 +23,7 @@ return new class extends Migration {
             $table->foreignUuid('approved_by')->nullable()
                 ->constrained("users")
                 ->onUpdate('cascade');
-            $table->foreignUuid('dealing_officer')->nullable()
-                ->constrained("users")
-                ->onUpdate('cascade');
+            $table->string('dealing_officer')->nullable();
             $table->foreignUuid('user_id')
                 ->constrained("users")
                 ->onUpdate('cascade');

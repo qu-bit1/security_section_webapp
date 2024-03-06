@@ -1,11 +1,10 @@
 <script setup>
-import Modal from '@/Components/Modal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import {useForm} from '@inertiajs/vue3';
 import {inject, ref} from 'vue';
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Textarea from "primevue/textarea";
+import Dialog from "primevue/dialog";
 
 const props = defineProps({
     comment: {
@@ -30,12 +29,6 @@ const submit = () => {
     });
 };
 
-const closeModal = () => {
-    confirmingCommentUpdate.value = false;
-
-    form.reset();
-};
-
 const can = inject('can')
 const canEditComments = () => {
     return can('edit own comments | edit all comments');
@@ -50,29 +43,22 @@ const canEditComments = () => {
         >
             Edit
         </button>
-        <Modal :show="confirmingCommentUpdate" @close="closeModal">
+        <Dialog v-model:visible="confirmingCommentUpdate" maximizable modal header="Edit Comment" :style="{ width: '50rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
             <form @submit.prevent="submit">
-                <div class="p-6">
-                    <h2 class="text-lg font-medium text-gray-900">
-                        Edit Comment
-                    </h2>
-                    <div class="flex flex-col gap-2 mt-4">
-                        <Textarea id="body" v-model="form.body" autocomplete="body" autoResize rows="5" cols="30" />
-                        <InputError :message="form.errors.body"/>
-                    </div>
+                <div class="flex flex-col gap-2 mt-2">
+                    <Textarea id="body" v-model="form.body" autocomplete="body" autoResize rows="5" cols="30" />
+                    <InputError :message="form.errors.body"/>
+                </div>
 
-                    <div class="mt-6 flex justify-end">
-                        <SecondaryButton @click="closeModal"> Cancel</SecondaryButton>
-
-                        <template v-if="canEditComments()">
-                            <PrimaryButton :class="{ 'opacity-25': form.processing }"
-                                           :disabled="form.processing" class="ms-3">
-                                Update Comment
-                            </PrimaryButton>
-                        </template>
-                    </div>
+                <div class="mt-6 flex justify-end">
+                    <template v-if="canEditComments()">
+                        <PrimaryButton :class="{ 'opacity-25': form.processing }"
+                                       :disabled="form.processing" class="ms-3">
+                            Update Comment
+                        </PrimaryButton>
+                    </template>
                 </div>
             </form>
-        </Modal>
+        </Dialog>
     </section>
 </template>

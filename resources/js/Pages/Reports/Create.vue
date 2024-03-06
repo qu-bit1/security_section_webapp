@@ -4,9 +4,8 @@ import {Head} from "@inertiajs/vue3";
 import CreateReportForm from "@/Pages/Reports/Partials/CreateReportForm.vue";
 
 const props = defineProps({
-    attachments: {
-        type: Array,
-    },
+    attachments: Object,
+    tags: Object,
 })
 </script>
 
@@ -19,7 +18,7 @@ const props = defineProps({
         </template>
 
         <div class="px-4 pb-4 sm:px-8 sm:pb-8">
-            <CreateReportForm :attachments="attachments" class="max-w-xl"/>
+            <CreateReportForm :attachments="attachments" :tags="tags" class="max-w-xl"/>
         </div>
     </AuthenticatedLayout>
 </template>

@@ -1,17 +1,16 @@
 <script setup>
-import Modal from "@/Components/Modal.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import TabButton from "@/Components/TabButton.vue";
 import {ref, watch} from "vue";
 import {router, useForm} from '@inertiajs/vue3'
 import InputError from "@/Components/InputError.vue";
 import DragDropInput from "@/Components/DragDropInput.vue";
+import Dialog from "primevue/dialog";
+import TabMenu from 'primevue/tabmenu';
+
 
 const props = defineProps({
-    attachments: {
-        type: Array,
-    },
+    attachments: Object,
     modelValue: {
         type: Array,
     },
@@ -19,7 +18,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue']);
 const attachingToReport = ref(false);
 const selectedFiles = ref([...props.modelValue]);
-const currentTab = ref("upload");
+const currentTab = ref(0);
 const form = useForm({
     attachments: null
 });
@@ -55,14 +54,10 @@ const insertAttachments = () => {
     closeModal();
 };
 
-const tabs = [
-    {name: "Upload", slug: "upload", current: true},
-    {name: "Insert", slug: "insert", current: false},
-];
-
-const changeTab = (tab) => {
-    currentTab.value = tab;
-};
+const tabs = ref([
+    { label: 'Upload', icon: 'pi pi-upload' },
+    { label: 'Insert', icon: 'pi pi-chart-line' },
+]);
 
 const toggleFileSelection = (attachmentId) => {
     const index = selectedFiles.value.indexOf(attachmentId);
@@ -78,53 +73,27 @@ const toggleFileSelection = (attachmentId) => {
     <SecondaryButton class="mt-1" type="button" @click="attachToReport">
         {{ modelValue.length ? `${modelValue.length} files selected` : 'Attach Files' }}
     </SecondaryButton>
-    <Modal :show="attachingToReport" @close="closeModal">
-        <div class="flex p-4 border-b items-center">
-            <div class="flex-1">
-                <h2 class="text-lg font-medium text-gray-900">Insert Files</h2>
-            </div>
-            <div class="flex-1">
-                <div class="flex justify-end">
-                    <SecondaryButton @click="closeModal">x</SecondaryButton>
-                </div>
-            </div>
-        </div>
-
-        <div class="hidden space-x-8 px-4 sm:flex h-14 bg-white border-b">
-            <template v-for="(tab, index) in tabs" :key="index">
-                <TabButton
-                    :active="currentTab === tab.slug"
-                    :type="'button'"
-                    @click.prevent="changeTab(tab.slug)"
-                >
-                    {{ tab.name }}
-                </TabButton>
-            </template>
-        </div>
+    <Dialog v-model:visible="attachingToReport" maximizable modal header="Insert Files" :style="{ width: '50rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+        <TabMenu v-model:activeIndex="currentTab" :model="tabs" />
         <!--        upload tab content-->
-        <div>
-            <form v-if="currentTab === 'upload'" @submit.prevent="uploadFile">
-                <div class="p-6">
-                    <div>
-                        <DragDropInput v-model="form.attachments" class="mt-1 block w-full"/>
-                        <progress v-if="form.progress" :value="form.progress.percentage" max="100">
-                            {{ form.progress.percentage }}%
-                        </progress>
-                        <InputError :message="form.errors.attachments"/>
-                    </div>
-                </div>
-                <div class="p-6 flex justify-end border-t">
-                    <SecondaryButton type="button" @click="closeModal">Cancel</SecondaryButton>
-                    <DangerButton
-                        :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4"
-                    >
-                        Upload File
-                    </DangerButton>
-                </div>
-            </form>
-        </div>
+        <form v-if="currentTab === 0" @submit.prevent="uploadFile">
+            <div class="py-6">
+                <DragDropInput v-model="form.attachments" class="mt-1 block w-full"/>
+                <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+                    {{ form.progress.percentage }}%
+                </progress>
+                <InputError :message="form.errors.attachments" class="mt-2"/>
+            </div>
+            <div class="flex justify-end">
+                <DangerButton
+                    :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4"
+                >
+                    Upload File
+                </DangerButton>
+            </div>
+        </form>
         <!--        insert tab content-->
-        <div v-if="currentTab === 'insert'">
+        <div v-if="currentTab === 1">
             <div class="p-6 grid grid-cols-3 gap-4 overflow-y-auto">
                 <template v-for="attachment in attachments" :key="attachment.id">
                     <div
@@ -143,15 +112,10 @@ const toggleFileSelection = (attachmentId) => {
                     </div>
                 </template>
             </div>
-            <!--            <div class="px-6">-->
-            <!--                <Paginator :paginator="attachments"/>-->
-            <!--            </div>-->
-            <div v-if="selectedFiles.length > 0"
-                 class="p-6 flex justify-end border-t sticky bottom-0 bg-white">
+            <div v-if="selectedFiles.length > 0" class="flex justify-end sticky bottom-0 bg-white">
                 <div class="flex-1">
                     <p class="text-gray-700">{{ selectedFiles.length }} files selected</p>
                 </div>
-                <SecondaryButton type="button" @click="closeModal">Cancel</SecondaryButton>
                 <DangerButton
                     class="ms-3"
                     type="button"
@@ -161,6 +125,6 @@ const toggleFileSelection = (attachmentId) => {
                 </DangerButton>
             </div>
         </div>
-    </Modal>
+    </Dialog>
 </template>
 

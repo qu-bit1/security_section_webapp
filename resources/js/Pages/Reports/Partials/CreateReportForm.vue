@@ -3,42 +3,96 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import {Head, useForm} from '@inertiajs/vue3';
-import SelectInput from "@/Components/SelectInput.vue";
 import FilePicker from "@/Components/FilePicker.vue";
-import MultiSelectInput from "@/Components/MultiSelectInput.vue";
 import {shiftOptions, statusOptions} from "@/Compositions/Constants.js";
 import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
+import MultiSelect from "primevue/multiselect";
+import Dropdown from "primevue/dropdown";
+import Calendar from "primevue/calendar";
+import {ref} from "vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const props = defineProps({
-    attachments: {
-        type: Array,
-    }
+    attachments: Object,
+    tags: Object,
 });
 
 const form = useForm({
     serial_number: '',
+    reported_at: new Date(),
     shift: shiftOptions[0].value,
     description: '',
     venue: '',
     reporter: '',
     category: '',
     status: statusOptions[0].value,
+    dealing_officer: '',
     tags: [],
     attachments: [],
 });
+
+const tagOptions = ref(props.tags);
+const selectAll = ref(false);
 
 const submit = () => {
     form.post(route('reports.store'));
 };
 
-const searchTags = async (search) => {
+const markAsNormal = () => {
+    form.status = statusOptions[0].value;
+    form.description = "Reported as normal";
+};
+
+const onFilter = async (event) => {
     try {
-        const response = await axios.get(route('tags.search', {search}));
-        return response.data.tags;
+        const response = await axios.get(route('tags.search', {search: event.value}));
+        const existingTitles = new Set(tagOptions.value.map(option => option.title));
+
+        // Add tags which don't exist in the options
+        response.data.tags.forEach(tag => {
+            if (!existingTitles.has(tag.title)) {
+                tagOptions.value.push(tag);
+            }
+        });
+
+        if (!existingTitles.has(event.value)) {
+            if (response.data.tags.length === 0) {
+                // Find and update existing custom option
+                const customOptionIndex = tagOptions.value.findIndex(option => option.custom && !option.selected);
+                if (customOptionIndex !== -1) {
+                    tagOptions.value[customOptionIndex].title = event.value;
+                } else {
+                    // Add new custom option at the beginning
+                    tagOptions.value.unshift({ title: event.value, custom: true, selected: false });
+                }
+            } else {
+                // Remove existing custom option if it exists
+                const customOptionIndex = tagOptions.value.findIndex(option => option.custom && !option.selected);
+                if (customOptionIndex !== -1) {
+                    tagOptions.value.splice(customOptionIndex, 1);
+                }
+            }
+        }
+
+        return tagOptions.value;
     } catch (error) {
         console.error('Error fetching data:', error);
     }
+};
+
+function onChange(event){
+    selectAll.value = event.value.length === tagOptions.value.length;
+
+    // if the custom option is selected then flag it as selected
+    tagOptions.value.forEach(option => {
+        option.selected = event.value.includes(option.title);
+    });
+}
+
+const onSelectAllChange = (event) => {
+    form.tags.value = event.checked ? tagOptions.value.map((item) => item.value) : [];
+    selectAll.value = event.checked;
 };
 </script>
 
@@ -46,21 +100,13 @@ const searchTags = async (search) => {
     <Head title="New Report"/>
 
     <form @submit.prevent="submit">
-        <div>
-            <InputLabel for="tags" value="Tags"/>
-
-            <MultiSelectInput
-                id="tags"
-                v-model="form.tags"
-                :search-function="searchTags"
-                autocomplete="tags"
-                class="mt-1 block w-full"
-            />
-
-            <InputError :message="form.errors.tags" class="mt-2"/>
+        <div class="flex flex-col gap-2">
+            <InputLabel for="reported_at" value="Reported At"/>
+            <Calendar v-model="form.reported_at" showButtonBar showTime/>
+            <InputError :message="form.errors.reported_at"/>
         </div>
         <div class="flex flex-col gap-2 mt-4">
-            <InputLabel for="serial_number" value="Serial Number"/>
+            <InputLabel for="serial_number" value="Serial Number" required/>
             <InputText
                 id="serial_number"
                 v-model="form.serial_number"
@@ -68,31 +114,53 @@ const searchTags = async (search) => {
             />
             <InputError :message="form.errors.serial_number"/>
         </div>
-        <div class="mt-4">
-            <InputLabel for="shift" value="Shift"/>
-
-            <SelectInput
-                id="shift"
-                v-model="form.shift"
-                :options="shiftOptions"
-                autocomplete="shift"
-                class="mt-1 block w-full"
-            />
-
-            <InputError :message="form.errors.shift" class="mt-2"/>
+        <div class="flex flex-col gap-2 mt-4">
+            <InputLabel for="shift" value="Shift" required/>
+            <div class="flex flex-row">
+                <Dropdown
+                    v-model="form.shift"
+                    :options="shiftOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Select a status"
+                    class="w-full flex-1"
+                />
+                <SecondaryButton @click="markAsNormal" class="ms-2">
+                    Mark as normal
+                </SecondaryButton>
+            </div>
+            <InputError :message="form.errors.shift"/>
         </div>
-        <div class="mt-4">
-            <InputLabel for="status" value="Status"/>
+        <div class="flex flex-col gap-2 mt-4">
+            <InputLabel for="tags" value="Tags"/>
+            <MultiSelect
+                v-model="form.tags"
+                data-key="title"
+                display="chip"
+                :options="tagOptions"
+                filter
+                optionLabel="title"
+                optionValue="title"
+                placeholder="Select tags"
+                class="w-full"
+                @filter="onFilter"
+                @selectallChange="onSelectAllChange($event)"
+                @change="onChange($event)"
+            />
+            <InputError :message="form.errors.tags"/>
+        </div>
 
-            <SelectInput
-                id="status"
+        <div class="flex flex-col gap-2 mt-4">
+            <InputLabel for="status" value="Status"/>
+            <Dropdown
                 v-model="form.status"
                 :options="statusOptions"
-                autocomplete="status"
-                class="mt-1 block w-full"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select a status"
+                class="w-full"
             />
-
-            <InputError :message="form.errors.status" class="mt-2"/>
+            <InputError :message="form.errors.status"/>
         </div>
         <div class="flex flex-col gap-2 mt-4">
             <InputLabel for="description" value="Description"/>
@@ -104,6 +172,17 @@ const searchTags = async (search) => {
             <InputLabel value="Attachments"/>
             <FilePicker v-model="form.attachments" :attachments="attachments" class="mt-2"/>
             <InputError :message="form.errors.attachments" class="mt-2"/>
+        </div>
+
+        <div class="flex flex-col gap-2 mt-4">
+            <InputLabel for="dealing_officer" value="Dealing Officer"/>
+            <InputText
+                type="text"
+                id="dealing_officer"
+                v-model="form.dealing_officer"
+                autocomplete="dealing_officer"
+            />
+            <InputError :message="form.errors.dealing_officer"/>
         </div>
 
         <div class="flex flex-col gap-2 mt-4">
@@ -128,7 +207,7 @@ const searchTags = async (search) => {
             <InputError :message="form.errors.reporter"/>
         </div>
 
-        <div v-if="can('create reports')" class="flex items-center justify-end mt-4">
+        <div v-if="can('create reports')" class="sticky bg-surface-0 border-t border-t-surface-200 bottom-0 start-0 z-50 flex items-center justify-end mt-4 py-4">
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4">
                 Create Report
             </PrimaryButton>

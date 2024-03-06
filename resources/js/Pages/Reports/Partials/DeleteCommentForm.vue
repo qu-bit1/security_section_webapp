@@ -1,9 +1,8 @@
 <script setup>
 import DangerButton from '@/Components/DangerButton.vue';
-import Modal from '@/Components/Modal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import {useForm} from '@inertiajs/vue3';
 import {ref} from 'vue';
+import Dialog from "primevue/dialog";
 
 const props = defineProps({
     comment: {
@@ -23,12 +22,6 @@ const deleteComment = () => {
         onFinish: () => form.reset(),
     });
 };
-
-const closeModal = () => {
-    confirmingCommentDeletion.value = false;
-
-    form.reset();
-};
 </script>
 
 <template>
@@ -39,25 +32,17 @@ const closeModal = () => {
         >
             Delete
         </button>
-
-        <Modal :show="confirmingCommentDeletion" @close="closeModal">
-            <div class="p-6">
-                <h2 class="text-lg font-medium">
-                    Are you sure you want to delete comment ?
-                </h2>
-                <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal"> Cancel</SecondaryButton>
-
-                    <DangerButton
-                        :class="{ 'opacity-25': form.processing }"
-                        :disabled="form.processing"
-                        class="ms-3"
-                        @click="deleteComment"
-                    >
-                        Delete Comment
-                    </DangerButton>
-                </div>
+        <Dialog v-model:visible="confirmingCommentDeletion" modal header="Are you sure you want to delete comment ?" :style="{ width: '50rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+            <div class="flex justify-end">
+                <DangerButton
+                    :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing"
+                    class="ms-3"
+                    @click="deleteComment"
+                >
+                    Delete Comment
+                </DangerButton>
             </div>
-        </Modal>
+        </Dialog>
     </section>
 </template>

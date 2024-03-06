@@ -4,12 +4,9 @@ import {Head} from "@inertiajs/vue3";
 import UpdateReportForm from "@/Pages/Reports/Partials/UpdateReportForm.vue";
 
 const props = defineProps({
-    report: {
-        type: Object,
-    },
-    attachments: {
-        type: Array,
-    },
+    report: Object,
+    attachments: Object,
+    tags: Object,
 })
 </script>
 
@@ -22,7 +19,7 @@ const props = defineProps({
         </template>
 
         <div class="px-4 pb-4 sm:px-8 sm:pb-8">
-            <UpdateReportForm :attachments="attachments" :report="report"/>
+            <UpdateReportForm :attachments="attachments" :report="report" :tags="tags"/>
         </div>
     </AuthenticatedLayout>
 </template>
