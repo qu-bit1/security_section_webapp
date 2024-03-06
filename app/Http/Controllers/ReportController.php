@@ -45,7 +45,7 @@ class ReportController extends Controller
             ->with(['attachments', 'tags']);
 
         $reports = $this->buildQuery($query, $params)
-            ->paginate(perPage: $params["rows"]??2, page: ($params["page"]??0)+1)
+            ->paginate(perPage: $params["rows"]??25, page: ($params["page"]??0)+1)
             ->withQueryString();
 
         return Inertia::render('Reports/Index', [
