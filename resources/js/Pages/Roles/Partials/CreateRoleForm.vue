@@ -34,7 +34,7 @@ const submit = () => {
 
         <div class="flex flex-col gap-2 mt-4">
             <InputLabel for="role-permissions" value="Permissions"/>
-            <MultiSelect v-model="form.permissions" id="role-permissions" dataKey="name" display="chip" :options="permissions" optionLabel="name" optionValue="id" placeholder="Select permissions"
+            <MultiSelect v-model="form.permissions" id="role-permissions" dataKey="name" filter display="chip" :options="permissions" optionLabel="name" optionValue="id" placeholder="Select permissions"
                          class="w-full" />
             <InputError :message="form.errors.permissions"/>
         </div>
