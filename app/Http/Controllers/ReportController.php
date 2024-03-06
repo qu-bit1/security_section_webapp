@@ -12,6 +12,7 @@ use App\Models\Remark;
 use App\Models\Report;
 use App\Models\Tag;
 use App\Services\ReportService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
@@ -75,7 +76,7 @@ class ReportController extends Controller
             'venue' => $request->venue,
             'reporter' => $request->reporter,
             'user_id' => auth()->user()->id,
-            'reported_at' => $request->reported_at ?? now(),
+            'reported_at' => Carbon::parse($request->reported_at ?? now()),
             'dealing_officer' => $request->dealing_officer,
         ]);
 
@@ -163,7 +164,7 @@ class ReportController extends Controller
             'status' => $request->status,
             'venue' => $request->venue,
             'reporter' => $request->reporter,
-            'reported_at' => $request->reported_at ?? now(),
+            'reported_at' => Carbon::parse($request->reported_at ?? now()),
             'dealing_officer' => $request->dealing_officer,
         ]);
 

@@ -28,7 +28,7 @@ return new class extends Migration {
                 ->constrained("users")
                 ->onUpdate('cascade');
             $table->timestamp('approved_at')->nullable();
-            $table->timestamp('reported_at')->nullable();
+            $table->dateTime('reported_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
