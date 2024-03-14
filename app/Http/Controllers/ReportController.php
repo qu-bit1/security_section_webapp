@@ -42,7 +42,8 @@ class ReportController extends Controller
             ->when($user->cannot(PermissionsEnum::ACCESS_ALL_REPORTS->value), function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
-            ->with(['attachments', 'tags']);
+            ->with(['attachments', 'tags'])
+            ->withCount(['remarks', 'comments']);
 
         $reports = $this->buildQuery($query, $params)
             ->paginate(perPage: $params["rows"]??25, page: ($params["page"]??0)+1)
@@ -50,6 +51,11 @@ class ReportController extends Controller
 
         return Inertia::render('Reports/Index', [
             'reports' => $reports,
+            'tags' => Tag::query()
+                ->withCount("reports")
+                ->orderBy("reports_count", "desc")
+                ->limit(10)
+                ->get(),
             'filters' => request()->all(),
         ]);
     }
@@ -323,6 +329,13 @@ class ReportController extends Controller
                         $query->where($field, '!=', $value);
                         break;
                     case MatchModeEnum::IN->value:
+                        if ($field === "tags") {
+                            $query->whereHas($field, function ($q) use ($value) {
+                                $q->whereIn('title', $value);
+                            });
+                            break;
+                        }
+
                         $values = collect($value)->pluck('value')->toArray();
                         $query->whereIn($field, $values);
                         break;

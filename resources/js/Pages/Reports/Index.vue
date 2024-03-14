@@ -4,11 +4,10 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {Head, Link, router} from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import DeleteReportForm from "@/Pages/Reports/Partials/DeleteReportForm.vue";
-import ViewTags from "@/Pages/Reports/Partials/ViewTags.vue";
 import {inject, ref} from "vue";
 import ViewAttachments from "@/Pages/Reports/Partials/ViewAttachments.vue";
 import DownloadReport from "@/Pages/Reports/Partials/DownloadReport.vue";
-import {perPageOptions, shiftOptions, statusOptions} from "@/Compositions/Constants.js";
+import {perPageOptions} from "@/Compositions/Constants.js";
 import Edit from "@/Components/icons/Edit.vue";
 import {formatDate, truncate } from "@/Compositions/DateTime.js";
 import Column from "primevue/column";
@@ -17,18 +16,20 @@ import InputText from "primevue/inputtext";
 import {FilterMatchMode} from "primevue/api";
 import Calendar from "primevue/calendar"
 import MultiSelect from "primevue/multiselect";
-import TriStateCheckbox from "primevue/tristatecheckbox";
 import Filter from "@/Components/icons/Filter.vue";
 import Export from "@/Components/icons/Export.vue";
-import Eye from "@/Components/icons/Eye.vue";
 import ApproveReportForm from "@/Pages/Reports/Partials/ApproveReportForm.vue";
-import Download from "@/Components/icons/Download.vue";
+import Tag from "primevue/tag";
+import Comment from "@/Components/icons/Comment.vue";
+import TriStateCheckbox from "primevue/tristatecheckbox";
 
 const props = defineProps({
     reports: Object,
     filters: Object,
+    tags: Object,
 });
 
+const tagOptions = ref(props.tags);
 const loading = ref(false);
 const totalRecords = ref(props.reports.total);
 const selectedReports = ref();
@@ -42,7 +43,7 @@ const customFilters = ref(obj.filters ?? {
     serial_number: {value: null, matchMode: FilterMatchMode.EQUALS},
     description: {value: null, matchMode: FilterMatchMode.CONTAINS},
     shift: {value: null, matchMode: FilterMatchMode.IN},
-    status: {value: null, matchMode: FilterMatchMode.IN},
+    tags: {value: null, matchMode: FilterMatchMode.IN},
     created_at: {value: null, matchMode: FilterMatchMode.DATE_IS},
     approved: {value: null, matchMode: FilterMatchMode.EQUALS},
     venue: {value: null, matchMode: FilterMatchMode.CONTAINS},
@@ -89,6 +90,24 @@ const onDisplayFilter = () => {
     filterDisplay.value = filterDisplay.value === '' ? 'row' : '';
     lazyParams.value.filterDisplay = filterDisplay.value;
 };
+
+const onTagFilter = async (event) => {
+    try {
+        const response = await axios.get(route('tags.search', {search: event.value}));
+        const existingTitles = new Set(tagOptions.value.map(option => option.title));
+
+        // Add tags which don't exist in the options
+        response.data.tags.forEach(tag => {
+            if (!existingTitles.has(tag.title)) {
+                tagOptions.value.push(tag);
+            }
+        });
+
+        return tagOptions.value;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+};
 </script>
 
 
@@ -122,7 +141,7 @@ const onDisplayFilter = () => {
                 :filterDisplay="filterDisplay"
                 :value="reports.data"
                 dataKey="id"
-                tableStyle="min-width: 50rem"
+                tableStyle="min-width: 30rem"
             >
                 <template #empty>
                     <div class="flex flex-col items-center justify-center">
@@ -168,17 +187,6 @@ const onDisplayFilter = () => {
                     </template>
                 </Column>
 
-                <Column field="shift" filterField="shift" header="Shift">
-                    <template #filter="{ filterModel, filterCallback }">
-                        <MultiSelect v-model="filterModel.value" :options="shiftOptions" class="p-column-filter"
-                                     optionLabel="value" placeholder="Any" @change="filterCallback()">
-                            <template #option="slotProps">
-                                <span>{{ slotProps.option.label }}</span>
-                            </template>
-                        </MultiSelect>
-                    </template>
-                </Column>
-
                 <Column field="description" filterField="description" header="Description">
                     <template #body="data">
                         <div v-tooltip="data.data?.description">
@@ -191,27 +199,6 @@ const onDisplayFilter = () => {
                     </template>
                 </Column>
 
-                <Column field="status" filterField="status" header="Status">
-                    <template #body="data">
-                        {{ statusOptions.find(option => option.value === data.data.status).label }}
-                    </template>
-                    <template #filter="{ filterModel, filterCallback }">
-                        <MultiSelect v-model="filterModel.value" :options="statusOptions" class="p-column-filter"
-                                     optionLabel="value" placeholder="Any" @change="filterCallback()">
-                            <template #option="slotProps">
-                                <span>{{ slotProps.option.label }}</span>
-                            </template>
-                        </MultiSelect>
-                    </template>
-                </Column>
-
-                <Column :showFilterMenu="false" field="approved" header="Approved" sortable>
-                    <template #filter="{ filterModel, filterCallback }">
-                        <TriStateCheckbox v-model="filterModel.value" inputId="verified-filter"
-                                          @change="filterCallback()"/>
-                    </template>
-                </Column>
-
                 <Column field="venue" header="Venue" sortable>
                     <template #filter="{filterModel, filterCallback}">
                         <InputText v-model="filterModel.value" class="p-column-filter" placeholder="Search by venue"
@@ -219,22 +206,28 @@ const onDisplayFilter = () => {
                     </template>
                 </Column>
 
-                <Column field="reporter" header="Reporter" sortable>
-                    <template #filter="{filterModel, filterCallback}">
-                        <InputText v-model="filterModel.value" class="p-column-filter" placeholder="Search by reporter"
-                                   type="text" @keyup.enter="filterCallback"/>
-                    </template>
-                </Column>
-
-                <Column field="tags" header="Tags" sortable>
+                <Column field="tags" header="Tags" filterField="tags" sortable :showFilterMenu="false">
                     <template #body="data">
-                        <ViewTags :report="data.data"/>
+                        <template v-for="tag in data.data.tags">
+                            <Tag :value="tag.title" class="mr-2 mb-2"/>
+                        </template>
                     </template>
-                </Column>
-
-                <Column field="attachments" header="Attachments" sortable>
-                    <template #body="data">
-                        <ViewAttachments :report="data.data"/>
+                    <template #filter="{ filterModel, filterCallback }">
+                        <MultiSelect v-model="filterModel.value"
+                                     data-key="title"
+                                     display="chip"
+                                     :options="tagOptions"
+                                     filter
+                                     optionLabel="title"
+                                     optionValue="title"
+                                     placeholder="Any"
+                                     @filter="onTagFilter"
+                                     @change="filterCallback()"
+                        >
+                            <template #option="slotProps">
+                                <Tag :value="slotProps.option.title"/>
+                            </template>
+                        </MultiSelect>
                     </template>
                 </Column>
 
@@ -249,19 +242,20 @@ const onDisplayFilter = () => {
                 </Column>
 
                 <!-- Action Column -->
-                <Column field="action" header="Action" style="min-width: 200px">
+                <Column field="action" header="Action" filterField="approved" :showFilterMenu="false" style="min-width: 150px">
 <!--                    frozen alignFrozen="right"-->
                     <template #body="data">
-                        <div class="flex flex-row">
-                            <SecondaryButton :href="route('reports.show', data.data.id)"><Eye/></SecondaryButton>
-                            <DownloadReport :key="data.data.id" :reports="[data.data]"><Download/></DownloadReport>
+                        <div class="flex flex-col justify-start items-start">
                             <template v-if="canEditReports() && !data.data.approved">
-                                <SecondaryButton :href="route('reports.edit', data.data.id)" class="ml-2"><Edit/></SecondaryButton>
+                                <SecondaryButton :href="route('reports.edit', data.data.id)" class="mb-2"><Edit/></SecondaryButton>
                             </template>
-                            <template v-if="canDeleteReports() && !data.data.approved">
-                                <DeleteReportForm :key="data.data.id" :reports="[data.data]" class="ml-2"/>
-                            </template>
+                            <ViewAttachments :report="data.data" class="mb-2"/>
+                            <SecondaryButton :href="route('reports.show', data.data.id)+'#commentSection'" class="mb-2">{{ data.data.comments_count }} <Comment class="ml-0.5"/></SecondaryButton>
                         </div>
+                    </template>
+                    <template #filter="{ filterModel, filterCallback }">
+                        <TriStateCheckbox v-model="filterModel.value" inputId="verified-filter"
+                                          @change="filterCallback()"/>
                     </template>
                 </Column>
             </DataTable>
