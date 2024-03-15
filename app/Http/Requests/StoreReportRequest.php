@@ -24,8 +24,6 @@ class StoreReportRequest extends FormRequest
     {
         return [
             'serial_number' => ['required', 'unique:reports'],
-            'shift' => ['required'],
-            'status' => ['required'],
         ];
     }
 }

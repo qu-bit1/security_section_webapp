@@ -8,10 +8,8 @@ import {shiftOptions, statusOptions} from "@/Compositions/Constants.js";
 import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
 import MultiSelect from "primevue/multiselect";
-import Dropdown from "primevue/dropdown";
 import Calendar from "primevue/calendar";
 import {ref} from "vue";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const props = defineProps({
     tags: Object,
@@ -23,8 +21,6 @@ const form = useForm({
     shift: shiftOptions[0].value,
     description: '',
     venue: '',
-    reporter: '',
-    category: '',
     status: statusOptions[0].value,
     dealing_officer: '',
     tags: [],
@@ -101,7 +97,7 @@ const onSelectAllChange = (event) => {
     <form @submit.prevent="submit">
         <div class="flex flex-col gap-2">
             <InputLabel for="reported_at" value="Reported At"/>
-            <Calendar v-model="form.reported_at" showButtonBar showTime/>
+            <Calendar v-model="form.reported_at" showButtonBar showTime />
             <InputError :message="form.errors.reported_at"/>
         </div>
         <div class="flex flex-col gap-2 mt-4">
@@ -113,23 +109,7 @@ const onSelectAllChange = (event) => {
             />
             <InputError :message="form.errors.serial_number"/>
         </div>
-        <div class="flex flex-col gap-2 mt-4">
-            <InputLabel for="shift" value="Shift" required/>
-            <div class="flex flex-row">
-                <Dropdown
-                    v-model="form.shift"
-                    :options="shiftOptions"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Select a status"
-                    class="w-full flex-1"
-                />
-                <SecondaryButton @click="markAsNormal" class="ms-2">
-                    Mark as normal
-                </SecondaryButton>
-            </div>
-            <InputError :message="form.errors.shift"/>
-        </div>
+
         <div class="flex flex-col gap-2 mt-4">
             <InputLabel for="tags" value="Tags"/>
             <MultiSelect
@@ -149,18 +129,6 @@ const onSelectAllChange = (event) => {
             <InputError :message="form.errors.tags"/>
         </div>
 
-        <div class="flex flex-col gap-2 mt-4">
-            <InputLabel for="status" value="Status"/>
-            <Dropdown
-                v-model="form.status"
-                :options="statusOptions"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="Select a status"
-                class="w-full"
-            />
-            <InputError :message="form.errors.status"/>
-        </div>
         <div class="flex flex-col gap-2 mt-4">
             <InputLabel for="description" value="Description"/>
             <Textarea id="description" v-model="form.description" autocomplete="description" autoResize rows="5" cols="30" />
@@ -193,17 +161,6 @@ const onSelectAllChange = (event) => {
                 autocomplete="venue"
             />
             <InputError :message="form.errors.venue"/>
-        </div>
-
-        <div class="flex flex-col gap-2 mt-4">
-            <InputLabel for="reporter" value="Reporter"/>
-            <InputText
-                type="text"
-                id="reporter"
-                v-model="form.reporter"
-                autocomplete="reporter"
-            />
-            <InputError :message="form.errors.reporter"/>
         </div>
 
         <div v-if="can('create reports')" class="sticky bg-surface-0 border-t border-t-surface-200 bottom-0 start-0 z-50 flex items-center justify-end mt-4 py-4">

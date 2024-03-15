@@ -23,12 +23,9 @@ defineProps({
 const displayFields = [
     {key: 'serial_number', label: 'Serial Number', inline: true},
     {key: 'description', label: 'Description', inline: false},
-    {key: 'reporter', label: 'Reporter', inline: true},
-    {key: 'status', label: 'Status', inline: true},
-    {key: 'shift', label: 'Shift', inline: true},
+    {key: 'dealing_officer', label: 'Dealing Officer', inline: true},
     {key: 'venue', label: 'Venue', inline: true},
     {key: 'reported_at', label: 'Reported At', inline: true},
-    {key: 'dealing_officer', label: 'Dealing Officer', inline: true},
     {key: 'tags', label: 'Tags', inline: false},
     {key: 'attachments', label: 'Attachments', inline: false},
 ];

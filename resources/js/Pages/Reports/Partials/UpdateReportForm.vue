@@ -103,23 +103,7 @@ const onSelectAllChange = (event) => {
             <Calendar v-model="form.reported_at" showButtonBar showTime/>
             <InputError :message="form.errors.reported_at"/>
         </div>
-        <div class="flex flex-col gap-2 mt-4">
-            <InputLabel for="shift" value="Shift" required/>
-            <div class="flex flex-row">
-                <Dropdown
-                    v-model="form.shift"
-                    :options="shiftOptions"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Select a status"
-                    class="w-full flex-1"
-                />
-                <SecondaryButton @click="markAsNormal" class="ms-2">
-                    Mark as normal
-                </SecondaryButton>
-            </div>
-            <InputError :message="form.errors.shift"/>
-        </div>
+
         <div class="flex flex-col gap-2 mt-4">
             <InputLabel for="tags" value="Tags"/>
             <MultiSelect
@@ -137,19 +121,6 @@ const onSelectAllChange = (event) => {
                 @change="onChange($event)"
             />
             <InputError :message="form.errors.tags"/>
-        </div>
-
-        <div class="flex flex-col gap-2 mt-4">
-            <InputLabel for="status" value="Status"/>
-            <Dropdown
-                v-model="form.status"
-                :options="statusOptions"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="Select a status"
-                class="w-full"
-            />
-            <InputError :message="form.errors.status"/>
         </div>
 
         <div class="flex flex-col gap-2 mt-4">
@@ -186,16 +157,6 @@ const onSelectAllChange = (event) => {
             <InputError :message="form.errors.venue"/>
         </div>
 
-        <div class="flex flex-col gap-2 mt-4">
-            <InputLabel for="reporter" value="Reporter"/>
-            <InputText
-                type="text"
-                id="reporter"
-                v-model="form.reporter"
-                autocomplete="reporter"
-            />
-            <InputError :message="form.errors.reporter"/>
-        </div>
         <div v-if="can('edit own reports | edit all reports')" class="sticky bg-surface-0 border-t border-t-surface-200 bottom-0 start-0 z-50 flex items-center justify-end mt-4 py-4">
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4">
                 Update Report

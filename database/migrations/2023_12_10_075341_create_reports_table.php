@@ -16,9 +16,8 @@ return new class extends Migration {
             $table->string('serial_number')->unique();
             $table->text('description')->nullable();
             $table->string('shift')->nullable();
-            $table->enum('status', StatusEnum::getValues())->default(StatusEnum::NORMAL->value);
+            $table->enum('status', StatusEnum::getValues())->default(StatusEnum::OPEN->value);
             $table->string('venue')->nullable();
-            $table->string('reporter')->nullable();
             $table->boolean('approved')->default(false);
             $table->foreignUuid('approved_by')->nullable()
                 ->constrained("users")
