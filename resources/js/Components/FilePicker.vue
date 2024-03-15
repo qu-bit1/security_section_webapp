@@ -2,20 +2,25 @@
 import DangerButton from "@/Components/DangerButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import {ref, watch} from "vue";
-import {router, useForm} from '@inertiajs/vue3'
+import {useForm} from '@inertiajs/vue3'
 import InputError from "@/Components/InputError.vue";
 import DragDropInput from "@/Components/DragDropInput.vue";
 import Dialog from "primevue/dialog";
 import TabMenu from 'primevue/tabmenu';
+import {useToast} from "primevue/usetoast";
 
 
 const props = defineProps({
-    attachments: Object,
+    attachments: {
+        type: Object,
+        required: false,
+    },
     modelValue: {
         type: Array,
     },
 });
 const emit = defineEmits(['update:modelValue']);
+const uploadedAttachments = ref(props.attachments);
 const attachingToReport = ref(false);
 const selectedFiles = ref([...props.modelValue]);
 const currentTab = ref(0);
@@ -36,14 +41,41 @@ const attachToReport = () => {
     attachingToReport.value = true;
 };
 
-const uploadFile = () => {
-    form.post(route('attachments.store'), {
-        onSuccess: () => {
-            form.reset('attachment');
-            router.reload({only: ['attachments']})
-            changeTab('insert')
+const toast = useToast();
+const uploadFile = async () => {
+    try {
+        const response = await axios.post(route('attachments.store'), {"attachments": form.attachments}, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        });
+
+        form.progress = null;
+        form.reset('attachments');
+        form.errors = {};
+
+        if (response.data.attachments.length > 0) {
+            if (uploadedAttachments.value) {
+                for (let i = 0; i < response.data.attachments.length; i++) {
+                    if (!uploadedAttachments.value.some(attachment => attachment.id === response.data.attachments[i].id)) {
+                        uploadedAttachments.value.push(response.data.attachments[i]);
+                    }
+                }
+            } else {
+                uploadedAttachments.value = response.data.attachments;
+            }
+            selectedFiles.value = [...selectedFiles.value, ...response.data.attachments.map(attachment => attachment.id)]
         }
-    });
+
+        toast.add({severity: 'success', summary: 'Success', detail: response.data.message, life: 3000});
+        changeTab(1);
+    } catch (error) {
+        form.errors = error.response.data?.errors;
+    }
+};
+
+const changeTab = (tab) => {
+    currentTab.value = tab;
 };
 
 const insertAttachments = () => {
@@ -76,13 +108,13 @@ const toggleFileSelection = (attachmentId) => {
     <Dialog v-model:visible="attachingToReport" maximizable modal header="Insert Files" :style="{ width: '50rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
         <TabMenu v-model:activeIndex="currentTab" :model="tabs" />
         <!--        upload tab content-->
-        <form v-if="currentTab === 0" @submit.prevent="uploadFile">
+        <form v-if="currentTab === 0" @submit.prevent="uploadFile" enctype="multipart/form-data">
             <div class="py-6">
                 <DragDropInput v-model="form.attachments" class="mt-1 block w-full"/>
                 <progress v-if="form.progress" :value="form.progress.percentage" max="100">
                     {{ form.progress.percentage }}%
                 </progress>
-                <InputError :message="form.errors.attachments" class="mt-2"/>
+                <InputError :message="form.errors?.attachments" class="mt-2"/>
             </div>
             <div class="flex justify-end">
                 <DangerButton
@@ -95,7 +127,12 @@ const toggleFileSelection = (attachmentId) => {
         <!--        insert tab content-->
         <div v-if="currentTab === 1">
             <div class="p-6 grid grid-cols-3 gap-4 overflow-y-auto">
-                <template v-for="attachment in attachments" :key="attachment.id">
+                <template v-if="!uploadedAttachments || uploadedAttachments.length === 0">
+                    <div class="col-span-3 text-center">
+                        <p class="text-gray-500">No files uploaded yet.</p>
+                    </div>
+                </template>
+                <template v-for="attachment in uploadedAttachments" :key="attachment.id">
                     <div
                         :class="{'border-blue-500': selectedFiles.includes(attachment.id) }"
                         class="border rounded shadow cursor-pointer"

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAttachmentRequest;
 use App\Http\Requests\UpdateAttachmentRequest;
 use App\Models\Attachment;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -32,19 +33,23 @@ class AttachmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAttachmentRequest $request): RedirectResponse
+    public function store(StoreAttachmentRequest $request): RedirectResponse|JsonResponse
     {
         $files = $request->file('attachments');
+        $attachments = [];
         foreach ($files as $file) {
-            $attachment = Attachment::create([
+            $attachments[] = Attachment::create([
                 'name' => $file->getClientOriginalName(),
+                'mime_type' => $file->getClientMimeType(),
                 'path' => $file->store('attachments'),
                 'user_id' => auth()->user()->id,
-                'mime_type' => $file->getMimeType(),
             ]);
         }
 
-        return redirect()->back()->with('success', 'Attachment uploaded.');
+        return response()->json([
+            'message' => 'Attachments uploaded.',
+            'attachments' => $attachments,
+        ]);
     }
 
     /**

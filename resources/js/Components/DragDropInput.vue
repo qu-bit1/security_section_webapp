@@ -42,7 +42,7 @@ function onInputChange(e) {
                 <input type="file" id="dragdrop-input" :multiple="multiple" @change="onInputChange" class="hidden absolute inset-0 z-50 w-full h-full p-0 m-0 outline-none opacity-0 cursor-pointer"/>
             </label>
         </DropZone>
-        <div v-show="files.length">
+        <div v-show="files.length && modelValue">
             <div class="grid grid-cols-2 gap-4 mt-4 md:grid-cols-6">
                 <FilePreview v-for="file of files" :key="file.id" :file="file" @remove="removeFile"/>
             </div>

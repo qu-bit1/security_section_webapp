@@ -15,7 +15,6 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const props = defineProps({
     report: Object,
-    attachments: Object,
     tags: Object,
 });
 
@@ -161,7 +160,7 @@ const onSelectAllChange = (event) => {
 
         <div class="mt-4">
             <InputLabel value="Attachments"/>
-            <FilePicker v-model="form.attachments" :attachments="attachments" class="mt-2"/>
+            <FilePicker v-model="form.attachments" :attachments="report.attachments" class="mt-2"/>
             <InputError :message="form.errors.attachments" class="mt-2"/>
         </div>
 

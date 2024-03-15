@@ -105,7 +105,6 @@ class ReportController extends Controller
     public function create(): Response
     {
         return Inertia::render('Reports/Create', [
-            'attachments' => Attachment::where('user_id', auth()->user()->id)->get(),
             'tags' => Tag::query()
                 ->withCount("reports")
                 ->orderBy("reports_count", "desc")
@@ -150,7 +149,6 @@ class ReportController extends Controller
     {
         return Inertia::render('Reports/Edit', [
             'report' => $report->load('users', 'attachments', "tags"),
-            'attachments' => Attachment::where('user_id', auth()->user()->id)->get(),
             'tags' => Tag::query()
                 ->withCount("reports")
                 ->orderBy("reports_count", "desc")
