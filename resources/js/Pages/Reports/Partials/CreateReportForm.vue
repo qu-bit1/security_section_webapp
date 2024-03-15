@@ -18,10 +18,8 @@ const props = defineProps({
 const form = useForm({
     serial_number: '',
     reported_at: new Date(),
-    shift: shiftOptions[0].value,
     description: '',
     venue: '',
-    status: statusOptions[0].value,
     dealing_officer: '',
     tags: [],
     attachments: [],

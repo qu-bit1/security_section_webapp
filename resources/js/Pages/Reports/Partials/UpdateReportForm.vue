@@ -24,12 +24,9 @@ const selectAll = ref(false);
 const form = useForm({
     reported_at: props.report.reported_at,
     dealing_officer: props.report.dealing_officer,
-    shift: props.report.shift,
     description: props.report.description,
     venue: props.report.venue,
     reporter: props.report.reporter,
-    category: '',
-    status: props.report.status,
     tags: props.report.tags.map(tag => tag.title),
     attachments: props.report.attachments.map(attachment => attachment.id),
 });

@@ -24,7 +24,6 @@ class Report extends Model
         'status',
         'approved',
         'venue',
-        'reporter',
         'approved_by',
         'dealing_officer',
         'approved_at',

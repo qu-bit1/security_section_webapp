@@ -76,11 +76,8 @@ class ReportController extends Controller
     {
         $report = Report::create([
             'serial_number' => $request->serial_number,
-            'shift' => $request->shift,
             'description' => $request->description,
-            'status' => $request->status,
             'venue' => $request->venue,
-            'reporter' => $request->reporter,
             'user_id' => auth()->user()->id,
             'reported_at' => Carbon::parse($request->reported_at ?? now()),
             'dealing_officer' => $request->dealing_officer,
@@ -163,11 +160,8 @@ class ReportController extends Controller
     public function update(UpdateReportRequest $request, Report $report): RedirectResponse
     {
         $report->update([
-            'shift' => $request->shift,
             'description' => $request->description,
-            'status' => $request->status,
             'venue' => $request->venue,
-            'reporter' => $request->reporter,
             'reported_at' => Carbon::parse($request->reported_at ?? now()),
             'dealing_officer' => $request->dealing_officer,
         ]);

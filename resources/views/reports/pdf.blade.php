@@ -68,15 +68,9 @@
         <h4>Venue</h4>
         <p class="text-gray-600 text-sm">{{ $report->venue ?? 'None' }}</p>
     </div>
-
     <div class="mb-4">
-        <h4>Reporter</h4>
-        <p class="text-gray-600 text-sm">{{ $report->reporter ?? 'None' }}</p>
-    </div>
-
-    <div class="mb-4">
-        <h4>Status</h4>
-        <p class="text-gray-600 text-sm">{{ $report->status ?? 'None' }}</p>
+        <h4>Dealing Officer</h4>
+        <p class="text-gray-600 text-sm">{{ $report->dealing_officer ?? 'None' }}</p>
     </div>
 
     <div class="mb-4">
@@ -86,7 +80,7 @@
 
     <div class="mb-4">
         <h4>Approved</h4>
-        <p class="text-gray-600 text-sm">{{ $report->approved ?? 'No' }}</p>
+        <p class="text-gray-600 text-sm">{{ $report->approved? "APPROVED" : 'PENDING' }}</p>
     </div>
 
     <div class="mb-4">
