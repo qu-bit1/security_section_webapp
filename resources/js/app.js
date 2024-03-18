@@ -6,7 +6,7 @@ import 'primeicons/primeicons.css'
 import {createApp, h} from 'vue';
 import {createInertiaApp} from '@inertiajs/vue3';
 import {resolvePageComponent} from 'laravel-vite-plugin/inertia-helpers';
-import {ZiggyVue} from '../../vendor/tightenco/ziggy/dist/vue.m';
+import { ZiggyVue } from 'ziggy-js';
 import {clickoutDirective} from "@/directives.js";
 import LaravelPermissionToVueJS from 'laravel-permission-to-vuejs'
 import PrimeVue from "primevue/config";
