@@ -2,8 +2,7 @@
     "version": 2,
     "framework": null,
     "builds": [
-        { "src": "/api/index.php", "use": "vercel-php@0.7.0" },
-        { "src": "/public/**", "use": "@vercel/static" }
+        { "src": "/api/index.php", "use": "vercel-php@0.7.0" }
     ],
     "functions": {
         "api/*.php": {
@@ -13,7 +12,12 @@
     "routes": [{
         "src": "/(.*)",
         "dest": "/api/index.php"
-    }],
+    },
+        {
+            "src": "/build/(.*)",
+            "dest": "public/build/$1"
+        }
+    ],
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "true",
