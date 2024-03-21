@@ -236,8 +236,7 @@ const onTagFilter = async (event) => {
                         {{ formatDate(data.data.created_at) }}
                     </template>
                     <template #filter="{ filterModel, filterCallback }">
-                        <Calendar v-model="filterModel.value" dateFormat="mm/dd/yy" hourFormat="24" mask="99/99/9999"
-                                  placeholder="mm/dd/yyyy" showTime @keyup.enter="filterCallback"/>
+                        <Calendar v-model="filterModel.value" showIcon touchUI iconDisplay="input" showTime @keyup.enter="filterCallback"/>
                     </template>
                 </Column>
 
@@ -251,6 +250,20 @@ const onTagFilter = async (event) => {
                             </template>
                             <ViewAttachments :report="data.data" class="mb-2"/>
                             <SecondaryButton :href="route('reports.show', data.data.id)+'#commentSection'" class="mb-2">{{ data.data.comments_count }} <Comment class="ml-0.5"/></SecondaryButton>
+                            <template v-if="data.data.approved">
+                                <div
+                                    v-tooltip="'approved'"
+                                    class="inline-flex items-center px-4 py-1.5 bg-white  text-emerald-500 border border-emerald-400 rounded-md font-bold text-base uppercase tracking-widest shadow-sm transition ease-in-out duration-150">
+                                    <i class="pi pi-check"/>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div
+                                    v-tooltip="'pending'"
+                                    class="inline-flex items-center px-4 py-1.5 bg-white  text-amber-500 border border-amber-400 rounded-md font-bold text-base uppercase tracking-widest shadow-sm transition ease-in-out duration-150">
+                                    <i class="pi pi-history"/>
+                                </div>
+                            </template>
                         </div>
                     </template>
                     <template #filter="{ filterModel, filterCallback }">

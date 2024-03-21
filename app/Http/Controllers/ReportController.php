@@ -7,7 +7,6 @@ use App\Enums\PermissionsEnum;
 use App\Enums\StatusEnum;
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
-use App\Models\Attachment;
 use App\Models\Remark;
 use App\Models\Report;
 use App\Models\Tag;
@@ -291,7 +290,7 @@ class ReportController extends Controller
                 $value = $filter['value'];
                 $matchMode = $filter['matchMode'];
 
-                if (empty($value)) {
+                if (!isset($value) || $value === '') {
                     continue;
                 }
 

@@ -57,20 +57,38 @@ const canCreateRemarks = () => {
 
     <AuthenticatedLayout>
         <template #header>
-            <div class="flex flex-row justify-end">
-                <template v-if="canCreateRemarks()">
-                    <CreateRemarkForm :key="report.id" :report="report" class="ml-2"/>
-                </template>
-                <DownloadReport :key="report.id" :reports="[report]"><Download/></DownloadReport>
-                <template v-if="canApproveReports() && !report.approved">
-                    <ApproveReportForm :reports="[report]" class="ml-2"/>
-                </template>
-                <template v-if="canEditReports() && !report.approved">
-                    <SecondaryButton :href="route('reports.edit', report.id)" class="ml-2"><Edit/></SecondaryButton>
-                </template>
-                <template v-if="canDeleteReports() && !report.approved">
-                    <DeleteReportForm :key="report.id" :reports="[report]" class="ml-2"/>
-                </template>
+            <div class="flex flex-row items-center">
+                <div class="flex-1">
+                    <template v-if="report.approved">
+                        <div
+                            v-tooltip="'approved'"
+                            class="inline-flex items-center px-4 py-1.5 bg-white  text-emerald-500 border border-emerald-400 rounded-md font-bold text-base uppercase tracking-widest shadow-sm transition ease-in-out duration-150">
+                            <i class="pi pi-check"/>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div
+                            v-tooltip="'pending'"
+                            class="inline-flex items-center px-4 py-1.5 bg-white  text-amber-500 border border-amber-400 rounded-md font-bold text-base uppercase tracking-widest shadow-sm transition ease-in-out duration-150">
+                            <i class="pi pi-history"/>
+                        </div>
+                    </template>
+                </div>
+                <div class="flex flex-row justify-end">
+                    <template v-if="canCreateRemarks()">
+                        <CreateRemarkForm :key="report.id" :report="report" class="ml-2"/>
+                    </template>
+                    <DownloadReport :key="report.id" :reports="[report]"><Download/></DownloadReport>
+                    <template v-if="canApproveReports() && !report.approved">
+                        <ApproveReportForm :reports="[report]" class="ml-2"/>
+                    </template>
+                    <template v-if="canEditReports() && !report.approved">
+                        <SecondaryButton :href="route('reports.edit', report.id)" class="ml-2"><Edit/></SecondaryButton>
+                    </template>
+                    <template v-if="canDeleteReports() && !report.approved">
+                        <DeleteReportForm :key="report.id" :reports="[report]" class="ml-2"/>
+                    </template>
+                </div>
             </div>
         </template>
 
