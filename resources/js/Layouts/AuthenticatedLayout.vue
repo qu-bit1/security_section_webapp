@@ -48,8 +48,11 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :active="route().current('tags.index')" :href="route('tags.index')">
                                     Tags
                                 </NavLink>
-                                <NavLink v-if="can('admin access')" :active="route().current('roles.index')" :href="route('roles.index')">
+                                <NavLink v-if="can('access roles')" :active="route().current('roles.index')" :href="route('roles.index')">
                                     Roles
+                                </NavLink>
+                                <NavLink v-if="can('assign roles')" :active="route().current('users.index')" :href="route('users.index')">
+                                    Users
                                 </NavLink>
                             </div>
                         </div>
@@ -145,9 +148,15 @@ const showingNavigationDropdown = ref(false);
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :active="route().current('roles.index')"
                                            :href="route('roles.index')"
-                                           v-if="can('admin access')"
+                                           v-if="can('access roles')"
                         >
                             Roles
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :active="route().current('users.index')"
+                                           :href="route('users.index')"
+                                           v-if="can('assign roles')"
+                        >
+                            Users
                         </ResponsiveNavLink>
                     </div>
 

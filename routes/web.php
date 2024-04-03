@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
@@ -37,6 +38,8 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth', 'admin'])->prefix("manage")->group(function (){
     Route::resource('roles', RoleController::class);
+    Route::get("/users", [UserController::class, 'index'])->name("users.index");
+    Route::put("/users/{id}/roles", [UserController::class, 'assignRoles'])->name("users.assignRoles");
 });
 
 Route::middleware('auth')->group(function () {

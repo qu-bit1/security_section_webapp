@@ -5,10 +5,12 @@ namespace App\Providers;
 use App\Models\Comment;
 use App\Models\Remark;
 use App\Models\Report;
+use App\Models\User;
 use App\Policies\CommentPolicy;
 use App\Policies\RemarkPolicy;
 use App\Policies\ReportPolicy;
 use App\Policies\RolePolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Spatie\Permission\Models\Role;
@@ -25,6 +27,7 @@ class AuthServiceProvider extends ServiceProvider
         Role::class => RolePolicy::class,
         Remark::class => RemarkPolicy::class,
         Comment::class => CommentPolicy::class,
+        User::class => UserPolicy::class,
     ];
 
     /**
