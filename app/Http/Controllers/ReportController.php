@@ -123,11 +123,11 @@ class ReportController extends Controller
         $query = Remark::query()->with('user');
         $remarks = [];
         if (auth()->user()->can(PermissionsEnum::ACCESS_ALL_REMARKS->value)) {
-            $remarks = $this->buildQuery($query, $params)
+            $remarks = buildQuery($query, $params)
                 ->paginate(perPage: $params["rows"]??25, page: ($params["page"]??0)+1)
                 ->withQueryString();
         } elseif (auth()->user()->can(PermissionsEnum::ACCESS_OWN_REMARKS->value)) {
-            $remarks = $this->buildQuery($query, $params)
+            $remarks = buildQuery($query, $params)
                 ->where('user_id', auth()->user()->id)
                 ->paginate(perPage: $params["rows"]??25, page: ($params["page"]??0)+1)
                 ->withQueryString();
