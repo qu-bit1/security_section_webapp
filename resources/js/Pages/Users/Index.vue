@@ -83,7 +83,7 @@ const onDisplayFilter = () => {
 
 
 <template>
-    <Head title="Permissions"/>
+    <Head title="Users"/>
     <AuthenticatedLayout>
         <template #header>
             <div class="flex flex-row ">

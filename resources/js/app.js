@@ -13,6 +13,8 @@ import PrimeVue from "primevue/config";
 import Lara from "@/presets/lara";
 import ToastService from 'primevue/toastservice';
 import Tooltip from 'primevue/tooltip';
+import { setupCalendar, Calendar, DatePicker } from 'v-calendar';
+import 'v-calendar/style.css';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -29,9 +31,12 @@ createInertiaApp({
                 unstyled: true,
                 pt: Lara,
             })
+            .use(setupCalendar, {})
             .use(ToastService)
             .directive('tooltip', Tooltip)
             .use(LaravelPermissionToVueJS)
+            .component('VDatePicker', DatePicker)
+            .component('VCalendar', Calendar)
             .provide("can", app.config.globalProperties.can)
             .provide("is", app.config.globalProperties.is)
             .directive('clickout', clickoutDirective)

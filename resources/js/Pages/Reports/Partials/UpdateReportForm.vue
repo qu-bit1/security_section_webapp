@@ -97,7 +97,17 @@ const onSelectAllChange = (event) => {
     <form @submit.prevent="submit">
         <div class="flex flex-col gap-2">
             <InputLabel for="reported_at" value="Reported At"/>
-            <Calendar v-model="form.reported_at" showButtonBar showTime showIcon touchUI iconDisplay="input"/>
+            <VDatePicker v-model="form.reported_at" mode="dateTime" color="teal" is24hr hide-time-header>
+                <template #default="{ inputValue, inputEvents }">
+                    <InputText
+                        class="w-full"
+                        :value="inputValue"
+                        v-on="inputEvents"
+                        autocomplete="reported_at"
+                        readonly
+                    />
+                </template>
+            </VDatePicker>
             <InputError :message="form.errors.reported_at"/>
         </div>
 

@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\MatchModeEnum;
 use App\Enums\PermissionsEnum;
-use App\Enums\StatusEnum;
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
 use App\Models\Remark;
@@ -14,7 +12,6 @@ use App\Services\ReportService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use STS\ZipStream\ZipStream;
