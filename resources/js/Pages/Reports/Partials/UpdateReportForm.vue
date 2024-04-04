@@ -4,14 +4,12 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import {Head, useForm} from '@inertiajs/vue3';
 import FilePicker from "@/Components/FilePicker.vue";
-import {shiftOptions, statusOptions} from "@/Compositions/Constants.js";
+import {statusOptions} from "@/Compositions/Constants.js";
 import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
-import Dropdown from "primevue/dropdown";
 import MultiSelect from "primevue/multiselect";
 import {ref} from "vue";
-import Calendar from "primevue/calendar";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
+import Calender from "@/Components/icons/Calender.vue";
 
 const props = defineProps({
     report: Object,
@@ -97,17 +95,19 @@ const onSelectAllChange = (event) => {
     <form @submit.prevent="submit">
         <div class="flex flex-col gap-2">
             <InputLabel for="reported_at" value="Reported At"/>
-            <VDatePicker v-model="form.reported_at" mode="dateTime" color="teal" is24hr hide-time-header>
-                <template #default="{ inputValue, inputEvents }">
+            <VueDatePicker v-model="form.reported_at">
+                <template #input-icon>
+                    <Calender class="mx-3"/>
+                </template>
+                <template #dp-input="{ value }">
                     <InputText
-                        class="w-full"
-                        :value="inputValue"
-                        v-on="inputEvents"
+                        class="w-full pl-8"
+                        :value="value"
                         autocomplete="reported_at"
                         readonly
                     />
                 </template>
-            </VDatePicker>
+            </VueDatePicker>
             <InputError :message="form.errors.reported_at"/>
         </div>
 

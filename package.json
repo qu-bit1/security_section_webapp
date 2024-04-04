@@ -19,12 +19,11 @@
         "vue": "^3.2.41"
     },
     "dependencies": {
-        "@popperjs/core": "^2.11.8",
+        "@vuepic/vue-datepicker": "^8.3.2",
         "laravel-permission-to-vuejs": "^3.0.2",
         "luxon": "^3.4.4",
         "primeicons": "^6.0.1",
         "primevue": "^3.49.1",
-        "v-calendar": "^3.1.2",
         "ziggy-js": "^2.0.4"
     }
 }
