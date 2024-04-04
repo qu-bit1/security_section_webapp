@@ -10,6 +10,7 @@ import Textarea from "primevue/textarea";
 import MultiSelect from "primevue/multiselect";
 import {ref} from "vue";
 import Calender from "@/Components/icons/Calender.vue";
+import {DateTime} from "luxon";
 
 const props = defineProps({
     report: Object,
@@ -20,7 +21,7 @@ const tagOptions = ref(props.tags);
 const selectAll = ref(false);
 
 const form = useForm({
-    reported_at: props.report.reported_at,
+    reported_at: DateTime.fromSQL(props.report.reported_at, {zone: 'utc'}).toJSDate(),
     dealing_officer: props.report.dealing_officer,
     description: props.report.description,
     venue: props.report.venue,
