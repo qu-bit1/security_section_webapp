@@ -12,6 +12,7 @@ import Download from "@/Components/icons/Download.vue";
 import Edit from "@/Components/icons/Edit.vue";
 import ApproveReportForm from "@/Pages/Reports/Partials/ApproveReportForm.vue";
 import Tag from "primevue/tag";
+import {DateTime} from "luxon";
 
 defineProps({
     report: Object,
@@ -116,6 +117,9 @@ const canCreateRemarks = () => {
                                 </div>
                             </template>
                         </div>
+                    </template>
+                    <template v-else-if="field.key === 'reported_at'">
+                        <span>{{ DateTime.fromSQL(report[field.key], {zone: 'utc'}).toJSDate().toLocaleString() }}</span>
                     </template>
                     <template v-else>
                         <span>{{ report[field.key] }}</span>

@@ -5,6 +5,7 @@ import CreateReportForm from "@/Pages/Reports/Partials/CreateReportForm.vue";
 
 const props = defineProps({
     tags: Object,
+    params : Object
 })
 </script>
 
@@ -17,7 +18,7 @@ const props = defineProps({
         </template>
 
         <div class="px-4 pb-4 sm:px-8 sm:pb-8">
-            <CreateReportForm :tags="tags" class="max-w-xl"/>
+            <CreateReportForm :tags="tags" :params="params" class="max-w-xl"/>
         </div>
     </AuthenticatedLayout>
 </template>

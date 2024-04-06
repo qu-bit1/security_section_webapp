@@ -107,6 +107,7 @@ class ReportController extends Controller
                 ->orderBy("reports_count", "desc")
                 ->limit(10)
                 ->get(),
+            "params" => request()->all(),
         ]);
     }
 

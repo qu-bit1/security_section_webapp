@@ -60,9 +60,22 @@ const showingNavigationDropdown = ref(false);
                             class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex justify-end flex-1 items-center"
                         >
                             <div v-if="can('create reports')">
-                                <PrimaryButton :href="route('reports.create')">
-                                    New Report
-                                </PrimaryButton>
+                                <div class="ms-3 relative">
+                                    <Dropdown align="right" width="48">
+                                        <template #trigger>
+                                            <span class="inline-flex rounded-md">
+                                                <PrimaryButton>
+                                                    New Report
+                                                </PrimaryButton>
+                                            </span>
+                                        </template>
+
+                                        <template #content>
+                                            <DropdownLink :href="route('reports.create', {'type': 'normal'})">Normal Report</DropdownLink>
+                                            <DropdownLink :href="route('reports.create')">New Report</DropdownLink>
+                                        </template>
+                                    </Dropdown>
+                                </div>
                             </div>
                         </div>
                         <div class="hidden sm:flex sm:items-center sm:ms-6">

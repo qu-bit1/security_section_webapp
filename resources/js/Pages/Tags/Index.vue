@@ -67,14 +67,14 @@ const onPage = (event) => {
         <div class="p-2 pb-2 sm:px-6 sm:pb-6 lg:px-8 lg:pb-8">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
                 <template v-for="tag in tags.data">
-                    <Card>
-                        <template #subtitle>
-                            <Tag :value="tag.title" class="mr-2 mb-2"/>
-                        </template>
-                        <template #content>
-                            {{ tag.description }}
-                        </template>
-                    </Card>
+                    <div class="border shadow-sm rounded-lg bg-white">
+                        <div class="p-4">
+                            <Tag :value="tag.title" class="mr-2"/>
+                        </div>
+                        <div class="p-4 border-t" v-if="tag.description">
+                            <h2 class="text-base font-medium text-gray-900"> {{ tag.description }}</h2>
+                        </div>
+                    </div>
                 </template>
             </div>
             <Paginator v-model:first="first" @page="onPage($event)" :rows="rows" :totalRecords="totalRecords" :rowsPerPageOptions="perPageOptions"/>
