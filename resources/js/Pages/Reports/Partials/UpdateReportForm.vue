@@ -15,13 +15,16 @@ import {DateTime} from "luxon";
 const props = defineProps({
     report: Object,
     tags: Object,
+    params : Object,
 });
 
 const tagOptions = ref(props.tags);
 const selectAll = ref(false);
 
 const form = useForm({
+    type : props.params.type,
     reported_at: DateTime.fromSQL(props.report.reported_at, {zone: 'utc'}).toJSDate(),
+    shift: props.report.shift,
     dealing_officer: props.report.dealing_officer,
     description: props.report.description,
     venue: props.report.venue,
@@ -34,9 +37,8 @@ const submit = () => {
     form.put(route('reports.update', props.report.id));
 };
 
-const markAsNormal = () => {
-    form.status = statusOptions[0].value;
-    form.description = "Reported as normal";
+const isNormal = () => {
+    return props.params.type === statusOptions[0].value;
 };
 
 const onFilter = async (event) => {
@@ -112,59 +114,81 @@ const onSelectAllChange = (event) => {
             <InputError :message="form.errors.reported_at"/>
         </div>
 
-        <div class="flex flex-col gap-2 mt-4">
-            <InputLabel for="tags" value="Tags"/>
-            <MultiSelect
-                v-model="form.tags"
-                data-key="title"
-                display="chip"
-                :options="tagOptions"
-                filter
-                optionLabel="title"
-                optionValue="title"
-                placeholder="Select tags"
-                class="w-full"
-                @filter="onFilter"
-                @selectallChange="onSelectAllChange($event)"
-                @change="onChange($event)"
-            />
-            <InputError :message="form.errors.tags"/>
+        <div class="flex flex-col gap-2 mt-4" v-if="isNormal()">
+            <InputLabel for="shift" value="Shift" required/>
+            <VueDatePicker v-model="form.shift"
+                           :range="{ disableTimeRangeValidation: true, partialRange: false }"
+                           placeholder="Select shift"
+                           required
+            >
+                <template #input-icon>
+                    <Calender class="mx-3"/>
+                </template>
+                <template #dp-input="{ value }">
+                    <InputText
+                        class="w-full pl-8"
+                        :value="value"
+                        autocomplete="reported_at"
+                        readonly
+                        required
+                    />
+                </template>
+            </VueDatePicker>
         </div>
+        <template v-if="!isNormal()">
+            <div class="flex flex-col gap-2 mt-4">
+                <InputLabel for="tags" value="Tags"/>
+                <MultiSelect
+                    v-model="form.tags"
+                    data-key="title"
+                    display="chip"
+                    :options="tagOptions"
+                    filter
+                    optionLabel="title"
+                    optionValue="title"
+                    placeholder="Select tags"
+                    class="w-full"
+                    @filter="onFilter"
+                    @selectallChange="onSelectAllChange($event)"
+                    @change="onChange($event)"
+                />
+                <InputError :message="form.errors.tags"/>
+            </div>
 
-        <div class="flex flex-col gap-2 mt-4">
-            <InputLabel for="description" value="Description"/>
-            <Textarea id="description" v-model="form.description" autocomplete="description" autoResize rows="5" cols="30" />
-            <InputError :message="form.errors.description"/>
-        </div>
+            <div class="flex flex-col gap-2 mt-4">
+                <InputLabel for="description" value="Description"/>
+                <Textarea id="description" v-model="form.description" autocomplete="description" autoResize rows="5" cols="30" />
+                <InputError :message="form.errors.description"/>
+            </div>
 
-        <div class="mt-4">
-            <InputLabel value="Attachments"/>
-            <FilePicker v-model="form.attachments" :attachments="report.attachments" class="mt-2"/>
-            <InputError :message="form.errors.attachments" class="mt-2"/>
-        </div>
+            <div class="mt-4">
+                <InputLabel value="Attachments"/>
+                <FilePicker v-model="form.attachments" :attachments="report.attachments" class="mt-2"/>
+                <InputError :message="form.errors.attachments" class="mt-2"/>
+            </div>
 
-        <div class="flex flex-col gap-2 mt-4">
-            <InputLabel for="dealing_officer" value="Dealing Officer"/>
-            <InputText
-                type="text"
-                id="dealing_officer"
-                v-model="form.dealing_officer"
-                autocomplete="dealing_officer"
-            />
-            <InputError :message="form.errors.dealing_officer"/>
-        </div>
+            <div class="flex flex-col gap-2 mt-4">
+                <InputLabel for="dealing_officer" value="Dealing Officer"/>
+                <InputText
+                    type="text"
+                    id="dealing_officer"
+                    v-model="form.dealing_officer"
+                    autocomplete="dealing_officer"
+                />
+                <InputError :message="form.errors.dealing_officer"/>
+            </div>
 
-        <div class="flex flex-col gap-2 mt-4">
-            <InputLabel for="venue" value="Venue"/>
-            <InputText
-                type="text"
-                id="venue"
-                v-model="form.venue"
-                autocomplete="venue"
-            />
-            <InputError :message="form.errors.venue"/>
-        </div>
-
+            <div class="flex flex-col gap-2 mt-4">
+                <InputLabel for="venue" value="Venue"/>
+                <InputText
+                    type="text"
+                    id="venue"
+                    v-model="form.venue"
+                    autocomplete="venue"
+                />
+                <InputError :message="form.errors.venue"/>
+            </div>
+        </template>
         <div v-if="can('edit own reports | edit all reports')" class="sticky bg-surface-0 border-t border-t-surface-200 bottom-0 start-0 z-50 flex items-center justify-end mt-4 py-4">
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4">
                 Update Report

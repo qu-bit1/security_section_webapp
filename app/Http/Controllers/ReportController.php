@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PermissionsEnum;
+use App\Enums\StatusEnum;
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
 use App\Models\Remark;
@@ -74,14 +75,27 @@ class ReportController extends Controller
      */
     public function store(StoreReportRequest $request): RedirectResponse
     {
-        $report = Report::create([
+        $data = [
             'serial_number' => $request->serial_number,
             'description' => $request->description,
             'venue' => $request->venue,
             'user_id' => auth()->user()->id,
             'reported_at' => Carbon::parse($request->reported_at ?? now()),
             'dealing_officer' => $request->dealing_officer,
-        ]);
+        ];
+
+        if ($request->type === StatusEnum::NORMAL->value) {
+            $data['status'] = StatusEnum::NORMAL->value;
+            if ($request->has('shift')) {
+                $shift = $request->shift;
+
+                if (is_array($shift) && count($shift) === 2) {
+                    $data['shift'] = sprintf("%s - %s", $shift[0], $shift[1]);
+                }
+            }
+        }
+
+        $report = Report::create($data);
 
         $report->attachments()->attach($request->attachments);
         $tagIds = [];
@@ -122,10 +136,12 @@ class ReportController extends Controller
         $remarks = [];
         if (auth()->user()->can(PermissionsEnum::ACCESS_ALL_REMARKS->value)) {
             $remarks = buildQuery($query, $params)
+                ->where('report_id', $report->id)
                 ->paginate(perPage: $params["rows"]??25, page: ($params["page"]??0)+1)
                 ->withQueryString();
         } elseif (auth()->user()->can(PermissionsEnum::ACCESS_OWN_REMARKS->value)) {
             $remarks = buildQuery($query, $params)
+                ->where('report_id', $report->id)
                 ->where('user_id', auth()->user()->id)
                 ->paginate(perPage: $params["rows"]??25, page: ($params["page"]??0)+1)
                 ->withQueryString();
@@ -145,6 +161,13 @@ class ReportController extends Controller
      */
     public function edit(Report $report): Response
     {
+        $params = [];
+
+        if ($report->status === StatusEnum::NORMAL->value) {
+            $params['type'] = 'normal';
+            $report->shift = explode(" - ", $report->shift);
+        }
+
         return Inertia::render('Reports/Edit', [
             'report' => $report->load('users', 'attachments', "tags"),
             'tags' => Tag::query()
@@ -152,6 +175,7 @@ class ReportController extends Controller
                 ->orderBy("reports_count", "desc")
                 ->limit(10)
                 ->get(),
+            'params' => $params,
         ]);
     }
 
@@ -160,12 +184,24 @@ class ReportController extends Controller
      */
     public function update(UpdateReportRequest $request, Report $report): RedirectResponse
     {
-        $report->update([
+        $data = [
             'description' => $request->description,
             'venue' => $request->venue,
             'reported_at' => Carbon::parse($request->reported_at ?? now()),
             'dealing_officer' => $request->dealing_officer,
-        ]);
+        ];
+
+        if ($request->type === StatusEnum::NORMAL->value) {
+            if ($request->has('shift')) {
+                $shift = $request->shift;
+
+                if (is_array($shift) && count($shift) === 2) {
+                    $data['shift'] = sprintf("%s - %s", $shift[0], $shift[1]);
+                }
+            }
+        }
+
+        $report->update($data);
 
         $report->attachments()->sync($request->attachments);
 

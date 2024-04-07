@@ -6,6 +6,7 @@ import UpdateReportForm from "@/Pages/Reports/Partials/UpdateReportForm.vue";
 const props = defineProps({
     report: Object,
     tags: Object,
+    params : Object,
 })
 </script>
 
@@ -18,7 +19,7 @@ const props = defineProps({
         </template>
 
         <div class="px-4 pb-4 sm:px-8 sm:pb-8">
-            <UpdateReportForm :report="report" :tags="tags"/>
+            <UpdateReportForm :report="report" :tags="tags" :params="params"/>
         </div>
     </AuthenticatedLayout>
 </template>

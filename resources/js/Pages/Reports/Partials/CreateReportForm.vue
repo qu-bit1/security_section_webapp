@@ -17,6 +17,7 @@ const props = defineProps({
 });
 
 const form = useForm({
+    type: props.params.type,
     serial_number: '',
     shift: undefined,
     reported_at: new Date(),
@@ -120,9 +121,9 @@ const onSelectAllChange = (event) => {
         <div class="flex flex-col gap-2 mt-4" v-if="isNormal()">
             <InputLabel for="shift" value="Shift" required/>
             <VueDatePicker v-model="form.shift"
-                           time-picker
-                           :range="{ disableTimeRangeValidation: true }"
+                           :range="{ disableTimeRangeValidation: true, partialRange: false }"
                            placeholder="Select shift"
+                           required
             >
                 <template #input-icon>
                     <Calender class="mx-3"/>
@@ -133,6 +134,7 @@ const onSelectAllChange = (event) => {
                         :value="value"
                         autocomplete="reported_at"
                         readonly
+                        required
                     />
                 </template>
             </VueDatePicker>
