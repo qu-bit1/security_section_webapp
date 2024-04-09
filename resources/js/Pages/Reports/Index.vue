@@ -22,6 +22,7 @@ import ApproveReportForm from "@/Pages/Reports/Partials/ApproveReportForm.vue";
 import Tag from "primevue/tag";
 import Comment from "@/Components/icons/Comment.vue";
 import TriStateCheckbox from "primevue/tristatecheckbox";
+import Attachment from "@/Components/icons/Attachment.vue";
 
 const props = defineProps({
     reports: Object,
@@ -114,10 +115,6 @@ const onTagFilter = async (event) => {
 <template>
     <Head title="Reports"/>
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl leading-tight">Reports</h2>
-        </template>
-
         <div class="m-auto">
             <DataTable
                 v-model:selection="selectedReports"
@@ -177,8 +174,22 @@ const onTagFilter = async (event) => {
 
                 <Column field="serial_number" header="S.NO." sortable>
                     <template #body="data">
-                        <Link :href="route('reports.show', data.data.id)">
+                        <Link :href="route('reports.show', data.data.id)" class="whitespace-nowrap">
                             {{ data.data.serial_number }}
+                            <template v-if="data.data.approved">
+                                <div
+                                    v-tooltip="'approved'"
+                                    class="inline-flex items-center text-emerald-500 font-bold text-base tracking-widest ml-1">
+                                    <i class="pi pi-check"/>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div
+                                    v-tooltip="'pending'"
+                                    class="inline-flex items-center text-amber-500 font-bold text-base tracking-widest ml-1">
+                                    <i class="pi pi-history"/>
+                                </div>
+                            </template>
                         </Link>
                     </template>
                     <template #filter="{filterModel, filterCallback}">
@@ -189,8 +200,22 @@ const onTagFilter = async (event) => {
 
                 <Column field="description" filterField="description" header="Description">
                     <template #body="data">
-                        <div v-tooltip="data.data?.description">
-                            {{ truncate(data.data.description, 10)}}
+                        <div v-tooltip="data.data?.description" v-if="data.data.description" class="mb-2 block">
+                            <Link :href="route('reports.show', data.data.id)" >
+                                {{ truncate(data.data.description, 10)}}
+                            </Link>
+                        </div>
+                        <div class="flex flex-row justify-end gap-4">
+                            <div
+                                class="inline-flex items-center"
+                            >
+                                {{ data.data.attachments.length }} <Attachment class="ml-1"/>
+                            </div>
+                            <div class="inline-flex items-center">
+                                <Link :href="route('reports.show', data.data.id)+'#commentSection'">
+                                    {{ data.data.comments_count }} <Comment class="ml-1"/>
+                                </Link>
+                            </div>
                         </div>
                     </template>
                     <template #filter="{filterModel, filterCallback}">
@@ -247,22 +272,6 @@ const onTagFilter = async (event) => {
                         <div class="flex flex-col justify-start items-start">
                             <template v-if="canEditReports() && !data.data.approved">
                                 <SecondaryButton :href="route('reports.edit', data.data.id)" class="mb-2"><Edit/></SecondaryButton>
-                            </template>
-                            <ViewAttachments :report="data.data" class="mb-2"/>
-                            <SecondaryButton :href="route('reports.show', data.data.id)+'#commentSection'" class="mb-2">{{ data.data.comments_count }} <Comment class="ml-0.5"/></SecondaryButton>
-                            <template v-if="data.data.approved">
-                                <div
-                                    v-tooltip="'approved'"
-                                    class="inline-flex items-center px-4 py-1.5 bg-white  text-emerald-500 border border-emerald-400 rounded-md font-bold text-base uppercase tracking-widest shadow-sm transition ease-in-out duration-150">
-                                    <i class="pi pi-check"/>
-                                </div>
-                            </template>
-                            <template v-else>
-                                <div
-                                    v-tooltip="'pending'"
-                                    class="inline-flex items-center px-4 py-1.5 bg-white  text-amber-500 border border-amber-400 rounded-md font-bold text-base uppercase tracking-widest shadow-sm transition ease-in-out duration-150">
-                                    <i class="pi pi-history"/>
-                                </div>
                             </template>
                         </div>
                     </template>

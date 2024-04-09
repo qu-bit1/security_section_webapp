@@ -50,7 +50,6 @@ const onPage = (event) => {
     <AuthenticatedLayout>
         <template #header>
             <div class="flex flex-row">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Tags</h2>
                 <div class="flex-1 flex justify-end">
                     <PrimaryButton :href="route('tags.create')" class="ml-2">
                         New Tag

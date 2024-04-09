@@ -64,9 +64,32 @@ class Report extends Model
     {
         parent::boot();
 
+        static::creating(function ($report) {
+            $report->serial_number = static::generateSerialNumber();
+        });
+
         static::deleting(function ($report) {
             $report->attachments()->detach();
             $report->tags()->detach();
         });
+    }
+
+    public static function generateSerialNumber(): string
+    {
+        $year = date('y');
+        $latestReport = Report::where('serial_number', 'like', "IITK-$year-%")->withTrashed()->latest()->first();
+        if ($latestReport) {
+            $serialNumber = explode('-', $latestReport->serial_number);
+            $latestNumber = intval($serialNumber[2]);
+            $nextNumber = $latestNumber + 1;
+        } else {
+            $nextNumber = 1;
+        }
+
+        if ($nextNumber < 1000){
+            return "IITK-$year-" . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        } else {
+            return "IITK-$year-" . $nextNumber;
+        }
     }
 }

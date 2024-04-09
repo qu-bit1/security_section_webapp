@@ -99,14 +99,17 @@ const canCreateRemarks = () => {
                 <div class="mb-1">
                     <h3 :class="getHeadingClass(field.inline)">{{ field.label }} {{ field.inline ? ':' : '' }}</h3>
                     <template v-if="field.key === 'tags'">
-                        <div class="flex">
+                        <div class="flex" v-if="report[field.key].length > 0">
                             <template v-for="tag in report[field.key]">
                                 <Tag :value="tag.title" class="mr-2 mb-2"/>
                             </template>
                         </div>
+                        <div v-else>
+                            <span>NA</span>
+                        </div>
                     </template>
-                    <template v-else-if="field.key === 'attachments' && report[field.key].length > 0">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:md:grid-cols-4 gap-4">
+                    <template v-else-if="field.key === 'attachments'">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:md:grid-cols-4 gap-4"  v-if="report[field.key].length > 0">
                             <template v-for="attachment in report[field.key]">
                                 <div class="border shadow-sm rounded-lg bg-white">
                                     <img :alt="'preview of '+attachment.name" :src="attachment.path"
@@ -117,12 +120,15 @@ const canCreateRemarks = () => {
                                 </div>
                             </template>
                         </div>
+                        <div v-else>
+                            <span>NA</span>
+                        </div>
                     </template>
                     <template v-else-if="field.key === 'reported_at'">
                         <span>{{ DateTime.fromSQL(report[field.key], {zone: 'utc'}).toJSDate().toLocaleString() }}</span>
                     </template>
                     <template v-else>
-                        <span>{{ report[field.key] }}</span>
+                        <span>{{ report[field.key] ?? "NA" }}</span>
                     </template>
                 </div>
             </template>

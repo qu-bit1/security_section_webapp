@@ -85,13 +85,7 @@ const onDisplayFilter = () => {
 <template>
     <Head title="Users"/>
     <AuthenticatedLayout>
-        <template #header>
-            <div class="flex flex-row ">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Users</h2>
-            </div>
-        </template>
-
-        <div class="py-4 not-prose">
+        <div class="not-prose">
             <DataTable
                 sortMode="multiple"
                 removableSort

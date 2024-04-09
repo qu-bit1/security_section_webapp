@@ -56,6 +56,7 @@ class ReportController extends Controller
         ];
 
         $reports = buildQuery($query, $params, $fieldMappings)
+            ->orderBy('updated_at', 'desc')
             ->paginate(perPage: $params["rows"]??25, page: ($params["page"]??0)+1)
             ->withQueryString();
 
@@ -75,8 +76,8 @@ class ReportController extends Controller
      */
     public function store(StoreReportRequest $request): RedirectResponse
     {
+        $tags = $request->tags;
         $data = [
-            'serial_number' => $request->serial_number,
             'description' => $request->description,
             'venue' => $request->venue,
             'user_id' => auth()->user()->id,
@@ -93,13 +94,16 @@ class ReportController extends Controller
                     $data['shift'] = sprintf("%s - %s", $shift[0], $shift[1]);
                 }
             }
+            if (!in_array('normal', $tags)) {
+                $tags[] = 'normal';
+            }
         }
 
         $report = Report::create($data);
 
         $report->attachments()->attach($request->attachments);
         $tagIds = [];
-        foreach ($request->tags as $tag) {
+        foreach ($tags as $tag) {
             $tag = Tag::firstOrCreate(['title' => $tag], ['user_id' => auth()->user()->id]);
             if ($tag) {
                 $tagIds[] = $tag->id;
@@ -184,6 +188,8 @@ class ReportController extends Controller
      */
     public function update(UpdateReportRequest $request, Report $report): RedirectResponse
     {
+        $tags = $request->tags;
+
         $data = [
             'description' => $request->description,
             'venue' => $request->venue,
@@ -192,6 +198,10 @@ class ReportController extends Controller
         ];
 
         if ($request->type === StatusEnum::NORMAL->value) {
+            if (!in_array('normal', $tags)) {
+                $tags[] = 'normal';
+            }
+
             if ($request->has('shift')) {
                 $shift = $request->shift;
 
@@ -206,7 +216,7 @@ class ReportController extends Controller
         $report->attachments()->sync($request->attachments);
 
         $tagIds = [];
-        foreach ($request->tags as $tag) {
+        foreach ($tags as $tag) {
             $tag = Tag::firstOrCreate(['title' => $tag], ['user_id' => auth()->user()->id]);
             if ($tag) {
                 $tagIds[] = $tag->id;

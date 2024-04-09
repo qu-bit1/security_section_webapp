@@ -18,7 +18,6 @@ const props = defineProps({
 
 const form = useForm({
     type: props.params.type,
-    serial_number: '',
     shift: undefined,
     reported_at: new Date(),
     description: '',
@@ -37,11 +36,6 @@ const submit = () => {
 
 const isNormal = () => {
     return props.params.type === statusOptions[0].value;
-};
-
-const markAsNormal = () => {
-    form.status = statusOptions[0].value;
-    form.description = "Reported as normal";
 };
 
 const onFilter = async (event) => {
@@ -140,16 +134,6 @@ const onSelectAllChange = (event) => {
             </VueDatePicker>
         </div>
 
-        <div class="flex flex-col gap-2 mt-4">
-            <InputLabel for="serial_number" value="Serial Number" required/>
-            <InputText
-                id="serial_number"
-                v-model="form.serial_number"
-                autocomplete="serial_number"
-            />
-            <InputError :message="form.errors.serial_number"/>
-        </div>
-
         <template v-if="!isNormal()">
             <div class="flex flex-col gap-2 mt-4">
                 <InputLabel for="tags" value="Tags"/>
@@ -204,7 +188,7 @@ const onSelectAllChange = (event) => {
                 <InputError :message="form.errors.venue"/>
             </div>
         </template>
-        <div v-if="can('create reports')" class="sticky bg-surface-0 border-t border-t-surface-200 bottom-0 start-0 z-50 flex items-center justify-end mt-4 py-4">
+        <div v-if="can('create reports')" :class="'sticky bg-surface-0 bottom-0 start-0 z-50 flex items-center justify-end mt-4 py-4 ' + (!isNormal() ? 'border-t border-t-surface-200':'')">
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4">
                 Create Report
             </PrimaryButton>
