@@ -88,13 +88,10 @@ class ReportController extends Controller
         if ($request->type === StatusEnum::NORMAL->value) {
             $data['status'] = StatusEnum::NORMAL->value;
             $data['description'] = Report::defaultDescription();
-            if ($request->has('shift')) {
-                $shift = $request->shift;
+            $shiftDate = Carbon::parse($request->shift_date)->toDateString();
+            $shiftRange = $request->shift_range;
 
-                if (is_array($shift) && count($shift) === 2) {
-                    $data['shift'] = sprintf("%s - %s", $shift[0], $shift[1]);
-                }
-            }
+            $data['shift'] = sprintf("%s, %s", $shiftDate, $shiftRange);
             if (!in_array('normal', $tags)) {
                 $tags[] = 'normal';
             }
@@ -203,13 +200,10 @@ class ReportController extends Controller
                 $tags[] = 'normal';
             }
 
-            if ($request->has('shift')) {
-                $shift = $request->shift;
+            $shiftDate = Carbon::parse($request->shift_date)->toDateString();
+            $shiftRange = $request->shift_range;
 
-                if (is_array($shift) && count($shift) === 2) {
-                    $data['shift'] = sprintf("%s - %s", $shift[0], $shift[1]);
-                }
-            }
+            $data['shift'] = sprintf("%s, %s", $shiftDate, $shiftRange);
         }
 
         $report->update($data);

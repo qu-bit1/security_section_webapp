@@ -4,13 +4,14 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import {Head, useForm} from '@inertiajs/vue3';
 import FilePicker from "@/Components/FilePicker.vue";
-import {statusOptions} from "@/Compositions/Constants.js";
+import {shiftOptions, statusOptions} from "@/Compositions/Constants.js";
 import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
 import MultiSelect from "primevue/multiselect";
 import {ref} from "vue";
 import Calender from "@/Components/icons/Calender.vue";
 import {DateTime} from "luxon";
+import Dropdown from "primevue/dropdown";
 
 const props = defineProps({
     report: Object,
@@ -21,10 +22,13 @@ const props = defineProps({
 const tagOptions = ref(props.tags);
 const selectAll = ref(false);
 
+const shift = ref(props.report.shift);
+const shiftSplit = shift.value.toString().split(',')
 const form = useForm({
     type : props.params.type,
     reported_at: DateTime.fromSQL(props.report.reported_at, {zone: 'utc'}).toJSDate(),
-    shift: props.report.shift,
+    shift_date: DateTime.fromSQL(shiftSplit[0], {zone: 'utc'}).toJSDate(),
+    shift_range: shiftSplit[1].trim(),
     dealing_officer: props.report.dealing_officer,
     description: props.report.description,
     venue: props.report.venue,
@@ -96,9 +100,9 @@ const onSelectAllChange = (event) => {
     <Head title="Edit Report"/>
 
     <form @submit.prevent="submit">
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-2" v-if="!isNormal()">
             <InputLabel for="reported_at" value="Reported At"/>
-            <VueDatePicker v-model="form.reported_at">
+            <VueDatePicker v-model="form.reported_at" format="dd/MM/yyyy HH:mm">
                 <template #input-icon>
                     <Calender class="mx-3"/>
                 </template>
@@ -116,25 +120,43 @@ const onSelectAllChange = (event) => {
 
         <div class="flex flex-col gap-2 mt-4" v-if="isNormal()">
             <InputLabel for="shift" value="Shift" required/>
-            <VueDatePicker v-model="form.shift"
-                           :range="{ disableTimeRangeValidation: true, partialRange: false }"
-                           placeholder="Select shift"
-                           required
-            >
-                <template #input-icon>
-                    <Calender class="mx-3"/>
-                </template>
-                <template #dp-input="{ value }">
-                    <InputText
-                        class="w-full pl-8"
-                        :value="value"
-                        autocomplete="reported_at"
-                        readonly
+            <div class="flex items-center gap-4 flex-col md:flex-row">
+                <div class="flex-auto w-full">
+                    <VueDatePicker v-model="form.shift_date" format="dd/MM/yyyy" :enable-time-picker="false">
+                        <template #input-icon>
+                            <Calender class="mx-3"/>
+                        </template>
+                        <template #dp-input="{ value }">
+                            <InputText
+                                class="w-full pl-8"
+                                :value="value"
+                                placeholder="Select date"
+                                autocomplete="shift_at"
+                                readonly
+                            />
+                        </template>
+                    </VueDatePicker>
+                    <InputError :message="form.errors.shift_date"/>
+                </div>
+                <div class="hidden md:block">
+                    -
+                </div>
+                <div class="flex-auto w-full">
+                    <Dropdown
+                        v-model="form.shift_range"
+                        :options="shiftOptions"
+                        placeholder="Select range"
+                        optionLabel="label"
+                        optionValue="value"
+                        class="w-full"
                         required
                     />
-                </template>
-            </VueDatePicker>
+                    <InputError :message="form.errors.shift_range"/>
+                </div>
+            </div>
         </div>
+        <InputError :message="form.errors.type"/>
+
         <template v-if="!isNormal()">
             <div class="flex flex-col gap-2 mt-4">
                 <InputLabel for="tags" value="Tags"/>
@@ -189,7 +211,7 @@ const onSelectAllChange = (event) => {
                 <InputError :message="form.errors.venue"/>
             </div>
         </template>
-        <div v-if="can('edit own reports | edit all reports')" class="sticky bg-surface-0 border-t border-t-surface-200 bottom-0 start-0 z-50 flex items-center justify-end mt-4 py-4">
+        <div v-if="can('edit own reports | edit all reports')" :class="'sticky bg-surface-0 bottom-0 start-0 z-50 flex items-center justify-end mt-4 py-4 ' + (!isNormal() ? 'border-t border-t-surface-200':'')">
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4">
                 Update Report
             </PrimaryButton>
