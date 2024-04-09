@@ -6,6 +6,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import {Head, Link, useForm} from '@inertiajs/vue3';
+import axios from "axios";
 
 defineProps({
     canResetPassword: {
@@ -25,6 +26,13 @@ const form = useForm({
 const submit = () => {
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
+        onSuccess: async () =>{
+            await axios.get('/get-permissions').then(
+                response => {
+                    window.Laravel.jsPermissions = response.data;
+                }
+            );
+        }
     });
 };
 </script>

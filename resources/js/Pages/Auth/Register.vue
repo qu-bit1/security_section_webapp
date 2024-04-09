@@ -5,6 +5,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import {Head, Link, useForm} from '@inertiajs/vue3';
+import axios from "axios";
 
 const form = useForm({
     name: '',
@@ -16,6 +17,13 @@ const form = useForm({
 const submit = () => {
     form.post(route('register'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
+        onSuccess: async () => {
+            await axios.get('/get-permissions').then(
+                response => {
+                    window.Laravel.jsPermissions = response.data;
+                }
+            );
+        }
     });
 };
 </script>

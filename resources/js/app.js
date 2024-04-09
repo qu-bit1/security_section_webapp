@@ -8,15 +8,16 @@ import {createInertiaApp} from '@inertiajs/vue3';
 import {resolvePageComponent} from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from 'ziggy-js';
 import {clickoutDirective} from "@/directives.js";
-import LaravelPermissionToVueJS from 'laravel-permission-to-vuejs'
 import PrimeVue from "primevue/config";
 import Lara from "@/presets/lara";
 import ToastService from 'primevue/toastservice';
 import Tooltip from 'primevue/tooltip';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import LaravelPermissionToVueJS from 'laravel-permission-to-vuejs'
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

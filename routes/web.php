@@ -22,14 +22,8 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return redirect()->route('dashboard');
 })->name('home');
 
 Route::get('/dashboard', function () {
@@ -64,6 +58,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/tags/search', [TagController::class, 'search'])->name('tags.search');
 
     Route::resource('attachments', AttachmentController::class);
+});
+
+Route::get('/get-permissions', function () {
+    return auth()->check()?auth()->user()->jsPermissions():0;
 });
 
 require __DIR__.'/auth.php';
