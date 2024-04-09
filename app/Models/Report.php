@@ -60,6 +60,11 @@ class Report extends Model
         return $this->hasMany(Remark::class);
     }
 
+    public static function defaultDescription(): string
+    {
+        return 'everything was normal no issues reported.';
+    }
+
     protected static function boot(): void
     {
         parent::boot();

@@ -87,6 +87,7 @@ class ReportController extends Controller
 
         if ($request->type === StatusEnum::NORMAL->value) {
             $data['status'] = StatusEnum::NORMAL->value;
+            $data['description'] = Report::defaultDescription();
             if ($request->has('shift')) {
                 $shift = $request->shift;
 
