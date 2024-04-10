@@ -66,7 +66,7 @@ const onPage = (event) => {
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
                 <template v-for="attachment in attachments.data">
                     <div class="border shadow-sm rounded-lg bg-white">
-                        <img :alt="'preview of '+attachment.name" :src="attachment.path"
+                        <img :alt="'preview of '+attachment.name" :src="'/storage/'+attachment.path"
                              class="w-full h-32 object-cover"/>
                         <div class="p-4 border-t">
                             <h2 class="text-base font-medium text-gray-900">{{ attachment.name }}</h2>

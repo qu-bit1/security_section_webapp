@@ -112,7 +112,7 @@ const canCreateRemarks = () => {
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:md:grid-cols-4 gap-4"  v-if="report[field.key].length > 0">
                             <template v-for="attachment in report[field.key]">
                                 <div class="border shadow-sm rounded-lg bg-white">
-                                    <img :alt="'preview of '+attachment.name" :src="'/'+attachment.path"
+                                    <img :alt="'preview of '+attachment.name" :src="'/storage/'+attachment.path"
                                          class="w-full m-0 not-prose rounded-t-lg"/>
                                     <div class="p-4 border-t">
                                         <h2 class="text-base font-medium text-gray-900">{{ attachment.name }}</h2>
