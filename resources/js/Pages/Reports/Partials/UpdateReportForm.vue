@@ -22,13 +22,14 @@ const props = defineProps({
 const tagOptions = ref(props.tags);
 const selectAll = ref(false);
 
-const shift = ref(props.report.shift);
+const shift = ref(props.report.shift??'');
 const shiftSplit = shift.value.toString().split(',')
+
 const form = useForm({
     type : props.params.type,
     reported_at: DateTime.fromSQL(props.report.reported_at, {zone: 'utc'}).toJSDate(),
     shift_date: DateTime.fromSQL(shiftSplit[0], {zone: 'utc'}).toJSDate(),
-    shift_range: shiftSplit[1].trim(),
+    shift_range: shiftSplit.length > 1 ? shiftSplit[1].trim() : '',
     dealing_officer: props.report.dealing_officer,
     description: props.report.description,
     venue: props.report.venue,

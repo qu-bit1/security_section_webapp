@@ -138,7 +138,9 @@ const toggleFileSelection = (attachmentId) => {
                         class="border rounded shadow cursor-pointer"
                         @click="toggleFileSelection(attachment.id)"
                     >
-                        <img :src="attachment.path" alt="" class="w-full h-32 object-cover"/>
+                        <object :data="'/storage/' + attachment.path" class="w-full h-32 object-cover">
+                            <div class="p-4">preview of {{ attachment.name }}</div>
+                        </object>
                         <div class="p-4">
                             <div class="flex justify-between">
                                 <div class="flex-1">
