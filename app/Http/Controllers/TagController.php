@@ -21,7 +21,6 @@ class TagController extends Controller
                     $query->where('title', 'LIKE', "%{$search}%")
                         ->orWhere('description', 'LIKE', "%{$search}%");
                 })
-                ->where('user_id', auth()->user()->id)
                 ->paginate(request('per_page', 25))
                 ->withQueryString(),
             'filters' => request()->only(['search']),
@@ -39,7 +38,7 @@ class TagController extends Controller
             "description" => $request->description,
         ]);
 
-        return redirect()->back()->with('success', 'Tag created.');
+        return redirect()->route('tags.index')->with('success', 'Tag created.');
     }
 
     /**

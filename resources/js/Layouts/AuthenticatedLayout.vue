@@ -31,7 +31,7 @@ const showingNavigationDropdown = ref(false);
                             </div>
 
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div class="hidden space-x-8 md:-my-px md:ms-10 md:flex">
                                 <NavLink :active="route().current('dashboard')" :href="route('dashboard')">
                                     Dashboard
                                 </NavLink>
@@ -57,7 +57,7 @@ const showingNavigationDropdown = ref(false);
                             </div>
                         </div>
                         <div
-                            class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex justify-end flex-1 items-center"
+                            class="hidden space-x-8 md:-my-px md:ms-10 md:flex justify-end flex-1 items-center"
                         >
                             <div v-if="can('create reports')">
                                 <div class="ms-3 relative">
@@ -78,7 +78,7 @@ const showingNavigationDropdown = ref(false);
                                 </div>
                             </div>
                         </div>
-                        <div class="hidden sm:flex sm:items-center sm:ms-6">
+                        <div class="hidden md:flex md:items-center md:ms-6">
                             <!-- Settings Dropdown -->
                             <div class="ms-3 relative">
                                 <Dropdown align="right" width="48">
@@ -104,7 +104,7 @@ const showingNavigationDropdown = ref(false);
                         </div>
 
                         <!-- Hamburger -->
-                        <div class="-me-2 flex items-center sm:hidden">
+                        <div class="-me-2 flex items-center md:hidden">
                             <button
                                 class="inline-flex items-center justify-center p-2 rounded-md focus:outline-none transition duration-150 ease-in-out"
                                 @click="showingNavigationDropdown = !showingNavigationDropdown"
@@ -139,7 +139,7 @@ const showingNavigationDropdown = ref(false);
                 <!-- Responsive Navigation Menu -->
                 <div
                     :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
-                    class="sm:hidden"
+                    class="md:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :active="route().current('dashboard')" :href="route('dashboard')">

@@ -64,18 +64,25 @@
         </div>
     @endif
 
+    @if($report->shift)
+        <div class="mb-4">
+            <h4>Shift</h4>
+            <p class="text-gray-600 text-sm">{{ $report->shift }}</p>
+        </div>
+    @endif
+
     <div class="mb-4">
         <h4>Venue</h4>
-        <p class="text-gray-600 text-sm">{{ $report->venue ?? 'None' }}</p>
+        <p class="text-gray-600 text-sm">{{ $report->venue ?? 'NA' }}</p>
     </div>
     <div class="mb-4">
         <h4>Dealing Officer</h4>
-        <p class="text-gray-600 text-sm">{{ $report->dealing_officer ?? 'None' }}</p>
+        <p class="text-gray-600 text-sm">{{ $report->dealing_officer ?? 'NA' }}</p>
     </div>
 
     <div class="mb-4">
         <h4>Description</h4>
-        <p class="text-gray-600 text-sm">{{ $report->description ?? 'None' }}</p>
+        <p class="text-gray-600 text-sm">{{ $report->description ?? 'NA' }}</p>
     </div>
 
     <div class="mb-4">
@@ -90,7 +97,7 @@
                 <a href="{{ $attachment->path }}" target="_blank" class="block text-gray-600 text-sm">{{ $attachment->name }}</a>
             @endforeach
         @else
-            <span class="block text-gray-600 text-sm">None</span>
+            <span class="block text-gray-600 text-sm">NA</span>
         @endif
     </div>
 </div>
