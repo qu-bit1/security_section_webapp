@@ -39,6 +39,18 @@ createInertiaApp({
             .provide("can", app.config.globalProperties.can)
             .provide("is", app.config.globalProperties.is)
             .directive('clickout', clickoutDirective)
+            .mixin({
+                mounted() {
+                    // Listen for popstate event (back/forward navigation)
+                    window.addEventListener('popstate', () => {
+                        // Check if the current path is "/reports"
+                        if (window.location.pathname === '/reports') {
+                            // Reload the "/reports" page
+                            this.$inertia.reload()
+                        }
+                    })
+                }
+            })
             .mount(el);
     },
     progress: {

@@ -17,12 +17,8 @@ const form = useForm({
 const submit = () => {
     form.post(route('register'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
-        onSuccess: async () => {
-            await axios.get('/get-permissions').then(
-                response => {
-                    window.Laravel.jsPermissions = response.data;
-                }
-            );
+        onSuccess: () => {
+            window.location.reload()
         }
     });
 };

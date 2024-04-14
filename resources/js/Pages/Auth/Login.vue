@@ -26,12 +26,8 @@ const form = useForm({
 const submit = () => {
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
-        onSuccess: async () =>{
-            await axios.get('/get-permissions').then(
-                response => {
-                    window.Laravel.jsPermissions = response.data;
-                }
-            );
+        onSuccess: () => {
+            window.location.reload()
         }
     });
 };
