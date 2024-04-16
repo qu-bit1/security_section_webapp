@@ -69,6 +69,9 @@ if (! function_exists('applyFilters')) {
                         $query->where($field, '!=', $value);
                         break;
                     case MatchModeEnum::IN->value:
+                        if (empty($value)) {
+                            break;
+                        }
                         if ($field === "tags") {
                             $query->whereHas($field, function ($q) use ($value) {
                                 $q->whereIn('title', $value);
