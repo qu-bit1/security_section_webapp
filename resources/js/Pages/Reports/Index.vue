@@ -200,21 +200,23 @@ const onTagFilter = async (event) => {
 
                 <Column field="description" filterField="description" header="Description">
                     <template #body="data">
-                        <div v-tooltip="data.data?.description" v-if="data.data.description" class="mb-2 block">
-                            <Link :href="route('reports.show', data.data.id)" >
-                                {{ truncate(data.data.description, 10)}}
-                            </Link>
-                        </div>
-                        <div class="flex flex-row justify-end gap-4">
-                            <div
-                                class="inline-flex items-center"
-                            >
-                                {{ data.data.attachments.length }} <Attachment class="ml-1"/>
-                            </div>
-                            <div class="inline-flex items-center">
-                                <Link :href="route('reports.show', data.data.id)+'#commentSection'">
-                                    {{ data.data.comments_count }} <Comment class="ml-1"/>
+                        <div class="flex flex-row gap-2">
+                            <div v-tooltip="data.data?.description" v-if="data.data.description" class="mb-2 block">
+                                <Link :href="route('reports.show', data.data.id)">
+                                    {{ truncate(data.data.description, 8)}}
                                 </Link>
+                            </div>
+                            <div class="flex flex-row justify-end gap-4 flex-1">
+                                <div
+                                    class="inline-flex items-center"
+                                >
+                                    <ViewAttachments :report="data.data"/>
+                                </div>
+                                <div class="inline-flex items-center">
+                                    <Link :href="route('reports.show', data.data.id)+'#commentSection'" class="whitespace-nowrap">
+                                        {{ data.data.comments_count }} <Comment class="ml-1"/>
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     </template>

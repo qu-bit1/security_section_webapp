@@ -13,6 +13,7 @@ import Edit from "@/Components/icons/Edit.vue";
 import ApproveReportForm from "@/Pages/Reports/Partials/ApproveReportForm.vue";
 import Tag from "primevue/tag";
 import {DateTime} from "luxon";
+import {attachmentPath} from "@/Compositions/Helpers.js";
 
 defineProps({
     report: Object,
@@ -112,8 +113,8 @@ const canCreateRemarks = () => {
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:md:grid-cols-4 gap-4"  v-if="report[field.key].length > 0">
                             <template v-for="attachment in report[field.key]">
                                 <div class="border shadow-sm rounded-lg bg-white">
-                                    <object :data="'/storage/' + attachment.path" class="w-full m-0 not-prose rounded-t-lg object-cover" width="100%" height="320px">
-                                        <div class="p-4">preview of {{ attachment.name }}</div>
+                                    <object :data="attachmentPath(attachment.path)" class="w-full m-0 not-prose rounded-t-lg object-cover" width="100%" height="320px">
+                                        <div class="p-4">preview not available</div>
                                     </object>
                                     <div class="p-4 border-t">
                                         <h2 class="text-base font-medium text-gray-900">{{ attachment.name }}</h2>

@@ -16,7 +16,7 @@ defineEmits(['remove'])
             </svg>
         </button>
         <object :data="file.url" class="w-full h-32 object-cover">
-            <div class="p-4">preview of {{ file.file.name }}</div>
+            <div class="p-4"> preview not available for {{ file.file.name }} </div>
         </object>
     </component>
 </template>

@@ -7,6 +7,7 @@ import Paginator from "primevue/paginator";
 import {ref} from "vue";
 import {perPageOptions} from "@/Compositions/Constants.js";
 import InputText from 'primevue/inputtext';
+import {attachmentPath} from "@/Compositions/Helpers.js";
 
 const props = defineProps({
     attachments: Object,
@@ -65,8 +66,8 @@ const onPage = (event) => {
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
                 <template v-for="attachment in attachments.data">
                     <div class="border shadow-sm rounded-lg bg-white">
-                        <object :data="'/storage/' + attachment.path" class="w-full m-0 not-prose rounded-t-lg object-cover" width="100%" height="320px">
-                            <div class="p-4">preview of {{ attachment.name }}</div>
+                        <object :data="attachmentPath(attachment.path)" class="w-full m-0 not-prose rounded-t-lg object-cover" width="100%" height="320px">
+                            <div class="p-4">preview not available</div>
                         </object>
                         <div class="p-4 border-t">
                             <h2 class="text-base font-medium text-gray-900">{{ attachment.name }}</h2>
