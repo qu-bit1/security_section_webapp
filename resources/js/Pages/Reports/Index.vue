@@ -14,7 +14,6 @@ import Column from "primevue/column";
 import DataTable from "primevue/datatable";
 import InputText from "primevue/inputtext";
 import {FilterMatchMode} from "primevue/api";
-import Calendar from "primevue/calendar"
 import MultiSelect from "primevue/multiselect";
 import Filter from "@/Components/icons/Filter.vue";
 import Export from "@/Components/icons/Export.vue";
@@ -22,7 +21,7 @@ import ApproveReportForm from "@/Pages/Reports/Partials/ApproveReportForm.vue";
 import Tag from "primevue/tag";
 import Comment from "@/Components/icons/Comment.vue";
 import TriStateCheckbox from "primevue/tristatecheckbox";
-import Attachment from "@/Components/icons/Attachment.vue";
+import Calender from "@/Components/icons/Calender.vue";
 
 const props = defineProps({
     reports: Object,
@@ -263,7 +262,19 @@ const onTagFilter = async (event) => {
                         {{ formatDate(data.data.created_at) }}
                     </template>
                     <template #filter="{ filterModel, filterCallback }">
-                        <Calendar v-model="filterModel.value" showIcon touchUI iconDisplay="input" showTime @keyup.enter="filterCallback"/>
+                        <VueDatePicker v-model="filterModel.value" @update:model-value="filterCallback">
+                            <template #input-icon>
+                                <Calender class="mx-3"/>
+                            </template>
+                            <template #dp-input="{ value }">
+                                <InputText
+                                    class="w-full pl-8 max-w-full min-w-max"
+                                    :value="value"
+                                    autocomplete="reported_at"
+                                    readonly
+                                />
+                            </template>
+                        </VueDatePicker>
                     </template>
                 </Column>
 
