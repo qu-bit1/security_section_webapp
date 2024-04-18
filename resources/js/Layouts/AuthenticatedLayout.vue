@@ -51,7 +51,7 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink v-if="can('access roles')" :active="route().current('roles.index')" :href="route('roles.index')">
                                     Roles
                                 </NavLink>
-                                <NavLink v-if="can('assign roles')" :active="route().current('users.index')" :href="route('users.index')">
+                                <NavLink v-if="can('access users')" :active="route().current('users.index')" :href="route('users.index')">
                                     Users
                                 </NavLink>
                             </div>
@@ -185,7 +185,7 @@ const showingNavigationDropdown = ref(false);
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :active="route().current('users.index')"
                                            :href="route('users.index')"
-                                           v-if="can('assign roles')"
+                                           v-if="can('access users')"
                         >
                             Users
                         </ResponsiveNavLink>

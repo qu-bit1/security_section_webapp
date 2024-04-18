@@ -172,7 +172,7 @@ const onDisplayFilter = () => {
                 </Column>
                 <Column header="Action" style="width: 3rem">
                     <template #body="data">
-                        <div class="flex flex-row">
+                        <div class="flex flex-row" v-if="can('assign roles')">
                             <AssignRoleForm :user="data.data" :roles="roles"/>
                         </div>
                     </template>

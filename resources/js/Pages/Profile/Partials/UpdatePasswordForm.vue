@@ -60,7 +60,7 @@ const updatePassword = () => {
 
                 <div class="flex flex-col gap-2 mt-4">
                     <InputLabel for="password_confirmation" value="Confirm Password"/>
-                    <InputText id="password_confirmation" ref="PasswordInput" type="password" autocomplete="new-password" v-model="form.password" aria-describedby="new-password"/>
+                    <InputText id="password_confirmation" ref="PasswordInput" type="password" autocomplete="new-password" v-model="form.password_confirmation" aria-describedby="new-password"/>
                     <InputError :message="form.errors.password_confirmation"/>
                 </div>
 

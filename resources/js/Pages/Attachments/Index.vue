@@ -63,7 +63,7 @@ const onPage = (event) => {
             </div>
         </template>
         <div class="p-2 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4" v-if="attachments.data.length > 0">
                 <template v-for="attachment in attachments.data">
                     <div class="border shadow-sm rounded-lg bg-white">
                         <object :data="attachmentPath(attachment.path)" class="w-full m-0 not-prose rounded-t-lg object-cover" width="100%" height="320px">
@@ -74,6 +74,11 @@ const onPage = (event) => {
                         </div>
                     </div>
                 </template>
+            </div>
+            <div v-else>
+                <div class="flex flex-col items-center justify-center mb-4">
+                    No attachments found
+                </div>
             </div>
             <Paginator v-model:first="first" @page="onPage($event)" :rows="rows" :totalRecords="totalRecords" :rowsPerPageOptions="perPageOptions"/>
         </div>

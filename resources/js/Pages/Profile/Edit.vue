@@ -35,7 +35,7 @@ defineProps({
                 <UpdatePasswordForm/>
             </div>
 
-            <div class="my-4 py-4">
+            <div class="my-4 py-4 hidden">
                 <DeleteUserForm/>
             </div>
         </div>

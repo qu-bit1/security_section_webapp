@@ -202,7 +202,7 @@ const onTagFilter = async (event) => {
                         <div class="flex flex-row gap-2">
                             <div v-tooltip="data.data?.description" v-if="data.data.description" class="mb-2 block">
                                 <Link :href="route('reports.show', data.data.id)">
-                                    {{ truncate(data.data.description, 8)}}
+                                    {{ truncate(data.data.description, 9)}}
                                 </Link>
                             </div>
                             <div class="flex flex-row justify-end gap-4 flex-1">
