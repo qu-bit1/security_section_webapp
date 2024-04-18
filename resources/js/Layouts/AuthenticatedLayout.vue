@@ -105,6 +105,24 @@ const showingNavigationDropdown = ref(false);
 
                         <!-- Hamburger -->
                         <div class="-me-2 flex items-center md:hidden">
+                            <div v-if="can('create reports')">
+                                <div class="ms-3 relative">
+                                    <Dropdown align="right" width="48">
+                                        <template #trigger>
+                                            <span class="inline-flex rounded-md">
+                                                <PrimaryButton>
+                                                    New Report
+                                                </PrimaryButton>
+                                            </span>
+                                        </template>
+
+                                        <template #content>
+                                            <DropdownLink :href="route('reports.create', {'type': 'normal'})">Normal Report</DropdownLink>
+                                            <DropdownLink :href="route('reports.create')">New Report</DropdownLink>
+                                        </template>
+                                    </Dropdown>
+                                </div>
+                            </div>
                             <button
                                 class="inline-flex items-center justify-center p-2 rounded-md focus:outline-none transition duration-150 ease-in-out"
                                 @click="showingNavigationDropdown = !showingNavigationDropdown"
