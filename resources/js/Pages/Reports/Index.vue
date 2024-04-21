@@ -313,17 +313,17 @@ const onTagFilter = async (event) => {
                     </template>
                 </Column>
                 <template #expansion="slotProps">
-                    <div class="p-3 prose max-w-none">
-                        <div class="mb-1">
-                            <h3>Description:</h3>
+                    <div class="p-3">
+                        <div class="mb-3">
+                            <h3 class="text-xl font-bold mb-2">Description:</h3>
                             <span>{{ slotProps.data.description ?? "NA" }}</span>
                         </div>
-                        <div class="mb-1">
-                            <h3 class="inline-block mr-2">Reported At:</h3>
+                        <div class="mb-3">
+                            <h3 class="inline-block mr-2 text-xl font-bold">Reported At:</h3>
                             <span>{{ DateTime.fromSQL(slotProps.data.reported_at, {zone: 'utc'}).toJSDate().toLocaleString() }}</span>
                         </div>
-                        <div class="mb-1">
-                            <h3>Attachments: </h3>
+                        <div class="mb-3">
+                            <h3 class="text-xl font-bold mb-2">Attachments: </h3>
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:md:grid-cols-4 gap-4"  v-if="slotProps.data.attachments.length > 0">
                                 <template v-for="attachment in slotProps.data.attachments">
                                     <div class="border shadow-sm rounded-lg bg-white">
