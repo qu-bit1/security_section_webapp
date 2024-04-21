@@ -109,7 +109,7 @@ class ReportController extends Controller
         };
         $report->tags()->attach($tagIds);
 
-        return redirect()->route('reports.index')->with('success', 'Report created.');
+        return redirect()->route('reports.show', $report->id)->with('success', 'Report created.');
     }
 
     /**

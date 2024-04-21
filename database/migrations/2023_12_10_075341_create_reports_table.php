@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('shift')->nullable();
             $table->enum('status', StatusEnum::getValues())->default(StatusEnum::OPEN->value);
             $table->string('venue')->nullable();
-            $table->boolean('approved')->default(false);
+            $table->enum('approve_status', StatusEnum::getApproveValues())->default(StatusEnum::DRAFT->value);
             $table->foreignUuid('approved_by')->nullable()
                 ->constrained("users")
                 ->onUpdate('cascade');

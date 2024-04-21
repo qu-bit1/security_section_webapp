@@ -3,11 +3,18 @@
 namespace App\Enums;
 
 enum StatusEnum: string {
+    // used for report status
     case OPEN = 'open';
     case IN_PROGRESS = 'in_progress';
     case RESOLVED = 'resolved';
     case CLOSED = 'closed';
     case NORMAL = 'normal';
+
+    // used for approval status
+    case PENDING = 'pending';
+    case APPROVED = 'approved';
+    case REJECTED = 'rejected';
+    case DRAFT = 'draft'; // report is created but not submitted for approval
 
     case UNKNOWN = 'unknown';
 
@@ -19,6 +26,15 @@ enum StatusEnum: string {
             self::RESOLVED->value,
             self::CLOSED->value,
             self::NORMAL->value
+        ];
+    }
+
+    public static function getApproveValues(): array
+    {
+        return [
+            self::PENDING->value,
+            self::APPROVED->value,
+            self::REJECTED->value,
         ];
     }
 
