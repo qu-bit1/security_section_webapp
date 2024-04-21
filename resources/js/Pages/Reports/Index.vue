@@ -22,6 +22,8 @@ import Tag from "primevue/tag";
 import Comment from "@/Components/icons/Comment.vue";
 import TriStateCheckbox from "primevue/tristatecheckbox";
 import Calender from "@/Components/icons/Calender.vue";
+import {attachmentPath} from "@/Compositions/Helpers.js";
+import {DateTime} from "luxon";
 
 const props = defineProps({
     reports: Object,
@@ -49,6 +51,19 @@ const customFilters = ref(obj.filters ?? {
     venue: {value: null, matchMode: FilterMatchMode.CONTAINS},
     reporter: {value: null, matchMode: FilterMatchMode.CONTAINS},
 });
+const expandedRows = ref({});
+
+const onRowExpand = (event) => {
+    // only one row can be expanded at a time
+    if(Object.keys(expandedRows.value).length > 0) {
+        expandedRows.value = {};
+        expandedRows.value[event.data.id] = true;
+    }
+};
+
+const onRowCollapse = (event) => {
+    expandedRows.value = {};
+};
 
 // Injected Dependencies
 const can = inject('can');
@@ -116,6 +131,7 @@ const onTagFilter = async (event) => {
     <AuthenticatedLayout>
         <div class="m-auto">
             <DataTable
+                v-model:expandedRows="expandedRows"
                 v-model:selection="selectedReports"
                 sortMode="multiple"
                 removableSort
@@ -138,12 +154,15 @@ const onTagFilter = async (event) => {
                 :value="reports.data"
                 dataKey="id"
                 tableStyle="min-width: 30rem"
+                @rowExpand="onRowExpand"
+                @rowCollapse="onRowCollapse"
             >
                 <template #empty>
                     <div class="flex flex-col items-center justify-center">
                         No reports found
                     </div>
                 </template>
+                <Column expander/>
 
                 <!-- Header Template -->
                 <template #header='{ event }'>
@@ -293,6 +312,36 @@ const onTagFilter = async (event) => {
                                           @change="filterCallback()"/>
                     </template>
                 </Column>
+                <template #expansion="slotProps">
+                    <div class="p-3 prose max-w-none">
+                        <div class="mb-1">
+                            <h3>Description:</h3>
+                            <span>{{ slotProps.data.description ?? "NA" }}</span>
+                        </div>
+                        <div class="mb-1">
+                            <h3 class="inline-block mr-2">Reported At:</h3>
+                            <span>{{ DateTime.fromSQL(slotProps.data.reported_at, {zone: 'utc'}).toJSDate().toLocaleString() }}</span>
+                        </div>
+                        <div class="mb-1">
+                            <h3>Attachments: </h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:md:grid-cols-4 gap-4"  v-if="slotProps.data.attachments.length > 0">
+                                <template v-for="attachment in slotProps.data.attachments">
+                                    <div class="border shadow-sm rounded-lg bg-white">
+                                        <object :data="attachmentPath(attachment.path)" class="w-full m-0 not-prose rounded-t-lg object-cover" width="100%" height="180px">
+                                            <div class="p-4">preview not available</div>
+                                        </object>
+                                        <div class="p-4 border-t">
+                                            <h2 class="text-base font-medium text-gray-900">{{ attachment.name }}</h2>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div v-else>
+                                <span>NA</span>
+                            </div>
+                        </div>
+                    </div>
+                </template>
             </DataTable>
         </div>
     </AuthenticatedLayout>
