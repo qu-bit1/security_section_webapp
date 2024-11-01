@@ -86,3 +86,58 @@ Run the test suite:
 php artisan test
 ```
 
+## Role Management
+
+The application uses a role-based access control system with three main roles:
+- super-admin: Full access to all features
+- admin: Administrative access with some restrictions
+- user: Basic access to create and manage own reports
+
+### Default Roles and Permissions
+
+First, seed the default roles and permissions:
+```bash
+php artisan db:seed --class=PermissionSeeder
+```
+
+### Managing Roles
+
+#### View User Roles
+To see all users and their roles, use tinker:
+```bash
+php artisan tinker
+```
+Then run:
+```php
+foreach(App\Models\User::with('roles')->get() as $user) { 
+    print("\nEmail: " . $user->email . "\nRoles: " . $user->roles->pluck('name')->join(', ') . "\n"); 
+}
+```
+
+#### Assign Roles
+To assign a role to a user via tinker:
+```php
+// Assign super-admin role
+User::where('email', 'user@example.com')->first()->assignRole('super-admin');
+
+// Assign user role
+User::where('email', 'user@example.com')->first()->assignRole('user');
+```
+
+### Role Permissions
+
+1. Super Admin
+   - Full system access
+   - Manage users and their roles
+   - Access and manage all reports
+   - Approve reports
+   - Manage roles and permissions
+
+2. User
+   - Create and view own reports
+   - Edit own reports
+   - Add comments to reports
+   - Basic dashboard access
+
+Note: New users are automatically assigned the 'user' role upon registration.
+
