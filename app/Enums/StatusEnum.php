@@ -35,6 +35,7 @@ enum StatusEnum: string {
             self::PENDING->value,
             self::APPROVED->value,
             self::REJECTED->value,
+            self::DRAFT->value,
         ];
     }
 
